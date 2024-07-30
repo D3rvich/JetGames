@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="release_date">Release date</string>
+    <string name="genres">Genres</string>
+    <string name="rating">Rating</string>
+</resources>

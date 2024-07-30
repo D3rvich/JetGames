@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="platforms_label">Platforms (%1$d)</string>
+    <string name="genres_label">Genres (%1$d)</string>
+    <string name="sort_by_label">Sort by</string>
+    <string name="metacritic_label">Metacritic</string>
+
+    <string name="no_sorting">No sorting</string>
+    <string name="metacritic">Metacritic</string>
+    <string name="rating">Rating</string>
+    <string name="name">Name</string>
+    <string name="released">Released</string>
+
+    <string name="edit">Edit</string>
+    <string name="clear_all">Clear all</string>
+    <string name="filter_label">Filter</string>
+    <string name="reset">reset</string>
+    <string name="navigate_back">Navigate back</string>
+    <string name="apply_filter">Apply filter</string>
+</resources>

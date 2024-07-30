@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feature_home_title">Home</string>
+    <string name="open_filter">Open filter</string>
+    <string name="list_view_mode_grid">Grid</string>
+    <string name="list_view_mode_compact">Compact</string>
+    <string name="list_view_mode_large">Large</string>
+    <string name="selected">Selected</string>
+    <string name="open_search">Open search</string>
+    <string name="jetgames">JetGames</string>
+</resources>

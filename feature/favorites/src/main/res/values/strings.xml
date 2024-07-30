@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feature_favorites_title">Favorites</string>
+    <string name="no_elements">There are no games.</string>
+    <string name="favorites">Favorites</string>
+</resources>

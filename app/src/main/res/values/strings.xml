@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">JetGames</string>
+    <string name="feature_browse_title">Browse</string>
+    <string name="feature_favorites_title">Favorites</string>
+</resources>
