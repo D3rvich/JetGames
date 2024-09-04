@@ -84,7 +84,7 @@ fun ScreenshotsScreen(
         CompositionLocalProvider(LocalOverscrollConfiguration provides null) {
             BoxWithConstraints {
                 val heightToDismiss = with(LocalDensity.current) {
-                    maxHeight.toPx() / 4
+                    maxHeight.toPx() / 6
                 }
                 val dragState = rememberDragToDismissState(heightToDismiss = heightToDismiss)
                 Surface(
