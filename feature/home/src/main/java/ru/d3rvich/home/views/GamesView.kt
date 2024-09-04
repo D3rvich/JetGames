@@ -1,18 +1,16 @@
 package ru.d3rvich.home.views
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -24,6 +22,7 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
@@ -43,6 +42,7 @@ import ru.d3rvich.core.ui.components.GameGridItemView
 import ru.d3rvich.core.ui.components.GameListItemView
 import ru.d3rvich.core.ui.mapper.toGameUiModel
 import ru.d3rvich.core.ui.theme.JetGamesTheme
+import ru.d3rvich.home.R
 import ru.d3rvich.home.model.ListViewMode
 
 /**
@@ -68,13 +68,19 @@ internal fun GamesView(
             }
         }
     }
-    when (pagingItems.loadState.refresh) {
-        is LoadState.Error -> {
+    when {
+        pagingItems.loadState.refresh is LoadState.Error -> {
             val error = pagingItems.loadState.refresh as? LoadState.Error
             DefaultErrorView(
                 message = error?.error?.message ?: "error",
                 onRefreshPressed = onRefreshPressed
             )
+        }
+
+        pagingItems.loadState.refresh is LoadState.NotLoading && pagingItems.itemCount == 0 -> {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text(text = stringResource(R.string.no_items))
+            }
         }
 
         else -> {
@@ -88,7 +94,7 @@ internal fun GamesView(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 state = gridState
             ) {
-                if (pagingItems.loadState.refresh == LoadState.Loading) {
+                if (pagingItems.loadState.refresh is LoadState.Loading) {
                     items(
                         count = if (listViewMode == ListViewMode.Grid) 40 else 20,
                         key = { "LoadingStub#$it" }) {
@@ -133,13 +139,23 @@ internal fun GamesView(
                 }
 
                 if (pagingItems.loadState.append == LoadState.Loading) {
-                    item {
-                        CircularProgressIndicator(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .wrapContentWidth(Alignment.CenterHorizontally)
-                                .padding(vertical = 8.dp)
-                        )
+                    items(
+                        count = if (listViewMode == ListViewMode.Grid) 20 else 10,
+                        key = { "LoadingStub#$it" }) {
+                        if (listViewMode == ListViewMode.Grid) {
+                            GameGridItemView(
+                                game = null,
+                                isLoading = true,
+                                imageLoader = imageLoader,
+                            )
+                        } else {
+                            GameListItemView(
+                                game = null,
+                                isLoading = true,
+                                isLarge = listViewMode == ListViewMode.Large,
+                                imageLoader = imageLoader
+                            )
+                        }
                     }
                 }
             }
