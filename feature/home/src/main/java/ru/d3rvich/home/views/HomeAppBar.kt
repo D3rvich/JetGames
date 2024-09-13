@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -23,6 +24,7 @@ import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -42,6 +44,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ru.d3rvich.common.components.SearchField
 import ru.d3rvich.core.ui.theme.JetGamesTheme
+import ru.d3rvich.home.R
 import ru.d3rvich.home.model.ListViewMode
 import ru.d3rvich.common.R as CommonR
 import ru.d3rvich.home.R as HomeR
@@ -60,6 +63,7 @@ internal fun HomeAppBar(
     onListViewModeChange: (ListViewMode) -> Unit,
     scrollBehavior: TopAppBarScrollBehavior? = null,
     navigateToFilterScreen: () -> Unit,
+    navigateToSettingsScreen: () -> Unit,
 ) {
     var showSearch by rememberSaveable {
         mutableStateOf(false)
@@ -74,7 +78,7 @@ internal fun HomeAppBar(
         }
         onDispose {}
     }
-    CenterAlignedTopAppBar(
+    TopAppBar(
         modifier = modifier,
         scrollBehavior = scrollBehavior,
         navigationIcon = {
@@ -121,7 +125,7 @@ internal fun HomeAppBar(
                 }
             }) {
                 IconButton(
-                    onClick = { navigateToFilterScreen() },
+                    onClick = navigateToFilterScreen,
                 ) {
                     Icon(
                         painter = painterResource(CommonR.drawable.ic_filter_alt_24),
@@ -138,6 +142,12 @@ internal fun HomeAppBar(
                 currentListViewMode = currentListViewMode,
                 onListViewModeChange = onListViewModeChange
             )
+            IconButton(onClick = navigateToSettingsScreen) {
+                Icon(
+                    imageVector = Icons.Default.Settings,
+                    contentDescription = stringResource(R.string.open_settings)
+                )
+            }
         })
 }
 
@@ -207,7 +217,8 @@ private fun HomeAppBarPreview() {
             isFilterEdited = false,
             currentListViewMode = ListViewMode.Compact,
             onListViewModeChange = {},
-            navigateToFilterScreen = {}
+            navigateToFilterScreen = {},
+            navigateToSettingsScreen = {}
         )
     }
 }
