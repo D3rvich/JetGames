@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="genres">Genres</string>
+    <string name="platforms">Platforms</string>
     <string name="browse">Browse</string>
+    <string name="games">Games</string>
 </resources>
