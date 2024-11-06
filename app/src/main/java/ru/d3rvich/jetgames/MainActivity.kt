@@ -12,18 +12,12 @@ import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSiz
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
-import coil.ImageLoader
-import dagger.Lazy
 import dagger.hilt.android.AndroidEntryPoint
 import ru.d3rvich.core.ui.theme.JetGamesTheme
 import ru.d3rvich.jetgames.navigation.SetupNavGraph
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
-    @Inject
-    lateinit var imageLoader: Lazy<ImageLoader>
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,7 +38,6 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     SetupNavGraph(
-                        imageLoader = imageLoader.get(),
                         windowSizeClass = windowSizeClass,
                     )
                 }

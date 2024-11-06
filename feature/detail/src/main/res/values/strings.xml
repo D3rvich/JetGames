@@ -13,4 +13,5 @@
     <string name="rating_type_recommended">Recommended</string>
     <string name="rating_type_meh">Meh</string>
     <string name="rating_type_skip">Skip</string>
+    <string name="navigate_back">Navigate back</string>
 </resources>

@@ -20,7 +20,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -32,8 +31,6 @@ import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
-import coil.ImageLoader
-import coil.imageLoader
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.datetime.LocalDate
 import ru.d3rvich.common.components.DefaultErrorView
@@ -52,7 +49,6 @@ import ru.d3rvich.home.model.ListViewMode
 internal fun GamesView(
     modifier: Modifier = Modifier,
     pagingItems: LazyPagingItems<GameEntity>,
-    imageLoader: ImageLoader,
     listViewMode: ListViewMode,
     contentPadding: PaddingValues = PaddingValues(),
     gridState: LazyGridState = rememberLazyGridState(),
@@ -105,14 +101,12 @@ internal fun GamesView(
                             GameGridItemView(
                                 game = null,
                                 isLoading = true,
-                                imageLoader = imageLoader,
                             )
                         } else {
                             GameListItemView(
                                 game = null,
                                 isLoading = true,
                                 isLarge = listViewMode == ListViewMode.Large,
-                                imageLoader = imageLoader
                             )
                         }
                     }
@@ -124,13 +118,11 @@ internal fun GamesView(
                         if (listViewMode == ListViewMode.Grid) {
                             GameGridItemView(
                                 game = item.toGameUiModel(),
-                                imageLoader = imageLoader,
                                 onItemClick = onGameSelected
                             )
                         } else {
                             GameListItemView(
                                 game = item.toGameUiModel(),
-                                imageLoader = imageLoader,
                                 isLarge = listViewMode == ListViewMode.Large,
                                 onItemClick = onGameSelected
                             )
@@ -146,14 +138,12 @@ internal fun GamesView(
                             GameGridItemView(
                                 game = null,
                                 isLoading = true,
-                                imageLoader = imageLoader,
                             )
                         } else {
                             GameListItemView(
                                 game = null,
                                 isLoading = true,
                                 isLarge = listViewMode == ListViewMode.Large,
-                                imageLoader = imageLoader
                             )
                         }
                     }
@@ -203,7 +193,6 @@ private fun GamesViewPreview() {
         GamesView(
             modifier = Modifier.fillMaxSize(),
             pagingItems = games,
-            imageLoader = LocalContext.current.imageLoader,
             listViewMode = ListViewMode.Grid,
             onRefreshPressed = { },
             onGameSelected = {})

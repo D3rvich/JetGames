@@ -19,8 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
-import coil.ImageLoader
-import coil.compose.AsyncImage
+import coil3.compose.AsyncImage
 import ru.d3rvich.detail.model.ScreenshotsUiState
 
 /**
@@ -30,7 +29,6 @@ import ru.d3rvich.detail.model.ScreenshotsUiState
 internal fun ScreenshotsView(
     modifier: Modifier = Modifier,
     screenshotsState: ScreenshotsUiState,
-    imageLoader: ImageLoader,
     onItemClicked: (Int) -> Unit,
 ) {
     LazyRow(
@@ -44,7 +42,6 @@ internal fun ScreenshotsView(
                     ScreenshotItem(
                         isLoading = true,
                         imageUrl = "",
-                        imageLoader = imageLoader,
                     )
                 }
             }
@@ -72,7 +69,6 @@ internal fun ScreenshotsView(
                     ScreenshotItem(
                         isLoading = false,
                         imageUrl = item.imageUrl,
-                        imageLoader = imageLoader,
                         onItemClicked = { onItemClicked(index) },
                     )
                 }
@@ -86,7 +82,6 @@ private fun ScreenshotItem(
     modifier: Modifier = Modifier,
     isLoading: Boolean,
     imageUrl: String,
-    imageLoader: ImageLoader,
     onItemClicked: (() -> Unit)? = null,
 ) {
     Card(modifier = modifier.size(200.dp)) {
@@ -103,7 +98,6 @@ private fun ScreenshotItem(
                 modifier = Modifier
                     .fillMaxSize()
                     .clickable(role = Role.Image) { onItemClicked?.invoke() },
-                imageLoader = imageLoader,
                 contentScale = ContentScale.Crop
             )
         }

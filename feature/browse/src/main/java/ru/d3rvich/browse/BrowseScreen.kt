@@ -29,19 +29,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil.ImageLoader
-import coil.compose.AsyncImage
-import coil.imageLoader
+import coil3.compose.AsyncImage
 import ru.d3rvich.browse.model.BrowseUiState
-import ru.d3rvich.core.ui.theme.JetGamesTheme
-import ru.d3rvich.core.domain.model.Status
 import ru.d3rvich.core.domain.entities.GenreFullEntity
+import ru.d3rvich.core.domain.model.Status
+import ru.d3rvich.core.ui.theme.JetGamesTheme
 
 /**
  * Created by Ilya Deryabin at 05.06.2024
@@ -50,7 +47,6 @@ import ru.d3rvich.core.domain.entities.GenreFullEntity
 fun BrowseScreen(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues,
-    imageLoader: ImageLoader,
 ) {
     val viewModel: BrowseViewModel = hiltViewModel()
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -58,7 +54,6 @@ fun BrowseScreen(
         state = state,
         modifier = modifier,
         contentPadding = contentPadding,
-        imageLoader = imageLoader
     )
 }
 
@@ -68,7 +63,6 @@ internal fun BrowseScreen(
     modifier: Modifier = Modifier,
     state: BrowseUiState,
     contentPadding: PaddingValues,
-    imageLoader: ImageLoader,
 ) {
     Scaffold(modifier = modifier.fillMaxSize(),
         topBar = {
@@ -81,7 +75,7 @@ internal fun BrowseScreen(
                 .padding(paddingValues)
                 .padding(contentPadding),
         ) {
-            GenresView(status = state.genres, imageLoader = imageLoader)
+            GenresView(status = state.genres)
         }
     }
 }
@@ -90,7 +84,6 @@ internal fun BrowseScreen(
 internal fun GenresView(
     modifier: Modifier = Modifier,
     status: Status<List<GenreFullEntity>>,
-    imageLoader: ImageLoader,
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
         Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
@@ -120,7 +113,7 @@ internal fun GenresView(
                         items(
                             items = status.value.sortedByDescending { it.gamesCount },
                             key = { it.id }) { genre ->
-                            GenresItemView(genre = genre, imageLoader = imageLoader)
+                            GenresItemView(genre = genre)
                         }
                     }
                 }
@@ -133,7 +126,6 @@ internal fun GenresView(
 internal fun GenresItemView(
     modifier: Modifier = Modifier,
     genre: GenreFullEntity,
-    imageLoader: ImageLoader,
 ) {
     Card(
         modifier = modifier
@@ -145,7 +137,6 @@ internal fun GenresItemView(
                 model = genre.imageUrl,
                 contentScale = ContentScale.Crop,
                 contentDescription = null,
-                imageLoader = imageLoader,
                 modifier = Modifier.fillMaxSize()
             )
             Column(
@@ -189,7 +180,7 @@ private fun GenresItemViewPreview() {
                     name = "Genre",
                     imageUrl = null,
                     gamesCount = 20
-                ), imageLoader = LocalContext.current.imageLoader
+                )
             )
         }
     }

@@ -11,8 +11,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.util.lerp
-import coil.ImageLoader
-import coil.compose.AsyncImage
+import coil3.compose.AsyncImage
 import ru.d3rvich.screenshots.model.DragToDismissState
 import ru.d3rvich.screenshots.model.draggableScreenshot
 import kotlin.math.roundToInt
@@ -26,7 +25,6 @@ internal fun ScreenshotView(
     screenshot: String,
     pageOffset: Float,
     dragToDismissState: DragToDismissState,
-    imageLoader: ImageLoader,
     windowSizeClass: WindowSizeClass,
     onHeightOffsetChange: () -> Unit,
     onDismissRequest: () -> Unit,
@@ -34,7 +32,6 @@ internal fun ScreenshotView(
     AsyncImage(
         model = screenshot,
         contentDescription = null,
-        imageLoader = imageLoader,
         contentScale = if (windowSizeClass.widthSizeClass == WindowWidthSizeClass.Compact) {
             ContentScale.FillWidth
         } else {

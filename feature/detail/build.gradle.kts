@@ -8,6 +8,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.coil.network)
     implementation(libs.coil.compose)
     implementation(libs.kotlinx.collections.immutable)
 

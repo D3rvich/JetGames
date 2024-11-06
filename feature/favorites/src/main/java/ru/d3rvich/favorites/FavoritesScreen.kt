@@ -27,7 +27,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
-import coil.ImageLoader
 import ru.d3rvich.common.components.DefaultErrorView
 import ru.d3rvich.core.ui.components.GameListItemView
 import ru.d3rvich.core.ui.mapper.toGameUiModel
@@ -40,7 +39,6 @@ import ru.d3rvich.favorites.model.FavoritesUiState
 fun FavoritesScreen(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues,
-    imageLoader: ImageLoader,
     navigateToGameDetail: (gameId: Int) -> Unit,
 ) {
     val viewModel: FavoritesViewModel = hiltViewModel()
@@ -48,7 +46,6 @@ fun FavoritesScreen(
     FavoritesScreen(
         modifier = modifier,
         state = state,
-        imageLoader = imageLoader,
         contentPadding = contentPadding,
         navigateToGameDetail = navigateToGameDetail
     )
@@ -59,7 +56,6 @@ fun FavoritesScreen(
 internal fun FavoritesScreen(
     modifier: Modifier = Modifier,
     state: FavoritesUiState,
-    imageLoader: ImageLoader,
     contentPadding: PaddingValues,
     navigateToGameDetail: (gameId: Int) -> Unit,
 ) {
@@ -111,7 +107,6 @@ internal fun FavoritesScreen(
                     GameListItemView(
                         game = item.toGameUiModel(),
                         isLarge = false,
-                        imageLoader = imageLoader
                     ) { gameId ->
                         navigateToGameDetail(gameId)
                     }

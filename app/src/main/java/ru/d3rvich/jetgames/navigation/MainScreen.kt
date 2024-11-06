@@ -25,7 +25,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import coil.ImageLoader
 import ru.d3rvich.browse.BrowseScreen
 import ru.d3rvich.common.navigation.Screens
 import ru.d3rvich.common.navigation.navigateToFilterScreen
@@ -41,7 +40,6 @@ import ru.d3rvich.home.HomeScreen
 fun MainScreen(
     modifier: Modifier = Modifier,
     externalNavController: NavController,
-    imageLoader: ImageLoader,
     windowSizeClass: WindowSizeClass,
     startDestination: Any = Screens.Favorites,
 ) {
@@ -76,7 +74,6 @@ fun MainScreen(
                 composable<Screens.Home> {
                     HomeScreen(
                         contentPadding = paddingValues,
-                        imageLoader = imageLoader,
                         navigateToFilterScreen = { externalNavController.navigateToFilterScreen() },
                         navigateToDetailScreen = { gameId ->
                             externalNavController.navigateToGameDetailScreen(gameId)
@@ -84,12 +81,11 @@ fun MainScreen(
                     )
                 }
                 composable<Screens.Browse> {
-                    BrowseScreen(contentPadding = paddingValues, imageLoader = imageLoader)
+                    BrowseScreen(contentPadding = paddingValues)
                 }
                 composable<Screens.Favorites> {
                     FavoritesScreen(
-                        contentPadding = paddingValues,
-                        imageLoader = imageLoader
+                        contentPadding = paddingValues
                     ) { gameId ->
                         externalNavController.navigateToGameDetailScreen(
                             gameId = gameId,

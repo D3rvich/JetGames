@@ -5,7 +5,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil.ImageLoader
 import ru.d3rvich.common.components.DefaultErrorView
 import ru.d3rvich.core.domain.entities.ScreenshotEntity
 import ru.d3rvich.detail.model.GameDetailUiEvent
@@ -21,7 +20,6 @@ import ru.d3rvich.detail.views.LoadingView
 @Composable
 fun GameDetailScreen(
     modifier: Modifier = Modifier,
-    imageLoader: ImageLoader,
     navigateToScreenshotScreen: (selectedItem: Int, screenshots: List<ScreenshotEntity>) -> Unit,
     navigateBack: () -> Unit,
 ) {
@@ -30,7 +28,6 @@ fun GameDetailScreen(
     GameDetailScreen(
         modifier = modifier,
         state = state,
-        imageLoader = imageLoader,
         onFavoriteChange = { viewModel.obtainEvent(GameDetailUiEvent.OnFavoriteChange(it)) },
         onRefresh = { viewModel.obtainEvent(GameDetailUiEvent.OnRefresh) },
         onNavigateBack = navigateBack,
@@ -41,7 +38,6 @@ fun GameDetailScreen(
 internal fun GameDetailScreen(
     modifier: Modifier = Modifier,
     state: GameDetailUiState,
-    imageLoader: ImageLoader,
     onFavoriteChange: (isFavorite: Boolean) -> Unit,
     onRefresh: () -> Unit,
     onNavigateBack: () -> Unit,
@@ -53,7 +49,6 @@ internal fun GameDetailScreen(
                 modifier = modifier,
                 detail = state.gameDetail.toGameDetailUiModel(),
                 screenshotsState = state.screenshots,
-                imageLoader = imageLoader,
                 isFavorite = state.isFavorite,
                 onFavoriteChange = onFavoriteChange,
                 onBackClicked = onNavigateBack,

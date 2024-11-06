@@ -43,6 +43,7 @@ dependencies {
     implementation(libs.androidx.compose.navigation)
 
     // Coil
+    implementation(libs.coil.network)
     implementation(libs.coil.compose)
 
     // Hilt additional
