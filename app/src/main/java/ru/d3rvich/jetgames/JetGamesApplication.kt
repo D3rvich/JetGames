@@ -1,11 +1,6 @@
 package ru.d3rvich.jetgames
 
 import android.app.Application
-import androidx.compose.ui.res.painterResource
-import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
-import coil3.Image
-import coil3.ImageDrawable
 import coil3.ImageLoader
 import coil3.PlatformContext
 import coil3.SingletonImageLoader
