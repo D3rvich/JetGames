@@ -7,11 +7,11 @@ hilt = "2.51.1"
 ksp = "2.0.0-1.0.21"
 androidxLifecycle = "2.8.4"
 androidxActivity = "1.9.1"
-androidxCompose = "1.7.0-rc01"
+androidxCompose = "1.7.0"
 androidxComposeMaterial3 = "1.2.1"
 androidxComposeBom = "2024.08.00"
 androidxPaging = "3.3.2"
-androidxComposeNavigation = "2.8.0-rc01"
+androidxComposeNavigation = "2.8.0"
 androidxHiltNavigationCompose = "1.2.0"
 androidxRoom = "2.6.1"
 timber = "5.0.1"
@@ -25,6 +25,9 @@ loggingInterceptor = "4.12.0"
 junit = "4.13.2"
 androidx-test-ext-junit = "1.2.1"
 espresso-core = "3.6.1"
+coreKtx = "1.13.1"
+appcompat = "1.6.1"
+material = "1.10.0"
 
 [libraries]
 androidx-lifecycle-runtime = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "androidxLifecycle" }
@@ -72,6 +75,9 @@ android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", ver
 android-tools-common = { group = "com.android.tools", name = "common", version.ref = "androidTools" }
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
