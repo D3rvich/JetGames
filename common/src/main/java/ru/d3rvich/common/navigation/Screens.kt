@@ -29,6 +29,9 @@ object Screens {
 
     @Serializable
     data class Screenshots(val selectedScreenshot: Int, val screenshots: List<String>)
+
+    @Serializable
+    data object Settings
 }
 
 val LoadSource.Companion.NavType: NavType<LoadSource?>
@@ -66,4 +69,8 @@ fun NavController.navigateToScreenshotsScreen(selectedScreenshot: Int, screensho
             selectedScreenshot = selectedScreenshot,
             screenshots = screenshots.map { URLEncoder.encode(it, StandardCharsets.UTF_8.name()) })
     )
+}
+
+fun NavController.navigateToSettingsScreen() {
+    navigate(Screens.Settings)
 }
