@@ -24,6 +24,7 @@ import ru.d3rvich.core.domain.model.LoadSource
 import ru.d3rvich.detail.GameDetailScreen
 import ru.d3rvich.filter.FilterScreen
 import ru.d3rvich.screenshots.ScreenshotsScreen
+import ru.d3rvich.settings.SettingsScreen
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 import kotlin.reflect.typeOf
@@ -51,6 +52,9 @@ fun SetupNavGraph(
         addScreenshotsScreen(
             navController = navController,
             windowSizeClass = windowSizeClass,
+        )
+        addSettingsScreen(
+            navController = navController,
         )
     }
 }
@@ -127,6 +131,19 @@ private fun NavGraphBuilder.addScreenshotsScreen(
             selectedItem = args.selectedScreenshot,
             windowSizeClass = windowSizeClass,
         ) {
+            navController.popBackStack()
+        }
+    }
+}
+
+private fun NavGraphBuilder.addSettingsScreen(navController: NavController) {
+    composable<Screens.Settings>(enterTransition = {
+        slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left)
+    },
+        exitTransition = {
+            slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right)
+        }) {
+        SettingsScreen {
             navController.popBackStack()
         }
     }

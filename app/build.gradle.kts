@@ -35,6 +35,7 @@ dependencies {
     implementation(project(":feature:filter"))
     implementation(project(":feature:detail"))
     implementation(project(":feature:screenshots"))
+    implementation(project(":feature:settings"))
 
     implementation(libs.androidx.lifecycle.runtime)
     implementation(libs.androidx.activity.compose)

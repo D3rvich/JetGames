@@ -38,6 +38,7 @@ fun HomeScreen(
     contentPadding: PaddingValues,
     navigateToDetailScreen: (Int) -> Unit,
     navigateToFilterScreen: () -> Unit,
+    navigateToSettingsScreen: () -> Unit
 ) {
     val homeViewModel: HomeViewModel = hiltViewModel()
     val state by homeViewModel.uiState.collectAsStateWithLifecycle()
@@ -48,7 +49,8 @@ fun HomeScreen(
         onSearchChange = { homeViewModel.obtainEvent(HomeUiEvent.OnSearchChange(it)) },
         onRefresh = { homeViewModel.obtainEvent(HomeUiEvent.OnRefresh) },
         navigateToDetailScreen = navigateToDetailScreen,
-        navigateToFilterScreen = navigateToFilterScreen
+        navigateToFilterScreen = navigateToFilterScreen,
+        navigateToSettingsScreen = navigateToSettingsScreen
     )
 }
 
@@ -62,6 +64,7 @@ internal fun HomeScreen(
     onRefresh: () -> Unit,
     navigateToDetailScreen: (Int) -> Unit,
     navigateToFilterScreen: () -> Unit,
+    navigateToSettingsScreen: () -> Unit,
 ) {
     val pagingItems = state.games.collectAsLazyPagingItems()
     val gridState = rememberLazyGridState()
@@ -104,7 +107,8 @@ internal fun HomeScreen(
                         currentListViewMode = currentListViewMode,
                         onListViewModeChange = listViewModeProvider::setListViewMode,
                         scrollBehavior = scrollBehavior,
-                        navigateToFilterScreen = navigateToFilterScreen
+                        navigateToFilterScreen = navigateToFilterScreen,
+                        navigateToSettingsScreen = navigateToSettingsScreen,
                     )
                 }
             }

@@ -29,6 +29,7 @@ import ru.d3rvich.browse.BrowseScreen
 import ru.d3rvich.common.navigation.Screens
 import ru.d3rvich.common.navigation.navigateToFilterScreen
 import ru.d3rvich.common.navigation.navigateToGameDetailScreen
+import ru.d3rvich.common.navigation.navigateToSettingsScreen
 import ru.d3rvich.core.domain.model.LoadSource
 import ru.d3rvich.favorites.FavoritesScreen
 import ru.d3rvich.home.HomeScreen
@@ -77,7 +78,8 @@ fun MainScreen(
                         navigateToFilterScreen = { externalNavController.navigateToFilterScreen() },
                         navigateToDetailScreen = { gameId ->
                             externalNavController.navigateToGameDetailScreen(gameId)
-                        }
+                        },
+                        navigateToSettingsScreen = { externalNavController.navigateToSettingsScreen() }
                     )
                 }
                 composable<Screens.Browse> {
@@ -85,13 +87,15 @@ fun MainScreen(
                 }
                 composable<Screens.Favorites> {
                     FavoritesScreen(
-                        contentPadding = paddingValues
-                    ) { gameId ->
-                        externalNavController.navigateToGameDetailScreen(
-                            gameId = gameId,
-                            loadSource = LoadSource.Local
-                        )
-                    }
+                        contentPadding = paddingValues,
+                        navigateToGameDetail = { gameId ->
+                            externalNavController.navigateToGameDetailScreen(
+                                gameId = gameId,
+                                loadSource = LoadSource.Local
+                            )
+                        },
+                        navigateToSettingsScreen = { externalNavController.navigateToSettingsScreen() }
+                    )
                 }
             }
         }

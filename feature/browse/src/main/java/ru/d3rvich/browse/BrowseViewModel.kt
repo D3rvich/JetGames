@@ -9,15 +9,17 @@ import ru.d3rvich.core.ui.base.BaseViewModel
 import ru.d3rvich.core.ui.base.UiAction
 import ru.d3rvich.core.ui.base.UiEvent
 import ru.d3rvich.core.domain.usecases.GetGenresUseCase
+import ru.d3rvich.core.domain.usecases.GetPlatformsUseCase
 import javax.inject.Inject
+import javax.inject.Provider
 
 /**
  * Created by Ilya Deryabin at 05.06.2024
  */
 @HiltViewModel
 internal class BrowseViewModel @Inject constructor(
-    private val getGenresUseCase: GetGenresUseCase,
-//    private val getPlatformsUseCase: Provider<GetPlatformsUseCase>,
+    private val getGenresUseCase: Provider<GetGenresUseCase>,
+    private val getPlatformsUseCase: Provider<GetPlatformsUseCase>,
 ) : BaseViewModel<BrowseUiState, UiEvent, UiAction>() {
     override fun createInitialState(): BrowseUiState = BrowseUiState()
 
@@ -25,8 +27,11 @@ internal class BrowseViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            getGenresUseCase.invoke().collect { status ->
+            getGenresUseCase.get().invoke().collect { status ->
                 setState(currentState.copy(genres = status))
+            }
+            getPlatformsUseCase.get().invoke().collect { status ->
+                setState(currentState.copy(platforms = status))
             }
         }
     }

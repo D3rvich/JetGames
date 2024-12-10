@@ -9,11 +9,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -40,6 +44,7 @@ fun FavoritesScreen(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues,
     navigateToGameDetail: (gameId: Int) -> Unit,
+    navigateToSettingsScreen: () -> Unit,
 ) {
     val viewModel: FavoritesViewModel = hiltViewModel()
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -47,7 +52,8 @@ fun FavoritesScreen(
         modifier = modifier,
         state = state,
         contentPadding = contentPadding,
-        navigateToGameDetail = navigateToGameDetail
+        navigateToGameDetail = navigateToGameDetail,
+        navigateToSettingsScreen = navigateToSettingsScreen,
     )
 }
 
@@ -58,6 +64,7 @@ internal fun FavoritesScreen(
     state: FavoritesUiState,
     contentPadding: PaddingValues,
     navigateToGameDetail: (gameId: Int) -> Unit,
+    navigateToSettingsScreen: () -> Unit,
 ) {
     val pagingItems = state.games.collectAsLazyPagingItems()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -67,8 +74,16 @@ internal fun FavoritesScreen(
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         contentWindowInsets = WindowInsets(0),
         topBar = {
-            CenterAlignedTopAppBar(
+            TopAppBar(
                 title = { Text(text = stringResource(R.string.favorites)) },
+                actions = {
+                    IconButton(onClick = navigateToSettingsScreen) {
+                        Icon(
+                            imageVector = Icons.Default.Settings,
+                            contentDescription = stringResource(R.string.open_settings)
+                        )
+                    }
+                },
                 scrollBehavior = scrollBehavior
             )
         }

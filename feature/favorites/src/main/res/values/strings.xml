@@ -3,4 +3,5 @@
     <string name="feature_favorites_title">Favorites</string>
     <string name="no_elements">There are no games.</string>
     <string name="favorites">Favorites</string>
+    <string name="open_settings">Open settings</string>
 </resources>
