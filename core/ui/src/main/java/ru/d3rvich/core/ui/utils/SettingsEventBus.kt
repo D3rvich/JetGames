@@ -54,7 +54,7 @@ enum class ThemeType(@StringRes val titleResId: Int) {
 }
 
 @Immutable
-enum class DynamicColorType() {
+enum class DynamicColorType {
     NotSupported,
     Selected,
     Unselected

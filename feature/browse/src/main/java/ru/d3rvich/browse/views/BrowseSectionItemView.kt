@@ -19,13 +19,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.ImageLoader
-import coil.compose.AsyncImage
-import coil.imageLoader
+import coil3.compose.AsyncImage
 import ru.d3rvich.browse.R
 import ru.d3rvich.core.ui.theme.JetGamesTheme
 
@@ -38,7 +35,6 @@ internal fun BrowseSectionItemView(
     itemName: String,
     itemCount: Int,
     itemImageUrl: String?,
-    imageLoader: ImageLoader,
 ) {
     Card(
         modifier = modifier.size(180.dp),
@@ -48,7 +44,6 @@ internal fun BrowseSectionItemView(
                 model = itemImageUrl,
                 contentScale = ContentScale.Crop,
                 contentDescription = null,
-                imageLoader = imageLoader,
                 modifier = Modifier.fillMaxSize()
             )
             Column(
@@ -81,8 +76,7 @@ private fun BrowseSectionItemViewPreview() {
         BrowseSectionItemView(
             itemName = "Item name",
             itemCount = 42,
-            itemImageUrl = null,
-            imageLoader = LocalContext.current.imageLoader
+            itemImageUrl = null
         )
     }
 }

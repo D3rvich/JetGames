@@ -53,8 +53,8 @@ internal fun BrowseScreen(
                 .padding(paddingValues)
                 .padding(contentPadding),
         ) {
-            GenresView(genresStatus = state.genres, imageLoader = imageLoader)
-            PlatformsView(platformsStatus = state.platforms, imageLoader = imageLoader)
+            GenresView(genresStatus = state.genres)
+            PlatformsView(platformsStatus = state.platforms)
         }
     }
 }

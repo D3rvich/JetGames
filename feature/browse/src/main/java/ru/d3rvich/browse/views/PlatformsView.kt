@@ -9,7 +9,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import coil.ImageLoader
 import ru.d3rvich.browse.R
 import ru.d3rvich.core.domain.entities.PlatformEntity
 import ru.d3rvich.core.domain.model.Status
@@ -21,7 +20,6 @@ import ru.d3rvich.core.domain.model.Status
 internal fun PlatformsView(
     modifier: Modifier = Modifier,
     platformsStatus: Status<List<PlatformEntity>>,
-    imageLoader: ImageLoader,
 ) {
     SectionTemplateView(
         modifier = modifier,
@@ -40,7 +38,6 @@ internal fun PlatformsView(
                     itemName = genre.name,
                     itemCount = genre.gamesCount,
                     itemImageUrl = genre.imageUrl,
-                    imageLoader = imageLoader
                 )
             }
         }
