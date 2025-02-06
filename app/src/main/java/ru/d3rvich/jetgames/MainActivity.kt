@@ -17,7 +17,7 @@ import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dagger.hilt.android.AndroidEntryPoint
 import ru.d3rvich.core.ui.theme.JetGamesTheme
-import ru.d3rvich.core.ui.utils.DynamicColorType
+import ru.d3rvich.core.ui.utils.ColorModeType
 import ru.d3rvich.core.ui.utils.SettingsEventBus
 import ru.d3rvich.core.ui.utils.ThemeType
 import ru.d3rvich.jetgames.navigation.SetupNavGraph
@@ -38,14 +38,15 @@ class MainActivity : ComponentActivity() {
         setContent {
             val windowSizeClass = calculateWindowSizeClass(this)
             val currentTheme by SettingsEventBus.currentTheme.collectAsStateWithLifecycle()
-            val useDynamicColor = SettingsEventBus.useDynamicColor.collectAsStateWithLifecycle()
+            val dynamicColor =
+                SettingsEventBus.colorMode.collectAsStateWithLifecycle().value == ColorModeType.Dynamic
             JetGamesTheme(
                 darkTheme = when (currentTheme) {
                     ThemeType.Light -> false
                     ThemeType.Dark -> true
-                    ThemeType.SystemDefault -> isSystemInDarkTheme()
+                    ThemeType.System -> isSystemInDarkTheme()
                 },
-                dynamicColor = useDynamicColor.value == DynamicColorType.Selected
+                dynamicColor = dynamicColor
             ) {
                 // A surface container using the 'background' color from the theme
                 Surface(

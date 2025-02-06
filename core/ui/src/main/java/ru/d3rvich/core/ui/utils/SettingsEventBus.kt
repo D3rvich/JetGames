@@ -16,48 +16,49 @@ import ru.d3rvich.core.ui.R
  */
 @Stable
 object SettingsEventBus {
+    val isDynamicColorSupported by lazy {
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+    }
+
     private val _currentTheme = MutableStateFlow(DefaultTheme)
     val currentTheme = _currentTheme.asStateFlow()
 
     val isDarkTheme: Boolean
         @Composable
-        get() = when(currentTheme.collectAsState().value) {
+        get() = when (currentTheme.collectAsState().value) {
             ThemeType.Light -> false
             ThemeType.Dark -> true
-            ThemeType.SystemDefault -> isSystemInDarkTheme()
+            ThemeType.System -> isSystemInDarkTheme()
         }
 
     fun setCurrentTheme(themeType: ThemeType) {
         _currentTheme.value = themeType
     }
 
-    private val _useDynamicColor =
-        MutableStateFlow(if (!isDynamicColorSupported()) DynamicColorType.NotSupported else DynamicColorType.Selected)
-    val useDynamicColor = _useDynamicColor.asStateFlow()
+    private val _colorMode =
+        MutableStateFlow(if (!isDynamicColorSupported) ColorModeType.Default else ColorModeType.Dynamic)
+    val colorMode = _colorMode.asStateFlow()
 
-    fun setDynamicColor(dynamicColorsType: DynamicColorType) {
-        if (!isDynamicColorSupported()) {
-            _useDynamicColor.value = DynamicColorType.NotSupported
+    fun setColorMode(dynamicColorsType: ColorModeType) {
+        if (!isDynamicColorSupported) {
+            _colorMode.value = ColorModeType.Default
         } else {
-            _useDynamicColor.value = dynamicColorsType
+            _colorMode.value = dynamicColorsType
         }
     }
 }
 
-private val DefaultTheme = ThemeType.SystemDefault
+private val DefaultTheme = ThemeType.System
 
 @Immutable
 enum class ThemeType(@StringRes val titleResId: Int) {
     Light(R.string.theme_light),
     Dark(R.string.theme_dark),
-    SystemDefault(R.string.theme_system)
+    System(R.string.theme_system)
 }
 
 @Immutable
-enum class DynamicColorType {
-    NotSupported,
-    Selected,
-    Unselected
+enum class ColorModeType(@StringRes val titleResId: Int) {
+    Default(R.string.color_mode_default),
+    Dynamic(R.string.color_mode_dynamic)
 }
-
-private fun isDynamicColorSupported(): Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S

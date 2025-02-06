@@ -5,5 +5,7 @@
     <string name="rating">Rating</string>
     <string name="theme_light">Light</string>
     <string name="theme_dark">Dark</string>
-    <string name="theme_system">System Default</string>
+    <string name="theme_system">System</string>
+    <string name="color_mode_default">Default</string>
+    <string name="color_mode_dynamic">Dynamic</string>
 </resources>

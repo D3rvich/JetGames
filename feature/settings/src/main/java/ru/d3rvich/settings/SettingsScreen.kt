@@ -2,13 +2,16 @@ package ru.d3rvich.settings
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.RadioButton
@@ -20,11 +23,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import ru.d3rvich.core.ui.theme.JetGamesTheme
+import ru.d3rvich.core.ui.utils.ColorModeType
 import ru.d3rvich.core.ui.utils.SettingsEventBus
 import ru.d3rvich.core.ui.utils.ThemeType
 
@@ -52,57 +57,107 @@ fun SettingsScreen(modifier: Modifier = Modifier, navigateBack: () -> Unit = {})
                 .padding(paddingValues)
                 .padding(horizontal = 12.dp)
         ) {
-            Text(
-                text = "Theme mode",
-                fontSize = 18.sp,
-                modifier = Modifier.padding(vertical = 12.dp)
-            )
-            Column(modifier = Modifier.selectableGroup()) {
-                val currentTheme by SettingsEventBus.currentTheme.collectAsStateWithLifecycle()
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .selectable(false) {
-                            SettingsEventBus.setCurrentTheme(ThemeType.SystemDefault)
-                        }
-                ) {
-                    RadioButton(
-                        selected = currentTheme == ThemeType.SystemDefault, onClick = null,
-                        modifier = Modifier.padding(12.dp)
-                    )
-                    Text(text = stringResource(id = ThemeType.SystemDefault.titleResId))
-                }
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .selectable(false) {
-                            SettingsEventBus.setCurrentTheme(ThemeType.Light)
-                        }
-                ) {
-                    RadioButton(
-                        selected = currentTheme == ThemeType.Light, onClick = null,
-                        modifier = Modifier.padding(12.dp)
-                    )
-                    Text(text = stringResource(id = ThemeType.Light.titleResId))
-                }
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .selectable(false) {
-                            SettingsEventBus.setCurrentTheme(ThemeType.Dark)
-                        }
-                ) {
-                    RadioButton(
-                        selected = currentTheme == ThemeType.Dark, onClick = null,
-                        modifier = Modifier.padding(12.dp)
-                    )
-                    Text(text = stringResource(id = ThemeType.Dark.titleResId))
-                }
-            }
+            ThemeMode(modifier = Modifier.padding(top = 8.dp))
+            HorizontalDivider()
+            DynamicTheme(modifier = Modifier.padding(top = 8.dp))
         }
+    }
+}
+
+@Composable
+private fun ThemeMode(modifier: Modifier = Modifier) {
+    Column(modifier = modifier.fillMaxWidth()) {
+        Text(
+            text = stringResource(R.string.theme),
+            fontSize = 18.sp,
+        )
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 16.dp)
+                .selectableGroup(),
+        ) {
+            val currentTheme by SettingsEventBus.currentTheme.collectAsStateWithLifecycle()
+            SettingOptionItem(
+                text = stringResource(id = ThemeType.System.titleResId),
+                selected = currentTheme == ThemeType.System,
+                onClick = {
+                    SettingsEventBus.setCurrentTheme(ThemeType.System)
+                })
+            SettingOptionItem(
+                text = stringResource(id = ThemeType.Light.titleResId),
+                selected = currentTheme == ThemeType.Light,
+                onClick = {
+                    SettingsEventBus.setCurrentTheme(ThemeType.Light)
+                })
+            SettingOptionItem(
+                text = stringResource(id = ThemeType.Dark.titleResId),
+                selected = currentTheme == ThemeType.Dark,
+                onClick = {
+                    SettingsEventBus.setCurrentTheme(ThemeType.Dark)
+                })
+        }
+    }
+}
+
+@Composable
+private fun DynamicTheme(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier.fillMaxWidth()
+    ) {
+        Text(
+            text = stringResource(R.string.color_mode),
+            fontSize = 18.sp,
+        )
+        val dynamicColor by SettingsEventBus.colorMode.collectAsStateWithLifecycle()
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 16.dp)
+                .selectableGroup()
+        ) {
+            SettingOptionItem(
+                text = stringResource(ColorModeType.Default.titleResId),
+                selected = dynamicColor == ColorModeType.Default,
+                onClick = {
+                    SettingsEventBus.setColorMode(ColorModeType.Default)
+                }
+            )
+            SettingOptionItem(
+                text = stringResource(ColorModeType.Dynamic.titleResId),
+                selected = dynamicColor == ColorModeType.Dynamic,
+                onClick = {
+                    SettingsEventBus.setColorMode(ColorModeType.Dynamic)
+                },
+                enabled = SettingsEventBus.isDynamicColorSupported
+            )
+        }
+    }
+}
+
+@Composable
+private fun SettingOptionItem(
+    modifier: Modifier = Modifier,
+    text: String,
+    selected: Boolean,
+    onClick: () -> Unit,
+    enabled: Boolean = true
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier
+            .selectable(
+                selected = false,
+                role = Role.RadioButton,
+                enabled = enabled,
+                onClick = onClick
+            )
+            .fillMaxWidth()
+            .padding(12.dp)
+    ) {
+        RadioButton(selected = selected, onClick = null)
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(text = text)
     }
 }
 
