@@ -23,6 +23,7 @@ android {
 
 dependencies {
     implementation(project(":core:domain"))
+    implementation(project(":datastore"))
     implementation(project(":database"))
     implementation(project(":remote"))
 

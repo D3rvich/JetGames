@@ -6,15 +6,18 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
-import ru.d3rvich.data.repositoties.GamesRepositoryImpl
 import ru.d3rvich.core.domain.repositories.GamesRepository
 import ru.d3rvich.core.domain.repositories.GenresRepository
 import ru.d3rvich.core.domain.repositories.PlatformsRepository
+import ru.d3rvich.core.domain.repositories.SettingsRepository
 import ru.d3rvich.data.model.SynchronizeTimeHolder
 import ru.d3rvich.data.paging.GamesPagingSource
+import ru.d3rvich.data.repositoties.GamesRepositoryImpl
 import ru.d3rvich.data.repositoties.GenresRepositoryImpl
 import ru.d3rvich.data.repositoties.PlatformsRepositoryImpl
+import ru.d3rvich.data.repositoties.SettingsRepositoryImpl
 import ru.d3rvich.database.JetGamesDatabase
+import ru.d3rvich.datastore.JetGamesPreferencesDataStore
 import ru.d3rvich.remote.JetGamesApiService
 
 /**
@@ -56,4 +59,8 @@ internal object DataModule {
         database = database,
         syncTimeHolder = SynchronizeTimeHolder(context)
     )
+
+    @Provides
+    fun provideSettingsRepository(dataStore: JetGamesPreferencesDataStore): SettingsRepository =
+        SettingsRepositoryImpl(dataStore = dataStore)
 }

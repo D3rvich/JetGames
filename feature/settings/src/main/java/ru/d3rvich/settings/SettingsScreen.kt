@@ -1,15 +1,20 @@
 package ru.d3rvich.settings
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -27,18 +32,39 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import ru.d3rvich.core.domain.repositories.ColorModeType
+import ru.d3rvich.core.domain.repositories.ThemeType
 import ru.d3rvich.core.ui.theme.JetGamesTheme
-import ru.d3rvich.core.ui.utils.ColorModeType
-import ru.d3rvich.core.ui.utils.SettingsEventBus
-import ru.d3rvich.core.ui.utils.ThemeType
 
 /**
  * Created by Ilya Deryabin at 05.09.2024
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(modifier: Modifier = Modifier, navigateBack: () -> Unit = {}) {
+    val viewModel: SettingsViewModel = hiltViewModel()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+    SettingsScreen(
+        modifier = modifier,
+        state = state,
+        onThemeChange = { theme -> viewModel.obtainEvent(SettingsUiEvent.UpdateThemeType(theme)) },
+        onColorModeChange = { colorCode ->
+            viewModel.obtainEvent(SettingsUiEvent.UpdateColorMode(colorCode))
+        },
+        navigateBack = navigateBack
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun SettingsScreen(
+    modifier: Modifier = Modifier,
+    state: SettingsUiState,
+    onThemeChange: (ThemeType) -> Unit = {},
+    onColorModeChange: (ColorModeType) -> Unit = {},
+    navigateBack: () -> Unit = {}
+) {
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -52,20 +78,49 @@ fun SettingsScreen(modifier: Modifier = Modifier, navigateBack: () -> Unit = {})
                     }
                 })
         }) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .padding(paddingValues)
-                .padding(horizontal = 12.dp)
-        ) {
-            ThemeMode(modifier = Modifier.padding(top = 8.dp))
-            HorizontalDivider()
-            DynamicTheme(modifier = Modifier.padding(top = 8.dp))
+        when (state) {
+            SettingsUiState.Loading -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
+
+            is SettingsUiState.Settings -> {
+                Column(
+                    modifier = Modifier
+                        .padding(paddingValues)
+                        .padding(horizontal = 12.dp)
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    ThemeMode(
+                        modifier = Modifier.padding(top = 8.dp),
+                        theme = state.themeType,
+                        onThemeChange = onThemeChange
+                    )
+                    HorizontalDivider()
+                    DynamicTheme(
+                        modifier = Modifier.padding(top = 8.dp),
+                        colorMode = state.colorModeType,
+                        isDynamicColorSupported = state.inDynamicColorSupported,
+                        onColorModeChange = onColorModeChange
+                    )
+                }
+            }
         }
     }
 }
 
 @Composable
-private fun ThemeMode(modifier: Modifier = Modifier) {
+private fun ThemeMode(
+    modifier: Modifier = Modifier,
+    theme: ThemeType,
+    onThemeChange: (ThemeType) -> Unit
+) {
     Column(modifier = modifier.fillMaxWidth()) {
         Text(
             text = stringResource(R.string.theme),
@@ -77,31 +132,35 @@ private fun ThemeMode(modifier: Modifier = Modifier) {
                 .padding(vertical = 16.dp)
                 .selectableGroup(),
         ) {
-            val currentTheme by SettingsEventBus.currentTheme.collectAsStateWithLifecycle()
             SettingOptionItem(
-                text = stringResource(id = ThemeType.System.titleResId),
-                selected = currentTheme == ThemeType.System,
+                text = stringResource(id = R.string.theme_system),
+                selected = theme == ThemeType.System,
                 onClick = {
-                    SettingsEventBus.setCurrentTheme(ThemeType.System)
+                    onThemeChange(ThemeType.System)
                 })
             SettingOptionItem(
-                text = stringResource(id = ThemeType.Light.titleResId),
-                selected = currentTheme == ThemeType.Light,
+                text = stringResource(id = R.string.theme_light),
+                selected = theme == ThemeType.Light,
                 onClick = {
-                    SettingsEventBus.setCurrentTheme(ThemeType.Light)
+                    onThemeChange(ThemeType.Light)
                 })
             SettingOptionItem(
-                text = stringResource(id = ThemeType.Dark.titleResId),
-                selected = currentTheme == ThemeType.Dark,
+                text = stringResource(id = R.string.theme_dark),
+                selected = theme == ThemeType.Dark,
                 onClick = {
-                    SettingsEventBus.setCurrentTheme(ThemeType.Dark)
+                    onThemeChange(ThemeType.Dark)
                 })
         }
     }
 }
 
 @Composable
-private fun DynamicTheme(modifier: Modifier = Modifier) {
+private fun DynamicTheme(
+    modifier: Modifier = Modifier,
+    isDynamicColorSupported: Boolean,
+    colorMode: ColorModeType,
+    onColorModeChange: (ColorModeType) -> Unit
+) {
     Column(
         modifier = modifier.fillMaxWidth()
     ) {
@@ -109,7 +168,6 @@ private fun DynamicTheme(modifier: Modifier = Modifier) {
             text = stringResource(R.string.color_mode),
             fontSize = 18.sp,
         )
-        val dynamicColor by SettingsEventBus.colorMode.collectAsStateWithLifecycle()
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -117,19 +175,19 @@ private fun DynamicTheme(modifier: Modifier = Modifier) {
                 .selectableGroup()
         ) {
             SettingOptionItem(
-                text = stringResource(ColorModeType.Default.titleResId),
-                selected = dynamicColor == ColorModeType.Default,
+                text = stringResource(R.string.color_mode_default),
+                selected = colorMode == ColorModeType.Default,
                 onClick = {
-                    SettingsEventBus.setColorMode(ColorModeType.Default)
+                    onColorModeChange(ColorModeType.Default)
                 }
             )
             SettingOptionItem(
-                text = stringResource(ColorModeType.Dynamic.titleResId),
-                selected = dynamicColor == ColorModeType.Dynamic,
+                text = stringResource(R.string.color_mode_dynamic),
+                selected = colorMode == ColorModeType.Dynamic,
                 onClick = {
-                    SettingsEventBus.setColorMode(ColorModeType.Dynamic)
+                    onColorModeChange(ColorModeType.Dynamic)
                 },
-                enabled = SettingsEventBus.isDynamicColorSupported
+                enabled = isDynamicColorSupported
             )
         }
     }
@@ -161,10 +219,24 @@ private fun SettingOptionItem(
     }
 }
 
+@Preview
+@Composable
+private fun SettingsScreenPreview_Loading() {
+    JetGamesTheme {
+        SettingsScreen(state = SettingsUiState.Loading)
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 private fun SettingsScreenPreview() {
     JetGamesTheme {
-        SettingsScreen()
+        SettingsScreen(
+            state = SettingsUiState.Settings(
+                themeType = ThemeType.System,
+                colorModeType = ColorModeType.Default,
+                inDynamicColorSupported = false
+            )
+        )
     }
 }
