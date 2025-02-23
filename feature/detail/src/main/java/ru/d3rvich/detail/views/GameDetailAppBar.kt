@@ -23,14 +23,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
-import coil.ImageLoader
-import coil.compose.AsyncImage
-import coil.imageLoader
+import coil3.compose.AsyncImage
 import ru.d3rvich.common.components.collapsing_appbar.CollapsingTitle
 import ru.d3rvich.common.components.collapsing_appbar.CollapsingTopAppBar
 import ru.d3rvich.common.components.collapsing_appbar.CollapsingTopAppBarScrollBehavior
@@ -46,7 +43,6 @@ internal fun GameDetailAppBar(
     modifier: Modifier = Modifier,
     title: String,
     imageUrl: String?,
-    imageLoader: ImageLoader,
     collapsingScrollBehavior: CollapsingTopAppBarScrollBehavior,
     isFavorite: Boolean,
     onBackClicked: () -> Unit,
@@ -68,7 +64,7 @@ internal fun GameDetailAppBar(
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                    contentDescription = "Navigate back",
+                    contentDescription = stringResource(R.string.navigate_back),
                 )
             }
         },
@@ -115,7 +111,6 @@ internal fun GameDetailAppBar(
                     AsyncImage(
                         model = imageUrl,
                         contentDescription = null,
-                        imageLoader = imageLoader,
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop
                     )
@@ -132,7 +127,6 @@ private fun GameDetailAppBarPreview() {
         GameDetailAppBar(
             title = "Game name",
             imageUrl = null,
-            imageLoader = LocalContext.current.imageLoader,
             collapsingScrollBehavior = rememberCollapsingTopAppBarScrollBehavior(),
             onBackClicked = {},
             isFavorite = false,

@@ -1,22 +1,23 @@
 [versions]
-androidGradlePlugin = "8.5.2"
-androidTools = "31.6.0"
-androidxCore = "1.13.1"
-kotlin = "2.0.0"
+androidGradlePlugin = "8.8.0"
+androidTools = "31.8.0"
+androidxCore = "1.15.0"
+kotlin = "2.1.0"
 hilt = "2.51.1"
-ksp = "2.0.0-1.0.21"
-androidxLifecycle = "2.8.4"
-androidxActivity = "1.9.1"
-androidxCompose = "1.7.0"
-androidxComposeMaterial3 = "1.2.1"
-androidxComposeBom = "2024.08.00"
-androidxPaging = "3.3.2"
-androidxComposeNavigation = "2.8.0"
+ksp = "2.1.0-1.0.29"
+androidxLifecycle = "2.8.7"
+androidxActivity = "1.10.0"
+androidxCompose = "1.7.7"
+androidxComposeMaterial3 = "1.3.1"
+androidxComposeBom = "2025.01.01"
+androidxPaging = "3.3.5"
+androidxComposeNavigation = "2.8.6"
 androidxHiltNavigationCompose = "1.2.0"
 androidxRoom = "2.6.1"
+androidxDataStore = "1.1.2"
 timber = "5.0.1"
-coil = "2.6.0"
-kotlinxCoroutines = "1.8.1"
+coil = "3.0.4"
+kotlinxCoroutines = "1.10.1"
 kotlinxSerializationJson = "1.7.0"
 kotlinxDatetime = "0.6.0"
 kotlinxCollectionsImmutable = "0.3.7"
@@ -25,9 +26,6 @@ loggingInterceptor = "4.12.0"
 junit = "4.13.2"
 androidx-test-ext-junit = "1.2.1"
 espresso-core = "3.6.1"
-coreKtx = "1.13.1"
-appcompat = "1.6.1"
-material = "1.10.0"
 
 [libraries]
 androidx-lifecycle-runtime = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "androidxLifecycle" }
@@ -53,7 +51,9 @@ androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = 
 androidx-room-paging = { group = "androidx.room", name = "room-paging", version.ref = "androidxRoom" }
 androidx-hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 androidx-hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
-coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
+androidx-datastore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "androidxDataStore" }
+coil-network = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coil" }
+coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
 kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
@@ -75,9 +75,6 @@ android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", ver
 android-tools-common = { group = "com.android.tools", name = "common", version.ref = "androidTools" }
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
-androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
-androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }

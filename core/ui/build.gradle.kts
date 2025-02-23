@@ -12,6 +12,7 @@ dependencies {
 
     implementation(libs.kotlinx.collections.immutable)
 
+    implementation(libs.coil.network)
     implementation(libs.coil.compose)
 
     implementation(libs.androidx.core)

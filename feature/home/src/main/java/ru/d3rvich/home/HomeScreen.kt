@@ -22,7 +22,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
-import coil.ImageLoader
 import kotlinx.coroutines.launch
 import ru.d3rvich.common.components.ScrollToTopButton
 import ru.d3rvich.home.model.HomeUiEvent
@@ -36,7 +35,6 @@ import kotlin.math.roundToInt
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    imageLoader: ImageLoader,
     contentPadding: PaddingValues,
     navigateToDetailScreen: (Int) -> Unit,
     navigateToFilterScreen: () -> Unit,
@@ -47,7 +45,6 @@ fun HomeScreen(
     HomeScreen(
         modifier = modifier,
         state = state,
-        imageLoader = imageLoader,
         contentPadding = contentPadding,
         onSearchChange = { homeViewModel.obtainEvent(HomeUiEvent.OnSearchChange(it)) },
         onRefresh = { homeViewModel.obtainEvent(HomeUiEvent.OnRefresh) },
@@ -62,7 +59,6 @@ fun HomeScreen(
 internal fun HomeScreen(
     modifier: Modifier = Modifier,
     state: HomeUiState,
-    imageLoader: ImageLoader,
     contentPadding: PaddingValues,
     onSearchChange: (String) -> Unit,
     onRefresh: () -> Unit,
@@ -119,7 +115,6 @@ internal fun HomeScreen(
         ) { paddingValues ->
             GamesView(
                 pagingItems = pagingItems,
-                imageLoader = imageLoader,
                 listViewMode = currentListViewMode,
                 contentPadding = PaddingValues(
                     top = paddingValues.calculateTopPadding() + 8.dp,

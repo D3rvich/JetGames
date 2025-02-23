@@ -3,7 +3,6 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.getByType
 import ru.d3rvich.jetgames.configureAndroidCompose
-import ru.d3rvich.jetgames.libs
 
 /**
  * Created by Ilya Deryabin at 11.05.2024

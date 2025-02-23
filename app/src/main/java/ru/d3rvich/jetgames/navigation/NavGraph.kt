@@ -15,7 +15,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import coil.ImageLoader
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -33,7 +32,6 @@ import kotlin.reflect.typeOf
 @Composable
 fun SetupNavGraph(
     modifier: Modifier = Modifier,
-    imageLoader: ImageLoader,
     windowSizeClass: WindowSizeClass,
 ) {
     val navController = rememberNavController()
@@ -44,18 +42,15 @@ fun SetupNavGraph(
     ) {
         addMainScreen(
             navController = navController,
-            imageLoader = imageLoader,
             windowSizeClass = windowSizeClass
         )
         addGameDetailScreen(
             navController = navController,
-            imageLoader = imageLoader,
             windowSizeClass = windowSizeClass,
         )
         addFilterScreen(navController = navController)
         addScreenshotsScreen(
             navController = navController,
-            imageLoader = imageLoader,
             windowSizeClass = windowSizeClass,
         )
         addSettingsScreen(
@@ -66,13 +61,11 @@ fun SetupNavGraph(
 
 private fun NavGraphBuilder.addMainScreen(
     navController: NavController,
-    imageLoader: ImageLoader,
     windowSizeClass: WindowSizeClass,
 ) {
     composable<MainScreen> {
         MainScreen(
             externalNavController = navController,
-            imageLoader = imageLoader,
             windowSizeClass = windowSizeClass
         )
     }
@@ -80,7 +73,6 @@ private fun NavGraphBuilder.addMainScreen(
 
 private fun NavGraphBuilder.addGameDetailScreen(
     navController: NavController,
-    imageLoader: ImageLoader,
     windowSizeClass: WindowSizeClass,
 ) {
     composable<Screens.GameDetail>(typeMap = mapOf(typeOf<LoadSource>() to LoadSource.NavType)) { backStackEntry ->
@@ -88,7 +80,6 @@ private fun NavGraphBuilder.addGameDetailScreen(
             mutableStateOf(false)
         }
         GameDetailScreen(
-            imageLoader = imageLoader,
             navigateToScreenshotScreen = { selectedItem, screenshots ->
                 val json = Json.encodeToString(
                     Screens.Screenshots(
@@ -108,7 +99,6 @@ private fun NavGraphBuilder.addGameDetailScreen(
             ScreenshotsScreen(
                 screenshots = args?.screenshots ?: emptyList(),
                 selectedItem = args?.selectedScreenshot ?: 0,
-                imageLoader = imageLoader,
                 windowSizeClass = windowSizeClass
             ) {
                 showScreenshots = false
@@ -130,7 +120,6 @@ private fun NavGraphBuilder.addFilterScreen(navController: NavController) {
 
 private fun NavGraphBuilder.addScreenshotsScreen(
     navController: NavController,
-    imageLoader: ImageLoader,
     windowSizeClass: WindowSizeClass,
 ) {
     composable<Screens.Screenshots> { backStackEntry ->
@@ -140,7 +129,6 @@ private fun NavGraphBuilder.addScreenshotsScreen(
                 URLDecoder.decode(it, StandardCharsets.UTF_8.name())
             },
             selectedItem = args.selectedScreenshot,
-            imageLoader = imageLoader,
             windowSizeClass = windowSizeClass,
         ) {
             navController.popBackStack()

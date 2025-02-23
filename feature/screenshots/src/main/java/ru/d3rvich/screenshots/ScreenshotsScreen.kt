@@ -49,7 +49,6 @@ import androidx.compose.ui.util.lerp
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import coil.ImageLoader
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import ru.d3rvich.core.ui.theme.JetGamesTheme
@@ -69,7 +68,6 @@ fun ScreenshotsScreen(
     modifier: Modifier = Modifier,
     screenshots: List<String>,
     selectedItem: Int = 0,
-    imageLoader: ImageLoader,
     windowSizeClass: WindowSizeClass,
     onBackPressed: () -> Unit,
 ) {
@@ -125,7 +123,6 @@ fun ScreenshotsScreen(
                                         pagerState.currentPageOffsetFraction)
                                     .absoluteValue,
                                 dragToDismissState = dragState,
-                                imageLoader = imageLoader,
                                 windowSizeClass = windowSizeClass,
                                 onHeightOffsetChange = {
                                     showWidgets = false

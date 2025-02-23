@@ -1,9 +1,9 @@
 pluginManagement {
     includeBuild("build-logic")
     repositories {
+        gradlePluginPortal()
         google()
         mavenCentral()
-        gradlePluginPortal()
     }
 }
 dependencyResolutionManagement {
@@ -29,3 +29,4 @@ include(":feature:screenshots")
 include(":feature:favorites")
 include(":feature:browse")
 include(":feature:settings")
+include(":datastore")

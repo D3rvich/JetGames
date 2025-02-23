@@ -31,12 +31,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.ImageLoader
-import coil.imageLoader
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.format
 import kotlinx.datetime.format.MonthNames
@@ -67,7 +64,6 @@ internal fun GameDetailView(
     detail: GameDetailUiModel,
     screenshotsState: ScreenshotsUiState,
     isFavorite: Boolean,
-    imageLoader: ImageLoader,
     onFavoriteChange: (Boolean) -> Unit,
     onScreenshotClicked: (selectedItem: Int) -> Unit,
     onBackClicked: () -> Unit,
@@ -81,7 +77,6 @@ internal fun GameDetailView(
                     detail.ratings?.maxByOrNull { it.percent }?.findWrapper()?.textIcon ?: ""
                 }",
                 imageUrl = detail.imageUrl,
-                imageLoader = imageLoader,
                 collapsingScrollBehavior = collapsingScrollBehavior,
                 onBackClicked = onBackClicked,
                 isFavorite = isFavorite,
@@ -169,7 +164,6 @@ internal fun GameDetailView(
                 GameDetailItem(title = stringResource(R.string.screenshots)) {
                     ScreenshotsView(
                         screenshotsState = screenshotsState,
-                        imageLoader = imageLoader,
                         onItemClicked = onScreenshotClicked,
                     )
                 }
@@ -272,12 +266,10 @@ private fun GameDetailViewPreview() {
         ),
         ratings = ratings
     )
-    val context = LocalContext.current
     GameDetailView(
         detail = detail.toGameDetailUiModel(),
         screenshotsState = ScreenshotsUiState.NoScreenshots,
         isFavorite = false,
-        imageLoader = context.imageLoader,
         onFavoriteChange = {},
         onScreenshotClicked = {},
         onBackClicked = {},

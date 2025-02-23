@@ -10,7 +10,6 @@ import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.WindowInsets
@@ -18,7 +17,7 @@ import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.only
-import androidx.compose.foundation.layout.systemBarsIgnoringVisibility
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
@@ -208,11 +207,13 @@ fun CollapsingTopAppBar(
             },
             modifier = modifier.then(dragModifier.heightIn(min = MinCollapsedHeight))
         ) { measurables, constraints ->
-            val statusBarHeightPx = windowInsets.getTop(density).toDp().toPx()
             val horizontalPaddingPx = HorizontalPadding.toPx()
             val expandedTitleBottomPaddingPx = ExpandedTitleBottomPadding.toPx()
-            val startWindowInsetsPaddingPx = windowInsets.getLeft(density, layoutDirection).toDp().toPx()
-            val endWindowInsetsPaddingPx = windowInsets.getRight(density, layoutDirection).toDp().toPx()
+            val topWindowInsetsPaddingPx = windowInsets.getTop(density).toDp().toPx()
+            val startWindowInsetsPaddingPx =
+                windowInsets.getLeft(density, layoutDirection).toDp().toPx()
+            val endWindowInsetsPaddingPx =
+                windowInsets.getRight(density, layoutDirection).toDp().toPx()
 
             // Measuring widgets inside toolbar:
 
@@ -230,7 +231,7 @@ fun CollapsingTopAppBar(
                 measurables.firstOrNull { it.layoutId == StatusBarGradientId }?.measure(
                     constraints.copy(
                         maxWidth = constraints.maxWidth,
-                        maxHeight = statusBarHeightPx.roundToInt(),
+                        maxHeight = topWindowInsetsPaddingPx.roundToInt(),
                         minHeight = 0,
                     )
                 )
@@ -286,7 +287,7 @@ fun CollapsingTopAppBar(
                         )
                     )
 
-            val collapsedHeightPx = MinCollapsedHeight.toPx() + statusBarHeightPx
+            val collapsedHeightPx = MinCollapsedHeight.toPx() + topWindowInsetsPaddingPx
 
             var layoutHeightPx = collapsedHeightPx
 
@@ -313,7 +314,7 @@ fun CollapsingTopAppBar(
             if (expandedTitlePlaceable != null && collapsedTitlePlaceable != null) {
                 // Measuring toolbar collapsing distance
                 val heightOffsetLimitPx =
-                    (expandedTitlePlaceable.height + expandedTitleBottomPaddingPx + statusBarHeightPx).coerceAtLeast(
+                    (expandedTitlePlaceable.height + expandedTitleBottomPaddingPx + topWindowInsetsPaddingPx).coerceAtLeast(
                         (backgroundHeightPx ?: 0f) - MinCollapsedHeight.toPx()
                     )
                 scrollBehavior?.state?.heightOffsetLimit = -heightOffsetLimitPx
@@ -415,10 +416,9 @@ private val ExpandedTitleBottomPadding = 8.dp
 private val CollapsedTitleLineHeight = 28.sp
 private val DefaultCollapsedElevation = 4.dp
 
-@OptIn(ExperimentalLayoutApi::class)
 private val DefaultWindowInsets
     @Composable
-    get() = WindowInsets.systemBarsIgnoringVisibility.only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal)
+    get() = WindowInsets.safeDrawing.only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal)
 
 private const val ExpandedTitleId = "expandedTitle"
 private const val CollapsedTitleId = "collapsedTitle"

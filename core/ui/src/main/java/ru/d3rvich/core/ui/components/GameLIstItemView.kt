@@ -26,13 +26,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.ImageLoader
-import coil.compose.AsyncImage
-import coil.imageLoader
+import coil3.compose.AsyncImage
 import kotlinx.datetime.LocalDate
 import ru.d3rvich.common.components.raitingbar.RatingBar
 import ru.d3rvich.common.components.shimmer.shimmer
@@ -52,7 +49,6 @@ fun GameListItemView(
     game: GameUiModel?,
     isLarge: Boolean,
     isLoading: Boolean = game == null,
-    imageLoader: ImageLoader,
     onItemClick: ((gameId: Int) -> Unit)? = null,
 ) {
     if (isLoading) {
@@ -64,7 +60,7 @@ fun GameListItemView(
             modifier = modifier,
             game = game,
             isLarge = isLarge,
-            imageLoader = imageLoader, onItemClick = onItemClick
+            onItemClick = onItemClick
         )
     }
 }
@@ -199,21 +195,18 @@ private fun GameListItemView(
     modifier: Modifier = Modifier,
     game: GameUiModel,
     isLarge: Boolean,
-    imageLoader: ImageLoader,
     onItemClick: (gameId: Int) -> Unit,
 ) {
     if (isLarge) {
         LargeGameListItemView(
             modifier = modifier,
             game = game,
-            imageLoader = imageLoader,
             onItemClick = onItemClick
         )
     } else {
         CompactGameListItemView(
             modifier = modifier,
             game = game,
-            imageLoader = imageLoader,
             onItemClick = onItemClick
         )
     }
@@ -223,7 +216,6 @@ private fun GameListItemView(
 private fun CompactGameListItemView(
     modifier: Modifier = Modifier,
     game: GameUiModel,
-    imageLoader: ImageLoader,
     onItemClick: (gameId: Int) -> Unit,
 ) {
     Card(
@@ -238,7 +230,6 @@ private fun CompactGameListItemView(
         ) {
             AsyncImage(
                 contentScale = ContentScale.Crop,
-                imageLoader = imageLoader,
                 model = game.imageUrl,
                 contentDescription = "Image of ${game.name}",
                 modifier = Modifier
@@ -300,7 +291,6 @@ private fun CompactGameListItemView(
 private fun LargeGameListItemView(
     modifier: Modifier = Modifier,
     game: GameUiModel,
-    imageLoader: ImageLoader,
     onItemClick: ((gameId: Int) -> Unit),
 ) {
     Card(
@@ -314,7 +304,6 @@ private fun LargeGameListItemView(
             contentScale = ContentScale.Crop,
             model = game.imageUrl,
             contentDescription = game.name,
-            imageLoader = imageLoader
         )
         Spacer(modifier = Modifier.height(8.dp))
         Row(
@@ -449,7 +438,7 @@ private fun LargeGameItemPreview() {
         GameListItemView(
             game = game.toGameUiModel(),
             isLarge = true,
-            imageLoader = LocalContext.current.imageLoader, onItemClick = {}
+            onItemClick = {}
         )
     }
 }
@@ -480,7 +469,6 @@ private fun CompactGameItemPreview() {
         GameListItemView(
             game = game.toGameUiModel(),
             isLarge = false,
-            imageLoader = LocalContext.current.imageLoader, onItemClick = {}
         )
     }
 }
@@ -505,7 +493,7 @@ private fun CompactGameItemWithLongNamePreview() {
     JetGamesTheme {
         GameListItemView(
             game = game.toGameUiModel(),
-            isLarge = false, imageLoader = LocalContext.current.imageLoader
+            isLarge = false
         ) {}
     }
 }
@@ -529,7 +517,6 @@ private fun CompactGamesViewPreview() {
                 )
                 GameListItemView(
                     game = game.toGameUiModel(),
-                    imageLoader = LocalContext.current.imageLoader,
                     isLarge = false,
                     onItemClick = {}
                 )

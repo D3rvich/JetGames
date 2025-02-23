@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil.ImageLoader
 import ru.d3rvich.browse.model.BrowseUiState
 import ru.d3rvich.browse.views.GenresView
 import ru.d3rvich.browse.views.PlatformsView
@@ -26,7 +25,6 @@ import ru.d3rvich.browse.views.PlatformsView
 fun BrowseScreen(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues,
-    imageLoader: ImageLoader,
 ) {
     val viewModel: BrowseViewModel = hiltViewModel()
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -34,7 +32,6 @@ fun BrowseScreen(
         state = state,
         modifier = modifier,
         contentPadding = contentPadding,
-        imageLoader = imageLoader
     )
 }
 
@@ -44,7 +41,6 @@ internal fun BrowseScreen(
     modifier: Modifier = Modifier,
     state: BrowseUiState,
     contentPadding: PaddingValues,
-    imageLoader: ImageLoader,
 ) {
     Scaffold(modifier = modifier.fillMaxSize(),
         topBar = {
@@ -57,8 +53,8 @@ internal fun BrowseScreen(
                 .padding(paddingValues)
                 .padding(contentPadding),
         ) {
-            GenresView(genresStatus = state.genres, imageLoader = imageLoader)
-            PlatformsView(platformsStatus = state.platforms, imageLoader = imageLoader)
+            GenresView(genresStatus = state.genres)
+            PlatformsView(platformsStatus = state.platforms)
         }
     }
 }
