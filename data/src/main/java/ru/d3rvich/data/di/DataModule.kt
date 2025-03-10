@@ -1,11 +1,10 @@
 package ru.d3rvich.data.di
 
-import android.content.Context
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
-import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CoroutineScope
 import ru.d3rvich.core.domain.repositories.GamesRepository
 import ru.d3rvich.core.domain.repositories.GenresRepository
 import ru.d3rvich.core.domain.repositories.PlatformsRepository
@@ -42,22 +41,30 @@ internal object DataModule {
     fun providePlatformsRepository(
         apiService: JetGamesApiService,
         database: JetGamesDatabase,
-        @ApplicationContext context: Context,
+        coroutineScope: CoroutineScope,
+        dataStore: JetGamesPreferencesDataStore,
     ): PlatformsRepository = PlatformsRepositoryImpl(
         apiService = apiService,
         database = database,
-        synchronizeTimeHolder = SynchronizeTimeHolder(context)
+        synchronizeTimeHolder = SynchronizeTimeHolder(
+            coroutineScope = coroutineScope,
+            dataStore = dataStore
+        )
     )
 
     @Provides
     fun providesGenresRepository(
         apiService: JetGamesApiService,
         database: JetGamesDatabase,
-        @ApplicationContext context: Context,
+        coroutineScope: CoroutineScope,
+        dataStore: JetGamesPreferencesDataStore,
     ): GenresRepository = GenresRepositoryImpl(
         apiService = apiService,
         database = database,
-        syncTimeHolder = SynchronizeTimeHolder(context)
+        syncTimeHolder = SynchronizeTimeHolder(
+            coroutineScope = coroutineScope,
+            dataStore = dataStore
+        )
     )
 
     @Provides

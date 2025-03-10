@@ -70,7 +70,7 @@ internal fun HomeScreen(
     val gridState = rememberLazyGridState()
     val listViewModeProvider = rememberListViewModeProvider()
     val currentListViewMode by
-    listViewModeProvider.currentListViewMode.collectAsStateWithLifecycle()
+    listViewModeProvider.listViewMode.collectAsStateWithLifecycle()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val scope = rememberCoroutineScope()
     BoxWithConstraints {

@@ -11,6 +11,8 @@ dependencies {
     implementation(libs.coil.network)
     implementation(libs.coil.compose)
 
+    implementation(libs.androidx.datastore)
+
     implementation(libs.androidx.paging.compose)
 
     androidTestImplementation(libs.androidx.test.ext.junit)

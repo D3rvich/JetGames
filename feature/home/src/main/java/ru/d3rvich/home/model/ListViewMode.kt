@@ -5,11 +5,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
-import androidx.core.content.edit
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.preferencesDataStore
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import ru.d3rvich.home.R
 
 /**
@@ -23,36 +30,54 @@ internal enum class ListViewMode(val iconResId: Int, val stringResId: Int) {
 }
 
 @Composable
-internal fun rememberListViewModeProvider(context: Context = LocalContext.current): ListViewModeProvider =
+internal fun rememberListViewModeProvider(
+    context: Context = LocalContext.current,
+    coroutineScope: CoroutineScope = rememberCoroutineScope()
+): ListViewModeProvider =
     remember {
-        ListViewModeProvider(context.applicationContext)
+        ListViewModeProvider(context = context.applicationContext, coroutineScope = coroutineScope)
     }
 
+private object DataStoreHolder {
+    val Context.dataStore: DataStore<Preferences> by preferencesDataStore(DataStoreName)
+}
+
 @Stable
-internal class ListViewModeProvider(context: Context) {
+internal class ListViewModeProvider(
+    private val context: Context,
+    private val coroutineScope: CoroutineScope
+) {
 
-    private val _currentListViewMode = MutableStateFlow(DefaultListViewMode)
-    val currentListViewMode: StateFlow<ListViewMode>
-        get() = _currentListViewMode.asStateFlow()
-
-    private val sharedPreferences =
-        context.getSharedPreferences(SharedPreferencesKey, Context.MODE_PRIVATE)
-            .also { preferences ->
-                preferences.getString(ListViewModeKey, DefaultListViewMode.name)?.let { modeName ->
-                    _currentListViewMode.value = ListViewMode.valueOf(modeName)
+    val listViewMode =
+        with(DataStoreHolder) {
+            context.dataStore.data.map { preferences -> preferences[ListViewModeKey] }
+                .map { raw ->
+                    if (raw.isNullOrEmpty()) DefaultListViewMode else ListViewMode.valueOf(
+                        raw
+                    )
                 }
-            }
+                .stateIn(
+                    scope = coroutineScope,
+                    started = SharingStarted.WhileSubscribed(),
+                    initialValue = DefaultListViewMode
+                )
+
+
+        }
 
     fun setListViewMode(viewMode: ListViewMode) {
-        _currentListViewMode.value = viewMode
-        sharedPreferences.edit {
-            putString(ListViewModeKey, viewMode.name)
+        with(DataStoreHolder) {
+            coroutineScope.launch {
+                context.dataStore.edit { preferences ->
+                    preferences[ListViewModeKey] = viewMode.name
+                }
+            }
         }
     }
 }
 
-private const val SharedPreferencesKey = "ListViewModeProvider_SharedPreferences"
-private const val ListViewModeKey = "ListViewMode"
+private const val DataStoreName = "ListViewModeProvider"
+private val ListViewModeKey = stringPreferencesKey("ListViewMode")
 
 @Stable
 private val DefaultListViewMode = ListViewMode.Compact

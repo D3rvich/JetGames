@@ -1,28 +1,37 @@
 package ru.d3rvich.data.model
 
-import android.content.Context
-import androidx.core.content.edit
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
+import ru.d3rvich.datastore.JetGamesPreferencesDataStore
 
-internal class SynchronizeTimeHolder(context: Context) {
-    private val sharedPreferences =
-        context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
+internal class SynchronizeTimeHolder(
+    private val coroutineScope: CoroutineScope,
+    private val dataStore: JetGamesPreferencesDataStore
+) {
 
     var lastSyncPlatformsTimestamp: Long
-        get() = sharedPreferences.getLong(PLATFORMS_SYNCHRONIZE_TIME, DEFAULT_TIMESTAMP)
-        set(value) = sharedPreferences.edit {
-            putLong(PLATFORMS_SYNCHRONIZE_TIME, value)
+        get() = dataStore.lastSyncPlatformsTimestamp.stateIn(
+            scope = coroutineScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = DEFAULT_TIMESTAMP
+        ).value
+        set(value) {
+            coroutineScope.launch { dataStore.setLastSyncPlatformsTimestamp(value) }
         }
 
     var lastSyncGenresTimestamp: Long
-        get() = sharedPreferences.getLong(GENRES_SYNCHRONIZE_TIME, DEFAULT_TIMESTAMP)
-        set(value) = sharedPreferences.edit {
-            putLong(GENRES_SYNCHRONIZE_TIME, value)
+        get() = dataStore.lastSyncGenresTimestamp.stateIn(
+            scope = coroutineScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = DEFAULT_TIMESTAMP
+        ).value
+        set(value) {
+            coroutineScope.launch { dataStore.setLastSyncGenresTimestamp(value) }
         }
 
     internal companion object {
         const val DEFAULT_TIMESTAMP = -1L
-        private const val SHARED_PREFERENCES_NAME = "SynchronizeTimeHolder"
-        private const val PLATFORMS_SYNCHRONIZE_TIME = "platformsSynchronize"
-        private const val GENRES_SYNCHRONIZE_TIME = "genresSynchronize"
     }
 }
