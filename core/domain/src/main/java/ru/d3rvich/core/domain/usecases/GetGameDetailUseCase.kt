@@ -14,7 +14,7 @@ import javax.inject.Inject
  * Created by Ilya Deryabin at 24.02.2024
  */
 class GetGameDetailUseCase @Inject constructor(private val gamesRepository: GamesRepository) {
-    suspend operator fun invoke(
+    operator fun invoke(
         gameId: Int,
         loadSource: LoadSource,
     ): Flow<Status<GameDetailEntity>> = flow {

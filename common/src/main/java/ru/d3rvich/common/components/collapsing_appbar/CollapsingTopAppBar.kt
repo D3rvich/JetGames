@@ -1,98 +1,107 @@
 package ru.d3rvich.common.components.collapsing_appbar
 
+import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.AnimationState
+import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.DecayAnimationSpec
+import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.animateDecay
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.foundation.background
+import androidx.compose.animation.core.animateTo
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
-import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.only
-import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material3.TopAppBarState
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.compose.ui.util.lerp
+import androidx.compose.ui.util.fastFirst
 import kotlin.math.abs
+import kotlin.math.max
 import kotlin.math.roundToInt
 
-/**
- * Created by Ilya Deryabin at 08.03.2024
- */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CollapsingTopAppBar(
     modifier: Modifier = Modifier,
-    collapsingTitle: CollapsingTitle? = null,
-    navigationIcon: (@Composable () -> Unit)? = null,
-    actions: (@Composable RowScope.() -> Unit)? = null,
-    expandedBackground: (@Composable () -> Unit)? = null,
-    scrollBehavior: CollapsingTopAppBarScrollBehavior? = null,
-    collapsedElevation: Dp = DefaultCollapsedElevation,
-    enableStatusBarBackground: Boolean = true,
-    enableTitleGradientBackground: Boolean = collapsingTitle != null && expandedBackground != null,
+    title: @Composable () -> Unit,
+    titleTextStyle: TextStyle = MaterialTheme.typography.titleLarge,
+    navigationIcon: (@Composable () -> Unit) = {},
+    actions: (@Composable RowScope.() -> Unit) = {},
+    expandedContent: (@Composable () -> Unit) = {},
+    collapsedHeight: Dp = CollapsedHeight,
+    expandedHeight: Dp = ExpandedHeight,
+    scrollBehavior: TopAppBarScrollBehavior? = null,
     windowInsets: WindowInsets = DefaultWindowInsets,
     colors: CollapsingTopAppBarColors = CollapsingTopAppBarDefaults.colors,
 ) {
-    val collapsedFraction = when {
-        scrollBehavior != null -> scrollBehavior.state.collapsedFraction
-        else -> 1f
+    require(expandedHeight >= collapsedHeight) {
+        "The expandedHeight is expected to be greater or equal to the collapsedHeight"
     }
-
-    val fullyCollapsedTitleScale = when {
-        collapsingTitle != null -> CollapsedTitleLineHeight.value / collapsingTitle.expandedTextStyle.lineHeight.value
-        else -> 1f
+    val collapsedHeightPx: Float
+    val expandedHeightPx: Float
+    with(LocalDensity.current) {
+        collapsedHeightPx = collapsedHeight.toPx()
+        expandedHeightPx = expandedHeight.toPx()
     }
-
-    val collapsingTitleScale = lerp(1f, fullyCollapsedTitleScale, collapsedFraction)
-
-    val showElevation = when {
-        scrollBehavior == null -> false
-        scrollBehavior.state.contentOffset <= 0 && collapsedFraction == 1f -> true
-        scrollBehavior.state.contentOffset < -1f -> true
-        else -> false
+    SideEffect {
+        if (scrollBehavior?.state?.heightOffsetLimit != collapsedHeightPx - expandedHeightPx) {
+            scrollBehavior?.state?.heightOffsetLimit = collapsedHeightPx - expandedHeightPx
+        }
     }
+    val collapsedFraction = scrollBehavior?.state?.collapsedFraction ?: 1f
 
-    val elevationState =
-        animateDpAsState(if (showElevation) collapsedElevation else 0.dp, label = "elevationState")
+    val colorTransitionFraction = scrollBehavior?.state?.collapsedFraction ?: 0f
+    val appBarContainerColor = colors.containerColor(colorTransitionFraction)
 
-    val density = LocalDensity.current
-    val layoutDirection = LocalLayoutDirection.current
+    val hideTopTitleSemantics = colorTransitionFraction < 0.5f
+    val hideBottomTitleSemantics = !hideTopTitleSemantics
+
+    val actionsRaw = @Composable {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.End,
+            content = actions
+        )
+    }
+    val titleAlpha = TopTitleAlphaEasing.transform(colorTransitionFraction)
 
     val dragModifier = if (scrollBehavior != null) {
-        Modifier.draggable(orientation = Orientation.Vertical,
+        Modifier.draggable(
+            orientation = Orientation.Vertical,
             state = rememberDraggableState { delta ->
                 scrollBehavior.state.heightOffset += delta
             },
@@ -100,7 +109,8 @@ fun CollapsingTopAppBar(
                 settleAppBar(
                     state = scrollBehavior.state,
                     velocity = velocity,
-                    flingAnimationSpec = scrollBehavior.flingAnimationSpec
+                    flingAnimationSpec = scrollBehavior.flingAnimationSpec,
+                    snapAnimationSpec = scrollBehavior.snapAnimationSpec
                 )
             }
         )
@@ -108,338 +118,212 @@ fun CollapsingTopAppBar(
         Modifier
     }
 
-    Surface(
-        modifier = modifier,
-        shadowElevation = elevationState.value,
-        color = colors.containerColor
-    ) {
-        Layout(
-            content = {
-                if (expandedBackground != null) {
-                    Box(
-                        modifier = Modifier
-                            .layoutId(BackgroundId)
-                            .wrapContentSize()
-                    ) {
-                        expandedBackground()
-                    }
-                }
-                if (enableStatusBarBackground) {
-                    val color = if (isSystemInDarkTheme()) Color.Black else Color.White
-                    Box(
-                        modifier = Modifier
-                            .layoutId(StatusBarGradientId)
-                            .background(color.copy(alpha = 0.5f))
-                            .fillMaxSize()
-                    )
-                }
-                if (enableTitleGradientBackground) {
-                    val gradientBrush = Brush.verticalGradient(
-                        listOf(
-                            Color.Transparent,
-                            MaterialTheme.colorScheme.background
-                        )
-                    )
-                    Box(
-                        modifier = Modifier
-                            .layoutId(TitleGradientBackgroundId)
-                            .background(gradientBrush)
-                            .fillMaxSize()
-                    )
-                }
-                if (collapsingTitle != null) {
-                    CompositionLocalProvider(LocalContentColor provides colors.titleContentColor) {
-                        Text(
-                            text = collapsingTitle.titleText,
-                            style = collapsingTitle.expandedTextStyle,
-                            modifier = Modifier
-                                .layoutId(ExpandedTitleId)
-                                .wrapContentHeight(align = Alignment.Top)
-                                .windowInsetsPadding(windowInsets.only(WindowInsetsSides.Top))
-                                .graphicsLayer(
-                                    scaleX = collapsingTitleScale,
-                                    scaleY = collapsingTitleScale,
-                                    transformOrigin = TransformOrigin(0f, 0f)
-                                )
-                        )
-                        Text(
-                            modifier = Modifier
-                                .layoutId(CollapsedTitleId)
-                                .wrapContentHeight(align = Alignment.Top)
-                                .windowInsetsPadding(windowInsets.only(WindowInsetsSides.Top))
-                                .graphicsLayer(
-                                    scaleX = collapsingTitleScale,
-                                    scaleY = collapsingTitleScale,
-                                    transformOrigin = TransformOrigin(0f, 0f)
-                                ),
-                            text = collapsingTitle.titleText,
-                            style = collapsingTitle.expandedTextStyle,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    }
-                }
-                if (navigationIcon != null) {
-                    CompositionLocalProvider(LocalContentColor provides colors.navigationIconContentColor) {
-                        Box(
-                            modifier = Modifier
-                                .wrapContentSize()
-                                .windowInsetsPadding(windowInsets.only(WindowInsetsSides.Top + WindowInsetsSides.Start))
-                                .layoutId(NavigationIconId)
-                        ) {
-                            navigationIcon()
-                        }
-                    }
-                }
-
-                if (actions != null) {
-                    CompositionLocalProvider(LocalContentColor provides colors.actionsContentColor) {
-                        Row(
-                            modifier = Modifier
-                                .wrapContentSize()
-                                .windowInsetsPadding(windowInsets.only(WindowInsetsSides.Top + WindowInsetsSides.End))
-                                .layoutId(ActionsId)
-                        ) {
-                            actions()
-                        }
-                    }
-                }
-            },
-            modifier = modifier.then(dragModifier.heightIn(min = MinCollapsedHeight))
-        ) { measurables, constraints ->
-            val horizontalPaddingPx = HorizontalPadding.toPx()
-            val expandedTitleBottomPaddingPx = ExpandedTitleBottomPadding.toPx()
-            val topWindowInsetsPaddingPx = windowInsets.getTop(density).toDp().toPx()
-            val startWindowInsetsPaddingPx =
-                windowInsets.getLeft(density, layoutDirection).toDp().toPx()
-            val endWindowInsetsPaddingPx =
-                windowInsets.getRight(density, layoutDirection).toDp().toPx()
-
-            // Measuring widgets inside toolbar:
-
-            val backgroundPlaceable =
-                measurables.firstOrNull { it.layoutId == BackgroundId }
-                    ?.measure(
-                        constraints.copy(
-                            maxWidth = constraints.maxWidth,
-                            minHeight = 0,
-                            minWidth = 0
-                        )
-                    )
-
-            val statusBarGradientPlaceable =
-                measurables.firstOrNull { it.layoutId == StatusBarGradientId }?.measure(
-                    constraints.copy(
-                        maxWidth = constraints.maxWidth,
-                        maxHeight = topWindowInsetsPaddingPx.roundToInt(),
-                        minHeight = 0,
-                    )
-                )
-
-            val navigationIconPlaceable =
-                measurables.firstOrNull { it.layoutId == NavigationIconId }
-                    ?.measure(constraints.copy(minWidth = 0))
-
-            val actionsPlaceable = measurables.firstOrNull { it.layoutId == ActionsId }
-                ?.measure(constraints.copy(minWidth = 0))
-
-            val expandedTitlePlaceable =
-                measurables.firstOrNull { it.layoutId == ExpandedTitleId }
-                    ?.measure(
-                        constraints.copy(
-                            maxWidth = (constraints.maxWidth - 2 * horizontalPaddingPx).roundToInt(),
-                            minWidth = 0,
-                            minHeight = 0
-                        )
-                    )
-
-            val titleGradientBackgroundPlaceable =
-                measurables.firstOrNull { it.layoutId == TitleGradientBackgroundId }
-                    ?.measure(
-                        constraints.copy(
-                            minHeight = 0,
-                            maxHeight = (expandedTitlePlaceable?.height
-                                ?: 0) + 2 * expandedTitleBottomPaddingPx.roundToInt(),
-                            maxWidth = constraints.maxWidth
-                        )
-                    )
-
-            val navigationIconOffset = when (navigationIconPlaceable) {
-                null -> horizontalPaddingPx + startWindowInsetsPaddingPx
-                else -> navigationIconPlaceable.width + horizontalPaddingPx * 2
-            }
-
-            val actionsOffset = when (actionsPlaceable) {
-                null -> horizontalPaddingPx + endWindowInsetsPaddingPx
-                else -> actionsPlaceable.width + horizontalPaddingPx * 2
-            }
-
-            val collapsedTitleMaxWidthPx =
-                (constraints.maxWidth - navigationIconOffset - actionsOffset) / fullyCollapsedTitleScale
-
-            val collapsedTitlePlaceable =
-                measurables.firstOrNull { it.layoutId == CollapsedTitleId }
-                    ?.measure(
-                        constraints.copy(
-                            maxWidth = collapsedTitleMaxWidthPx.roundToInt(),
-                            minWidth = 0,
-                            minHeight = 0
-                        )
-                    )
-
-            val collapsedHeightPx = MinCollapsedHeight.toPx() + topWindowInsetsPaddingPx
-
-            var layoutHeightPx = collapsedHeightPx
-
-            // Calculating coordinates of widgets inside toolbar:
-
-            // Current coordinates of navigation icon
-            val navigationIconX = horizontalPaddingPx.roundToInt()
-            val navigationIconY =
-                ((collapsedHeightPx - (navigationIconPlaceable?.height ?: 0)) / 2).roundToInt()
-
-            // Current coordinates of actions
-            val actionsX =
-                (constraints.maxWidth - (actionsPlaceable?.width
-                    ?: 0) - horizontalPaddingPx).roundToInt()
-            val actionsY =
-                ((collapsedHeightPx - (actionsPlaceable?.height ?: 0)) / 2).roundToInt()
-
-            // Current coordinates of title
-            var collapsingTitleY = 0
-            var collapsingTitleX = 0
-            var titleGradientBackgroundY = 0
-
-            val backgroundHeightPx = backgroundPlaceable?.height?.toDp()?.toPx()
-            if (expandedTitlePlaceable != null && collapsedTitlePlaceable != null) {
-                // Measuring toolbar collapsing distance
-                val heightOffsetLimitPx =
-                    (expandedTitlePlaceable.height + expandedTitleBottomPaddingPx + topWindowInsetsPaddingPx).coerceAtLeast(
-                        (backgroundHeightPx ?: 0f) - MinCollapsedHeight.toPx()
-                    )
-                scrollBehavior?.state?.heightOffsetLimit = -heightOffsetLimitPx
-
-                // Toolbar height at fully expanded state
-                val fullyExpandedHeightPx = MinCollapsedHeight.toPx() + heightOffsetLimitPx
-
-                // Coordinates of fully expanded title
-                val fullyExpandedTitleX = startWindowInsetsPaddingPx + 2 * horizontalPaddingPx
-                val fullyExpandedTitleY =
-                    fullyExpandedHeightPx - expandedTitlePlaceable.height - expandedTitleBottomPaddingPx
-                titleGradientBackgroundY =
-                    (fullyExpandedTitleY - expandedTitleBottomPaddingPx).roundToInt()
-
-                // Coordinates of fully collapsed title
-                val fullyCollapsedTitleX = navigationIconOffset
-                val fullyCollapsedTitleY =
-                    collapsedHeightPx / 2 - CollapsedTitleLineHeight.toPx()
-
-                // Current height of toolbar
-                layoutHeightPx =
-                    lerp(fullyExpandedHeightPx, collapsedHeightPx, collapsedFraction)
-
-                // Current coordinates of collapsing title
-                collapsingTitleX =
-                    lerp(
-                        fullyExpandedTitleX,
-                        fullyCollapsedTitleX,
-                        collapsedFraction
-                    ).roundToInt()
-                collapsingTitleY =
-                    lerp(
-                        fullyExpandedTitleY,
-                        fullyCollapsedTitleY,
-                        collapsedFraction
-                    ).roundToInt()
-            } else if (backgroundHeightPx != null && backgroundHeightPx > collapsedHeightPx) {
-                scrollBehavior?.state?.heightOffsetLimit = backgroundHeightPx
-                layoutHeightPx = lerp(backgroundHeightPx, collapsedHeightPx, collapsedFraction)
-            } else {
-                scrollBehavior?.state?.heightOffsetLimit = -1f
-            }
-
-            val toolbarHeightPx = layoutHeightPx.roundToInt()
-
-            // Placing toolbar widgets:
-
-            layout(constraints.maxWidth, toolbarHeightPx) {
-                backgroundPlaceable?.placeRelativeWithLayer(
-                    x = 0,
-                    y = 0,
-                    zIndex = -1f,
-                    layerBlock = {
+    Surface(modifier = modifier.then(dragModifier), color = appBarContainerColor) {
+        Box {
+            ExpandedContentLayout(
+                modifier = Modifier
+                    .windowInsetsPadding(windowInsets)
+                    .clipToBounds()
+                    .heightIn(max = expandedHeight)
+                    .graphicsLayer {
                         alpha = 1 - collapsedFraction
-                    }
-                )
-                statusBarGradientPlaceable?.placeRelativeWithLayer(
-                    x = 0,
-                    y = 0,
-                    layerBlock = { alpha = 1 - collapsedFraction })
-                titleGradientBackgroundPlaceable?.placeRelative(
-                    x = 0,
-                    y = titleGradientBackgroundY,
-                    zIndex = -1f
-                )
-                navigationIconPlaceable?.placeRelative(
-                    x = navigationIconX,
-                    y = navigationIconY
-                )
-                actionsPlaceable?.placeRelative(
-                    x = actionsX,
-                    y = actionsY
-                )
-                if (expandedTitlePlaceable?.width == collapsedTitlePlaceable?.width) {
-                    expandedTitlePlaceable?.placeRelative(
-                        x = collapsingTitleX,
-                        y = collapsingTitleY,
-                    )
-                } else {
-                    expandedTitlePlaceable?.placeRelativeWithLayer(
-                        x = collapsingTitleX,
-                        y = collapsingTitleY,
-                        layerBlock = { alpha = 1 - collapsedFraction }
-                    )
-                    collapsedTitlePlaceable?.placeRelativeWithLayer(
-                        x = collapsingTitleX,
-                        y = collapsingTitleY,
-                        layerBlock = { alpha = collapsedFraction }
-                    )
-                }
-            }
+                    },
+                content = expandedContent,
+                scrolledOffset = { scrollBehavior?.state?.heightOffset ?: 0f }
+            )
+            TopAppBarLayout(
+                Modifier
+                    .windowInsetsPadding(windowInsets)
+                    .clipToBounds()
+                    .heightIn(max = collapsedHeight),
+                scrolledOffset = { 0f },
+                navigationIconContentColor = colors.navigationIconContentColor,
+                titleContentColor = colors.titleContentColor,
+                actionIconContentColor = colors.actionsContentColor,
+                title = title,
+                titleTextStyle = titleTextStyle,
+                titleAlpha = titleAlpha,
+                hideTitleSemantics = hideBottomTitleSemantics,
+                navigationIcon = navigationIcon,
+                actions = actionsRaw
+            )
         }
     }
 }
 
-private val MinCollapsedHeight = 64.dp
+@Composable
+private fun TopAppBarLayout(
+    modifier: Modifier = Modifier,
+    scrolledOffset: ScrolledOffset,
+    navigationIconContentColor: Color,
+    titleContentColor: Color,
+    actionIconContentColor: Color,
+    title: @Composable () -> Unit,
+    titleTextStyle: TextStyle,
+    titleAlpha: Float,
+    hideTitleSemantics: Boolean,
+    navigationIcon: @Composable () -> Unit,
+    actions: @Composable () -> Unit,
+) {
+    Layout(
+        content = {
+            Box(
+                Modifier
+                    .layoutId(NavigationIconId)
+                    .padding(start = HorizontalPadding)
+                    .wrapContentSize()
+            ) {
+                CompositionLocalProvider(
+                    LocalContentColor provides navigationIconContentColor,
+                    content = navigationIcon
+                )
+            }
+            Box(
+                modifier = Modifier
+                    .layoutId(TitleId)
+                    .padding(horizontal = HorizontalPadding)
+                    .then(if (hideTitleSemantics) Modifier.clearAndSetSemantics {} else Modifier)
+                    .graphicsLayer(alpha = titleAlpha)
+            ) {
+                val mergedStyle = LocalTextStyle.current.merge(titleTextStyle)
+                CompositionLocalProvider(
+                    LocalTextStyle provides mergedStyle,
+                    LocalContentColor provides titleContentColor,
+                    content = title
+                )
+            }
+            Box(
+                Modifier
+                    .layoutId(ActionsId)
+                    .padding(end = HorizontalPadding)
+                    .wrapContentSize()
+            ) {
+                CompositionLocalProvider(
+                    LocalContentColor provides actionIconContentColor,
+                    content = actions
+                )
+            }
+        },
+        modifier = modifier
+    ) { measurables, constraints ->
+        val navigationIconPlaceable = measurables.fastFirst { it.layoutId == NavigationIconId }
+            .measure(constraints.copy(minWidth = 0))
+        val actionsPlaceable = measurables.fastFirst { it.layoutId == ActionsId }
+            .measure(constraints.copy(minWidth = 0))
+        val titleMaxWidth = if (constraints.maxWidth == Constraints.Infinity) {
+            constraints.maxWidth
+        } else {
+            (constraints.maxWidth - navigationIconPlaceable.width - actionsPlaceable.width).coerceAtLeast(
+                0
+            )
+        }
+        val titlePlaceable = measurables.fastFirst { it.layoutId == TitleId }
+            .measure(constraints.copy(minWidth = 0, maxWidth = titleMaxWidth))
+
+        val scrolledOffsetValue = scrolledOffset.offset()
+        val heightOffset = if (scrolledOffsetValue.isNaN()) 0 else scrolledOffsetValue.roundToInt()
+
+        val layoutHeight =
+            if (constraints.maxHeight == Constraints.Infinity) {
+                constraints.maxHeight
+            } else {
+                constraints.maxHeight + heightOffset
+            }
+
+        layout(constraints.maxWidth, layoutHeight) {
+
+            navigationIconPlaceable.placeRelative(
+                x = 0,
+                y = (layoutHeight - navigationIconPlaceable.height) / 2
+            )
+
+            titlePlaceable.placeRelative(
+                x = max(TopAppBarTitleInset.roundToPx(), navigationIconPlaceable.width),
+                y = (layoutHeight - titlePlaceable.height) / 2
+            )
+
+            actionsPlaceable.placeRelative(
+                x = constraints.maxWidth - actionsPlaceable.width,
+                y = (layoutHeight - actionsPlaceable.height) / 2
+            )
+        }
+    }
+}
+
+@Composable
+private fun ExpandedContentLayout(
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit,
+    scrolledOffset: ScrolledOffset,
+) {
+    Layout(
+        content = {
+            Box(
+                Modifier
+                    .layoutId(ExpandedContentId)
+                    .wrapContentSize(),
+                contentAlignment = Alignment.BottomCenter
+            ) {
+                content()
+            }
+        },
+        modifier = modifier
+    ) { measurables, constraints ->
+        val scrolledOffsetValue = scrolledOffset.offset()
+        val heightOffset = if (scrolledOffsetValue.isNaN()) 0 else scrolledOffsetValue.roundToInt()
+
+        val layoutHeight =
+            if (constraints.maxHeight == Constraints.Infinity) {
+                constraints.maxHeight
+            } else {
+                constraints.maxHeight + heightOffset
+            }
+
+        val contentPlaceable = measurables.fastFirst { it.layoutId == ExpandedContentId }
+            .measure(constraints.copy(minHeight = 0, maxHeight = layoutHeight))
+
+        layout(constraints.maxWidth, layoutHeight) {
+            contentPlaceable.placeRelative(x = 0, y = 0)
+        }
+    }
+}
+
+private val CollapsedHeight = 64.dp
+private val ExpandedHeight = 240.dp
 private val HorizontalPadding = 4.dp
-private val ExpandedTitleBottomPadding = 8.dp
-private val CollapsedTitleLineHeight = 28.sp
-private val DefaultCollapsedElevation = 4.dp
+private val TopAppBarTitleInset = 16.dp - HorizontalPadding
 
 private val DefaultWindowInsets
-    @Composable
-    get() = WindowInsets.safeDrawing.only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal)
+    @Composable get() = WindowInsets.statusBars.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top)
 
-private const val ExpandedTitleId = "expandedTitle"
-private const val CollapsedTitleId = "collapsedTitle"
+private const val TitleId = "title"
 private const val NavigationIconId = "navigationIcon"
 private const val ActionsId = "actions"
-private const val BackgroundId = "background"
-private const val StatusBarGradientId = "statusBarGradient"
-private const val TitleGradientBackgroundId = "titleGradientBackground"
+private const val ExpandedContentId = "expandedContent"
 
+@OptIn(ExperimentalMaterial3Api::class)
 private suspend fun settleAppBar(
-    state: CollapsingTopAppBarScrollState,
+    state: TopAppBarState,
     velocity: Float,
     flingAnimationSpec: DecayAnimationSpec<Float>?,
+    snapAnimationSpec: AnimationSpec<Float>?
 ): Velocity {
+    // Check if the app bar is completely collapsed/expanded. If so, no need to settle the app bar,
+    // and just return Zero Velocity.
+    // Note that we don't check for 0f due to float precision with the collapsedFraction
+    // calculation.
     if (state.collapsedFraction < 0.01f || state.collapsedFraction == 1f) {
         return Velocity.Zero
     }
     var remainingVelocity = velocity
-    if (flingAnimationSpec != null && abs(velocity) > 1F) {
+    // In case there is an initial velocity that was left after a previous user fling, animate to
+    // continue the motion to expand or collapse the app bar.
+    if (flingAnimationSpec != null && abs(velocity) > 1f) {
         var lastValue = 0f
-        AnimationState(initialValue = 0f, initialVelocity = velocity)
+        AnimationState(
+            initialValue = 0f,
+            initialVelocity = velocity,
+        )
             .animateDecay(flingAnimationSpec) {
                 val delta = value - lastValue
                 val initialHeightOffset = state.heightOffset
@@ -451,42 +335,57 @@ private suspend fun settleAppBar(
                 if (abs(delta - consumed) > 0.5f) this.cancelAnimation()
             }
     }
-    snapAppBar(state)
+    // Snap if animation specs were provided.
+    if (snapAnimationSpec != null) {
+        if (state.heightOffset < 0 && state.heightOffset > state.heightOffsetLimit) {
+            AnimationState(initialValue = state.heightOffset).animateTo(
+                if (state.collapsedFraction < 0.5f) {
+                    0f
+                } else {
+                    state.heightOffsetLimit
+                },
+                animationSpec = snapAnimationSpec
+            ) {
+                state.heightOffset = value
+            }
+        }
+    }
+
     return Velocity(0f, remainingVelocity)
 }
 
-object CollapsingTopAppBarDefaults {
+@Stable
+class CollapsingTopAppBarColors(
+    val containerColor: Color,
+    val scrolledContainerColor: Color,
+    val navigationIconContentColor: Color,
+    val titleContentColor: Color,
+    val actionsContentColor: Color,
+) {
+    @Stable
+    internal fun containerColor(colorTransitionFraction: Float): Color {
+        return androidx.compose.ui.graphics.lerp(
+            containerColor,
+            scrolledContainerColor,
+            FastOutLinearInEasing.transform(colorTransitionFraction)
+        )
+    }
+}
 
+object CollapsingTopAppBarDefaults {
     @Stable
     val colors
         @Composable get() = CollapsingTopAppBarColors(
             containerColor = MaterialTheme.colorScheme.surface,
+            scrolledContainerColor = MaterialTheme.colorScheme.surfaceContainer,
             navigationIconContentColor = MaterialTheme.colorScheme.contentColorFor(MaterialTheme.colorScheme.surface),
             titleContentColor = MaterialTheme.colorScheme.contentColorFor(MaterialTheme.colorScheme.surface),
             actionsContentColor = MaterialTheme.colorScheme.contentColorFor(MaterialTheme.colorScheme.surface)
         )
 }
 
-data class CollapsingTopAppBarColors(
-    val containerColor: Color,
-    val navigationIconContentColor: Color,
-    val titleContentColor: Color,
-    val actionsContentColor: Color,
-)
+private val TopTitleAlphaEasing = CubicBezierEasing(.8f, 0f, .8f, .15f)
 
-@Stable
-data class CollapsingTitle(
-    val titleText: String,
-    val expandedTextStyle: TextStyle,
-) {
-
-    companion object {
-        @Composable
-        fun large(titleText: String) =
-            CollapsingTitle(titleText, MaterialTheme.typography.headlineLarge)
-
-        @Composable
-        fun medium(titleText: String) =
-            CollapsingTitle(titleText, MaterialTheme.typography.headlineMedium)
-    }
+private fun interface ScrolledOffset {
+    fun offset(): Float
 }

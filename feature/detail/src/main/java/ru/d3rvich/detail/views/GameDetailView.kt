@@ -23,11 +23,13 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,7 +43,6 @@ import kotlinx.datetime.format
 import kotlinx.datetime.format.MonthNames
 import kotlinx.datetime.format.char
 import ru.d3rvich.common.components.CollapsingText
-import ru.d3rvich.common.components.collapsing_appbar.rememberCollapsingTopAppBarScrollBehavior
 import ru.d3rvich.core.domain.entities.GameDetailEntity
 import ru.d3rvich.core.domain.entities.ParentPlatformEntity
 import ru.d3rvich.core.domain.entities.RatingEntity
@@ -59,7 +60,7 @@ import ru.d3rvich.detail.model.toGameDetailUiModel
 /**
  * Created by Ilya Deryabin at 11.03.2024
  */
-@OptIn(ExperimentalLayoutApi::class)
+@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
 @Composable
 internal fun GameDetailView(
     modifier: Modifier = Modifier,
@@ -70,7 +71,7 @@ internal fun GameDetailView(
     onScreenshotClicked: (selectedItem: Int) -> Unit,
     onBackClicked: () -> Unit,
 ) {
-    val collapsingScrollBehavior = rememberCollapsingTopAppBarScrollBehavior()
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -79,7 +80,7 @@ internal fun GameDetailView(
                     detail.ratings?.maxByOrNull { it.percent }?.findWrapper()?.textIcon ?: ""
                 }",
                 imageUrl = detail.imageUrl,
-                collapsingScrollBehavior = collapsingScrollBehavior,
+                scrollBehavior = scrollBehavior,
                 onBackClicked = onBackClicked,
                 isFavorite = isFavorite,
                 onFavoriteChange = onFavoriteChange
@@ -91,7 +92,7 @@ internal fun GameDetailView(
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize()
-                .nestedScroll(collapsingScrollBehavior.nestedScrollConnection),
+                .nestedScroll(scrollBehavior.nestedScrollConnection),
             verticalArrangement = Arrangement.spacedBy(32.dp),
             contentPadding = PaddingValues(
                 top = 20.dp,

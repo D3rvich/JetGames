@@ -22,7 +22,6 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
             extensions.configure<LibraryExtension> {
                 configureKotlinAndroid(this)
                 lint.targetSdk = 35
-                @Suppress("UnstableApiUsage")
                 testOptions {
                     targetSdk = 35
                 }

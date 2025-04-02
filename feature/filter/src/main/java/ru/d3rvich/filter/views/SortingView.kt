@@ -111,7 +111,7 @@ private fun SortingEntity.getStringRes(): String =
         }
     )
 
-@Preview(showBackground = true, apiLevel = 33)
+@Preview(showBackground = true)
 @Composable
 private fun SortingViewPreview() {
     Box(modifier = Modifier.fillMaxSize()) {
