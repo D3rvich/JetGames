@@ -1,26 +1,32 @@
 package ru.d3rvich.detail
 
+import android.content.Context
+import androidx.core.net.toUri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import ru.d3rvich.core.ui.base.BaseViewModel
-import ru.d3rvich.core.ui.base.UiAction
 import ru.d3rvich.common.navigation.NavType
 import ru.d3rvich.common.navigation.Screens
+import ru.d3rvich.core.domain.entities.GameDetailEntity
+import ru.d3rvich.core.domain.entities.GameStoreEntity
 import ru.d3rvich.core.domain.model.LoadSource
 import ru.d3rvich.core.domain.model.Result
 import ru.d3rvich.core.domain.model.Status
 import ru.d3rvich.core.domain.usecases.AddToFavoritesUseCase
 import ru.d3rvich.core.domain.usecases.CheckIsGameFavoriteUseCase
 import ru.d3rvich.core.domain.usecases.GetGameDetailUseCase
+import ru.d3rvich.core.domain.usecases.GetGameStoresByIdUseCase
 import ru.d3rvich.core.domain.usecases.GetScreenshotsUseCase
 import ru.d3rvich.core.domain.usecases.RemoveFromFavoritesUseCase
-import ru.d3rvich.core.domain.entities.GameDetailEntity
+import ru.d3rvich.core.ui.base.BaseViewModel
+import ru.d3rvich.detail.browser.BrowserManager
+import ru.d3rvich.detail.model.GameDetailUiAction
 import ru.d3rvich.detail.model.GameDetailUiEvent
 import ru.d3rvich.detail.model.GameDetailUiState
 import ru.d3rvich.detail.model.ScreenshotsUiState
@@ -34,12 +40,14 @@ import kotlin.reflect.typeOf
 @HiltViewModel
 internal class GameDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
+    @ApplicationContext private val context: Context,
     private val getGameDetailUseCase: Provider<GetGameDetailUseCase>,
     private val getScreenshotsUseCase: Provider<GetScreenshotsUseCase>,
     private val addToFavoritesUseCase: Provider<AddToFavoritesUseCase>,
     private val removeFromFavoritesUseCase: Provider<RemoveFromFavoritesUseCase>,
     private val checkIsGameFavoriteUseCase: Provider<CheckIsGameFavoriteUseCase>,
-) : BaseViewModel<GameDetailUiState, GameDetailUiEvent, UiAction>() {
+    private val getGamesStoresUseCase: Provider<GetGameStoresByIdUseCase>
+) : BaseViewModel<GameDetailUiState, GameDetailUiEvent, GameDetailUiAction>() {
     override fun createInitialState(): GameDetailUiState = GameDetailUiState.Loading
 
     override fun obtainEvent(event: GameDetailUiEvent) {
@@ -56,10 +64,13 @@ internal class GameDetailViewModel @Inject constructor(
         }
     }
 
-    private val args: Args = extractArgs(savedStateHandle)
+    private val browserManager = BrowserManager(context)
 
-    init {
-        load(args)
+    private var gameStores: List<GameStoreEntity>? = null
+
+    private val args: Args = extractArgs(savedStateHandle).also { args ->
+        loadGameDetail(args)
+        loadStores(args.gameId)
     }
 
     private fun extractArgs(savedStateHandle: SavedStateHandle): Args {
@@ -70,7 +81,7 @@ internal class GameDetailViewModel @Inject constructor(
         }
     }
 
-    private fun load(args: Args) {
+    private fun loadGameDetail(args: Args) {
         viewModelScope.launch {
             val isFavorite = async { checkIsGameFavoriteUseCase.get().invoke(args.gameId) }
             getGameDetailUseCase.get().invoke(args.gameId, args.loadSource).collect { status ->
@@ -94,6 +105,24 @@ internal class GameDetailViewModel @Inject constructor(
                             status.throwable.localizedMessage ?: "error"
                         )
                     )
+                }
+            }
+        }
+    }
+
+    private fun loadStores(gameId: Int, selectedStore: Int? = null) {
+        viewModelScope.launch(Dispatchers.IO) {
+            when (val result = getGamesStoresUseCase.get().invoke(gameId = gameId)) {
+                is Result.Success -> {
+                    gameStores = result.value
+                    selectedStore?.let {
+                        val storeUrl = result.value.find { it.storeId == selectedStore }?.url!!
+                        browserManager.launchUrl(storeUrl.toUri())
+                    }
+                }
+
+                is Result.Failure -> {
+                    sendAction { GameDetailUiAction.ShowGameStoreDownloadError }
                 }
             }
         }
@@ -143,6 +172,13 @@ internal class GameDetailViewModel @Inject constructor(
                 }
             }
 
+            is GameDetailUiEvent.OnGameStoreSelected -> {
+                if (!gameStores.isNullOrEmpty()) {
+                    val storeUrl = gameStores?.find { it.storeId == event.storeId }?.url!!
+                    browserManager.launchUrl(storeUrl.toUri())
+                }
+            }
+
             else -> unexpectedEventError(event, state)
         }
     }
@@ -150,7 +186,7 @@ internal class GameDetailViewModel @Inject constructor(
     private fun reduce(state: GameDetailUiState.Error, event: GameDetailUiEvent) {
         when (event) {
             GameDetailUiEvent.OnRefresh -> {
-                load(args)
+                loadGameDetail(args)
             }
 
             else -> unexpectedEventError(event, state)

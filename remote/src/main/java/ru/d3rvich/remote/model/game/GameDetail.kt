@@ -6,6 +6,7 @@ import kotlinx.serialization.Serializable
 import ru.d3rvich.remote.model.GenreFull
 import ru.d3rvich.remote.model.ParentPlatformWrapper
 import ru.d3rvich.remote.model.Rating
+import ru.d3rvich.remote.model.StoreWrapper
 
 @Serializable
 data class GameDetail(
@@ -20,4 +21,5 @@ data class GameDetail(
     @SerialName("ratings") val ratings: List<Rating>?,
     @SerialName("screenshots_count") val screenshotCount: Int,
     @SerialName("parent_platforms") val parentPlatforms: List<ParentPlatformWrapper>?,
+    @SerialName("stores") val stores: List<StoreWrapper>?,
 )

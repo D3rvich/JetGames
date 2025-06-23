@@ -3,18 +3,21 @@ package ru.d3rvich.data.mapper
 import kotlinx.datetime.Clock
 import ru.d3rvich.core.domain.entities.GameDetailEntity
 import ru.d3rvich.core.domain.entities.GameEntity
+import ru.d3rvich.core.domain.entities.GameStoreEntity
 import ru.d3rvich.core.domain.entities.GenreEntity
 import ru.d3rvich.core.domain.entities.GenreFullEntity
 import ru.d3rvich.core.domain.entities.ParentPlatformEntity
 import ru.d3rvich.core.domain.entities.PlatformEntity
 import ru.d3rvich.core.domain.entities.RatingEntity
 import ru.d3rvich.core.domain.entities.ScreenshotEntity
+import ru.d3rvich.core.domain.entities.StoreEntity
 import ru.d3rvich.core.domain.model.Result
 import ru.d3rvich.database.model.GameDBO
 import ru.d3rvich.database.model.GenreDBO
 import ru.d3rvich.database.model.ParentPlatformDBO
 import ru.d3rvich.database.model.PlatformDBO
 import ru.d3rvich.database.model.RatingDBO
+import ru.d3rvich.remote.model.GameStore
 import ru.d3rvich.remote.model.Genre
 import ru.d3rvich.remote.model.GenreFull
 import ru.d3rvich.remote.model.ParentPlatform
@@ -23,6 +26,7 @@ import ru.d3rvich.remote.model.Rating
 import ru.d3rvich.remote.model.Screenshot
 import ru.d3rvich.remote.model.game.Game
 import ru.d3rvich.remote.model.game.GameDetail
+import ru.d3rvich.remote.model.Store
 import ru.d3rvich.remote.retrofit_result.RetrofitResult
 
 internal fun Game.toGameEntity(): GameEntity =
@@ -51,7 +55,8 @@ internal fun GameDetail.toGameDetailEntity(): GameDetailEntity =
         genres = genres?.map { it.toGenreFullEntity() },
         rating = rating,
         parentPlatforms = parentPlatforms?.map { it.platform.toParentPlatformEntity() },
-        ratings = ratings?.map { it.toRatingEntity() }
+        ratings = ratings?.map { it.toRatingEntity() },
+        stores = stores?.map { it.store.toStoreEntity() }
     )
 
 internal fun GameDetailEntity.toGameDBO(): GameDBO = GameDBO(
@@ -83,7 +88,8 @@ internal fun GameDBO.toGameDetailEntity(): GameDetailEntity =
         genres = genres?.map { it.toGenreFullEntity() },
         rating = rating,
         parentPlatforms = parentPlatforms?.map { it.toParentPlatformEntity() },
-        ratings = ratings?.map { it.toRatingEntity() }
+        ratings = ratings?.map { it.toRatingEntity() },
+        stores = null,
     )
 
 internal fun GameDBO.toGameEntity(): GameEntity =
@@ -139,6 +145,10 @@ internal fun Rating.toRatingEntity(): RatingEntity = RatingEntity(id, title, cou
 internal fun RatingDBO.toRatingEntity(): RatingEntity = RatingEntity(id, title, count, percent)
 
 internal fun RatingEntity.toRatingDBO(): RatingDBO = RatingDBO(id, title, count, percent)
+
+internal fun Store.toStoreEntity(): StoreEntity = StoreEntity(id, name)
+
+internal fun GameStore.toGameStoreEntity(): GameStoreEntity = GameStoreEntity(id, storeId, url)
 
 internal fun <T : Any> RetrofitResult<T>.asResult(): Result<T> = when (this) {
     is RetrofitResult.Failure<*> -> Result.Failure(this.error ?: Exception("Unknown error"))

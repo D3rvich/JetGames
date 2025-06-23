@@ -11,6 +11,7 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 import ru.d3rvich.remote.model.ApiPagingResult
+import ru.d3rvich.remote.model.GameStore
 import ru.d3rvich.remote.model.GenreFull
 import ru.d3rvich.remote.model.Platform
 import ru.d3rvich.remote.model.Screenshot
@@ -29,6 +30,7 @@ interface JetGamesApiService {
 
     companion object {
         internal const val BASE_URL = "https://api.rawg.io/api/"
+        private const val RAWG_MAX_PAGE_SIZE = 40
     }
 
     /**
@@ -62,6 +64,16 @@ interface JetGamesApiService {
         @Query("page") page: Int = 1,
         @Query("page_size") pageSize: Int = 10,
     ): RetrofitResult<ApiPagingResult<Screenshot>>
+
+    /**
+     * Api [doc](https://api.rawg.io/docs/#operation/games_stores_list)
+     * */
+    @GET("games/{id}/stores")
+    suspend fun getGameStoresById(
+        @Path("id") gameId: Int,
+        @Query("page") page: Int = 1,
+        @Query("page_size") pageSize: Int = RAWG_MAX_PAGE_SIZE
+    ): RetrofitResult<ApiPagingResult<GameStore>>
 
     /**
      * Api [doc](https://api.rawg.io/docs/#operation/platforms_list)

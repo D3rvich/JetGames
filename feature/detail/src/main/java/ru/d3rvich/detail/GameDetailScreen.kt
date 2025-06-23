@@ -31,7 +31,9 @@ fun GameDetailScreen(
         onFavoriteChange = { viewModel.obtainEvent(GameDetailUiEvent.OnFavoriteChange(it)) },
         onRefresh = { viewModel.obtainEvent(GameDetailUiEvent.OnRefresh) },
         onNavigateBack = navigateBack,
-        navigateToScreenshotScreen = navigateToScreenshotScreen)
+        navigateToScreenshotScreen = navigateToScreenshotScreen,
+        onGameStoreSelected = { viewModel.obtainEvent(GameDetailUiEvent.OnGameStoreSelected(it)) }
+    )
 }
 
 @Composable
@@ -42,6 +44,7 @@ internal fun GameDetailScreen(
     onRefresh: () -> Unit,
     onNavigateBack: () -> Unit,
     navigateToScreenshotScreen: (selectedItem: Int, screenshots: List<ScreenshotEntity>) -> Unit,
+    onGameStoreSelected: (storeId: Int) -> Unit,
 ) {
     when (state) {
         is GameDetailUiState.Detail -> {
@@ -56,7 +59,8 @@ internal fun GameDetailScreen(
                     if (state.screenshots is ScreenshotsUiState.Success) {
                         navigateToScreenshotScreen(selectedItem, state.gameDetail.screenshots)
                     }
-                }
+                },
+                onGameStoreSelected = onGameStoreSelected
             )
         }
 

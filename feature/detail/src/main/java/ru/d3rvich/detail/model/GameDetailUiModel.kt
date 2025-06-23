@@ -9,6 +9,7 @@ import ru.d3rvich.core.domain.entities.GenreFullEntity
 import ru.d3rvich.core.domain.entities.ParentPlatformEntity
 import ru.d3rvich.core.domain.entities.RatingEntity
 import ru.d3rvich.core.domain.entities.ScreenshotEntity
+import ru.d3rvich.core.domain.entities.StoreEntity
 
 /**
  * Created by Ilya Deryabin at 25.06.2024
@@ -27,6 +28,7 @@ internal data class GameDetailUiModel(
     val rating: Float?,
     val ratings: ImmutableList<RatingEntity>?,
     val parentPlatforms: ImmutableList<ParentPlatformEntity>?,
+    val stores: ImmutableList<StoreEntity>?,
 )
 
 internal fun GameDetailEntity.toGameDetailUiModel(): GameDetailUiModel =
@@ -42,5 +44,6 @@ internal fun GameDetailEntity.toGameDetailUiModel(): GameDetailUiModel =
         genres = genres?.toImmutableList(),
         rating = rating,
         parentPlatforms = parentPlatforms?.toImmutableList(),
-        ratings = ratings?.toImmutableList()
+        ratings = ratings?.toImmutableList(),
+        stores = stores?.toImmutableList()
     )

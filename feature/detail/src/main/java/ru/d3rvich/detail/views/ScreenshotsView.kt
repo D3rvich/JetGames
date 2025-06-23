@@ -17,9 +17,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import ru.d3rvich.detail.R
 import ru.d3rvich.detail.model.ScreenshotsUiState
 
 /**
@@ -52,14 +54,19 @@ internal fun ScreenshotsView(
                         modifier = Modifier.fillParentMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text(text = "No screenshots")
+                        Text(text = stringResource(R.string.no_screenshots))
                     }
                 }
             }
 
             is ScreenshotsUiState.Error -> {
                 item {
-                    ShowError(message = "error", modifier = Modifier.fillParentMaxWidth())
+                    Box(
+                        modifier = modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(text = "Error")
+                    }
                 }
             }
 
@@ -101,15 +108,5 @@ private fun ScreenshotItem(
                 contentScale = ContentScale.Crop
             )
         }
-    }
-}
-
-@Composable
-private fun ShowError(message: String, modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(text = message)
     }
 }

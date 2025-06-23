@@ -7,5 +7,6 @@ import ru.d3rvich.core.ui.base.UiEvent
  */
 internal sealed interface GameDetailUiEvent : UiEvent {
     data object OnRefresh : GameDetailUiEvent
-    class OnFavoriteChange(val isFavorite: Boolean) : GameDetailUiEvent
+    data class OnFavoriteChange(val isFavorite: Boolean) : GameDetailUiEvent
+    data class OnGameStoreSelected(val storeId: Int) : GameDetailUiEvent
 }

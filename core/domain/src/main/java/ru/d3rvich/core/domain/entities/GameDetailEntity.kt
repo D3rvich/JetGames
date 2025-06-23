@@ -15,4 +15,5 @@ data class GameDetailEntity(
     val rating: Float?,
     val ratings: List<RatingEntity>?,
     val parentPlatforms: List<ParentPlatformEntity>?,
+    val stores: List<StoreEntity>?,
 )

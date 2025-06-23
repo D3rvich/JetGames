@@ -14,4 +14,7 @@
     <string name="rating_type_meh">Meh</string>
     <string name="rating_type_skip">Skip</string>
     <string name="navigate_back">Navigate back</string>
+    <string name="view_in_stores">View in stores</string>
+    <string name="store_icon">Icon of %1$s</string>
+    <string name="no_screenshots">No screenshots</string>
 </resources>

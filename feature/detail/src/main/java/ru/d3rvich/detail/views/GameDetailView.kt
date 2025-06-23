@@ -19,10 +19,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -46,6 +48,7 @@ import ru.d3rvich.common.components.CollapsingText
 import ru.d3rvich.core.domain.entities.GameDetailEntity
 import ru.d3rvich.core.domain.entities.ParentPlatformEntity
 import ru.d3rvich.core.domain.entities.RatingEntity
+import ru.d3rvich.core.domain.entities.StoreEntity
 import ru.d3rvich.core.ui.icon.RatingType
 import ru.d3rvich.core.ui.icon.findWrapper
 import ru.d3rvich.core.ui.icon.textIcon
@@ -70,6 +73,7 @@ internal fun GameDetailView(
     onFavoriteChange: (Boolean) -> Unit,
     onScreenshotClicked: (selectedItem: Int) -> Unit,
     onBackClicked: () -> Unit,
+    onGameStoreSelected: (storeId: Int) -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     Scaffold(
@@ -177,32 +181,12 @@ internal fun GameDetailView(
             }
             if (detail.released != null) {
                 item {
-                    Column {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 8.dp),
-                            verticalAlignment = Alignment.Bottom,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(
-                                text = stringResource(R.string.release_date),
-                                style = MaterialTheme.typography.titleLarge
-                            )
-                            val dateFormat = LocalDate.Format {
-                                monthName(MonthNames.ENGLISH_ABBREVIATED)
-                                char(' ')
-                                dayOfMonth()
-                                chars(", ")
-                                year()
-                            }
-                            Text(
-                                text = detail.released.format(dateFormat),
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-                        }
-                        HorizontalDivider()
-                    }
+                    ReleasedDate(date = detail.released)
+                }
+            }
+            if (!detail.stores.isNullOrEmpty()) {
+                item {
+                    Stores(stores = detail.stores, onSelected = onGameStoreSelected)
                 }
             }
             if (detail.description != null) {
@@ -216,6 +200,73 @@ internal fun GameDetailView(
                             collapsedMaxLines = 5,
                             modifier = Modifier.padding(horizontal = 16.dp)
                         )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ReleasedDate(modifier: Modifier = Modifier, date: LocalDate) {
+    Column {
+        Row(
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp),
+            verticalAlignment = Alignment.Bottom,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = stringResource(R.string.release_date),
+                style = MaterialTheme.typography.titleLarge
+            )
+            val dateFormat = LocalDate.Format {
+                monthName(MonthNames.ENGLISH_ABBREVIATED)
+                char(' ')
+                dayOfMonth()
+                chars(", ")
+                year()
+            }
+            Text(
+                text = date.format(dateFormat),
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
+        HorizontalDivider()
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun Stores(
+    stores: List<StoreEntity>,
+    modifier: Modifier = Modifier,
+    onSelected: (storeId: Int) -> Unit,
+) {
+    GameDetailItem(modifier, stringResource(R.string.view_in_stores)) {
+        FlowRow(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            stores.forEach { store ->
+                Card(modifier = modifier, onClick = { onSelected(store.id) }) {
+                    Row(
+                        modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(text = store.name)
+                        store.tryFindIcon()?.let { icon ->
+                            Icon(
+                                painter = icon,
+                                contentDescription = stringResource(R.string.store_icon, store.name),
+                                modifier = modifier.size(24.dp)
+                            )
+                        }
                     }
                 }
             }
@@ -271,7 +322,8 @@ private fun GameDetailViewPreview() {
             ParentPlatformEntity(0, "PC"),
             ParentPlatformEntity(1, "Xbox One")
         ),
-        ratings = ratings
+        ratings = ratings,
+        stores = null
     )
     GameDetailView(
         detail = detail.toGameDetailUiModel(),
@@ -280,5 +332,13 @@ private fun GameDetailViewPreview() {
         onFavoriteChange = {},
         onScreenshotClicked = {},
         onBackClicked = {},
+        onGameStoreSelected = {}
     )
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun StoresPreview() {
+    val stores = listOf(StoreEntity(0, "Steam"), StoreEntity(1, "GOG"))
+    Stores(stores = stores) {}
 }
