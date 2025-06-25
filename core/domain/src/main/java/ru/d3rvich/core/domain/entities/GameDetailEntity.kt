@@ -16,4 +16,5 @@ data class GameDetailEntity(
     val ratings: List<RatingEntity>?,
     val parentPlatforms: List<ParentPlatformEntity>?,
     val stores: List<StoreEntity>?,
+    val isFavorite: Boolean,
 )

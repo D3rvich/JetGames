@@ -8,18 +8,14 @@ import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import ru.d3rvich.common.navigation.NavType
 import ru.d3rvich.common.navigation.Screens
 import ru.d3rvich.core.domain.entities.GameDetailEntity
 import ru.d3rvich.core.domain.entities.GameStoreEntity
-import ru.d3rvich.core.domain.model.LoadSource
 import ru.d3rvich.core.domain.model.Result
 import ru.d3rvich.core.domain.model.Status
 import ru.d3rvich.core.domain.usecases.AddToFavoritesUseCase
-import ru.d3rvich.core.domain.usecases.CheckIsGameFavoriteUseCase
 import ru.d3rvich.core.domain.usecases.GetGameDetailUseCase
 import ru.d3rvich.core.domain.usecases.GetGameStoresByIdUseCase
 import ru.d3rvich.core.domain.usecases.GetScreenshotsUseCase
@@ -32,7 +28,6 @@ import ru.d3rvich.detail.model.GameDetailUiState
 import ru.d3rvich.detail.model.ScreenshotsUiState
 import javax.inject.Inject
 import javax.inject.Provider
-import kotlin.reflect.typeOf
 
 /**
  * Created by Ilya Deryabin at 24.02.2024
@@ -45,7 +40,6 @@ internal class GameDetailViewModel @Inject constructor(
     private val getScreenshotsUseCase: Provider<GetScreenshotsUseCase>,
     private val addToFavoritesUseCase: Provider<AddToFavoritesUseCase>,
     private val removeFromFavoritesUseCase: Provider<RemoveFromFavoritesUseCase>,
-    private val checkIsGameFavoriteUseCase: Provider<CheckIsGameFavoriteUseCase>,
     private val getGamesStoresUseCase: Provider<GetGameStoresByIdUseCase>
 ) : BaseViewModel<GameDetailUiState, GameDetailUiEvent, GameDetailUiAction>() {
     override fun createInitialState(): GameDetailUiState = GameDetailUiState.Loading
@@ -68,23 +62,14 @@ internal class GameDetailViewModel @Inject constructor(
 
     private var gameStores: List<GameStoreEntity>? = null
 
-    private val args: Args = extractArgs(savedStateHandle).also { args ->
-        loadGameDetail(args)
-        loadStores(args.gameId)
+    private val gameId: Int = savedStateHandle.toRoute<Screens.GameDetail>().gameId.also { id ->
+        loadGameDetail(gameId = id)
+        loadStores(id)
     }
 
-    private fun extractArgs(savedStateHandle: SavedStateHandle): Args {
-        return savedStateHandle.toRoute<Screens.GameDetail>(
-            typeMap = mapOf(typeOf<LoadSource>() to LoadSource.NavType)
-        ).run {
-            Args(gameId, loadSource)
-        }
-    }
-
-    private fun loadGameDetail(args: Args) {
+    private fun loadGameDetail(gameId: Int) {
         viewModelScope.launch {
-            val isFavorite = async { checkIsGameFavoriteUseCase.get().invoke(args.gameId) }
-            getGameDetailUseCase.get().invoke(args.gameId, args.loadSource).collect { status ->
+            getGameDetailUseCase.get().invoke(gameId).collect { status ->
                 when (status) {
                     Status.Loading -> setState(GameDetailUiState.Loading)
                     is Status.Success -> {
@@ -92,7 +77,6 @@ internal class GameDetailViewModel @Inject constructor(
                             GameDetailUiState.Detail(
                                 gameDetail = status.value,
                                 screenshots = ScreenshotsUiState.NoScreenshots,
-                                isFavorite = isFavorite.await()
                             )
                         )
                         if (status.value.screenshotCount > 0) {
@@ -168,7 +152,7 @@ internal class GameDetailViewModel @Inject constructor(
                     } else {
                         removeFromFavoritesUseCase.get().invoke(state.gameDetail)
                     }
-                    setState(state.copy(isFavorite = event.isFavorite))
+                    setState(state.copy(gameDetail = state.gameDetail.copy(isFavorite = event.isFavorite)))
                 }
             }
 
@@ -186,12 +170,10 @@ internal class GameDetailViewModel @Inject constructor(
     private fun reduce(state: GameDetailUiState.Error, event: GameDetailUiEvent) {
         when (event) {
             GameDetailUiEvent.OnRefresh -> {
-                loadGameDetail(args)
+                loadGameDetail(gameId)
             }
 
             else -> unexpectedEventError(event, state)
         }
     }
 }
-
-private data class Args(val gameId: Int, val loadSource: LoadSource)

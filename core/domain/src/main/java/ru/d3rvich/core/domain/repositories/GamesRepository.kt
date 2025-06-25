@@ -2,7 +2,6 @@ package ru.d3rvich.core.domain.repositories
 
 import androidx.paging.PagingData
 import kotlinx.coroutines.flow.Flow
-import ru.d3rvich.core.domain.model.LoadSource
 import ru.d3rvich.core.domain.model.Result
 import ru.d3rvich.core.domain.preferences.FilterPreferencesBody
 import ru.d3rvich.core.domain.entities.GameDetailEntity
@@ -15,7 +14,7 @@ interface GamesRepository {
         filterPreferencesBody: FilterPreferencesBody,
     ): Flow<PagingData<GameEntity>>
 
-    suspend fun getGameDetail(gameId: Int, loadSource: LoadSource): Result<GameDetailEntity>
+    suspend fun getGameDetail(gameId: Int): Result<GameDetailEntity>
 
     suspend fun getGameScreenshots(gameId: Int): Result<List<ScreenshotEntity>>
 

@@ -17,6 +17,7 @@ import ru.d3rvich.database.model.GenreDBO
 import ru.d3rvich.database.model.ParentPlatformDBO
 import ru.d3rvich.database.model.PlatformDBO
 import ru.d3rvich.database.model.RatingDBO
+import ru.d3rvich.database.model.StoreDBO
 import ru.d3rvich.remote.model.GameStore
 import ru.d3rvich.remote.model.Genre
 import ru.d3rvich.remote.model.GenreFull
@@ -56,7 +57,8 @@ internal fun GameDetail.toGameDetailEntity(): GameDetailEntity =
         rating = rating,
         parentPlatforms = parentPlatforms?.map { it.platform.toParentPlatformEntity() },
         ratings = ratings?.map { it.toRatingEntity() },
-        stores = stores?.map { it.store.toStoreEntity() }
+        stores = stores.map { it.store.toStoreEntity() },
+        isFavorite = false,
     )
 
 internal fun GameDetailEntity.toGameDBO(): GameDBO = GameDBO(
@@ -72,7 +74,8 @@ internal fun GameDetailEntity.toGameDBO(): GameDBO = GameDBO(
     rating = rating,
     ratings = ratings?.map { it.toRatingDBO() },
     parentPlatforms = parentPlatforms?.map { it.toParentPlatformDBO() },
-    addingTime = Clock.System.now().toEpochMilliseconds()
+    addingTime = Clock.System.now().toEpochMilliseconds(),
+    stores = stores.map { it.toStoreBDO(it.url) }
 )
 
 internal fun GameDBO.toGameDetailEntity(): GameDetailEntity =
@@ -89,7 +92,8 @@ internal fun GameDBO.toGameDetailEntity(): GameDetailEntity =
         rating = rating,
         parentPlatforms = parentPlatforms?.map { it.toParentPlatformEntity() },
         ratings = ratings?.map { it.toRatingEntity() },
-        stores = null,
+        stores = stores.map { it.toStoreEntity() },
+        isFavorite = true,
     )
 
 internal fun GameDBO.toGameEntity(): GameEntity =
@@ -149,6 +153,10 @@ internal fun RatingEntity.toRatingDBO(): RatingDBO = RatingDBO(id, title, count,
 internal fun Store.toStoreEntity(): StoreEntity = StoreEntity(id, name)
 
 internal fun GameStore.toGameStoreEntity(): GameStoreEntity = GameStoreEntity(id, storeId, url)
+
+internal fun StoreEntity.toStoreBDO(url: String? = null): StoreDBO = StoreDBO(id, name, url)
+
+internal fun StoreDBO.toStoreEntity(): StoreEntity = StoreEntity(id, name, url)
 
 internal fun <T : Any> RetrofitResult<T>.asResult(): Result<T> = when (this) {
     is RetrofitResult.Failure<*> -> Result.Failure(this.error ?: Exception("Unknown error"))

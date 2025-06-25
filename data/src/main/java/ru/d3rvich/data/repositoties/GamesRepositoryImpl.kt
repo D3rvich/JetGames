@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.map
 import ru.d3rvich.core.domain.entities.GameDetailEntity
 import ru.d3rvich.core.domain.entities.GameEntity
 import ru.d3rvich.core.domain.entities.ScreenshotEntity
-import ru.d3rvich.core.domain.model.LoadSource
 import ru.d3rvich.core.domain.model.Result
 import ru.d3rvich.core.domain.model.map
 import ru.d3rvich.core.domain.preferences.FilterPreferencesBody
@@ -50,27 +49,14 @@ internal class GamesRepositoryImpl(
             }).flow
     }
 
-    override suspend fun getGameDetail(
-        gameId: Int,
-        loadSource: LoadSource,
-    ): Result<GameDetailEntity> {
-        return when (loadSource) {
-            LoadSource.Local -> {
-                when (val detail = database.gamesDao.gameDetail(gameId)) {
-                    null -> {
-                        Result.Failure(IllegalArgumentException("Game with id={$gameId} doesn't exist!"))
-                    }
+    override suspend fun getGameDetail(gameId: Int): Result<GameDetailEntity> {
+        return when (val detail = database.gamesDao.gameDetail(gameId)) {
+            null -> safeApiCall {
+                apiService.getGameDetail(gameId = gameId)
+            }.map { it.toGameDetailEntity() }
 
-                    else -> {
-                        Result.Success(detail.toGameDetailEntity())
-                    }
-                }
-            }
-
-            LoadSource.Network -> {
-                safeApiCall {
-                    apiService.getGameDetail(gameId = gameId)
-                }.map { it.toGameDetailEntity() }
+            else -> {
+                Result.Success(detail.toGameDetailEntity())
             }
         }
     }

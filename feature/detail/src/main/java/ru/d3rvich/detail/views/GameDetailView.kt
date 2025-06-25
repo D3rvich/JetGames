@@ -5,7 +5,6 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -63,13 +62,12 @@ import ru.d3rvich.detail.model.toGameDetailUiModel
 /**
  * Created by Ilya Deryabin at 11.03.2024
  */
-@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun GameDetailView(
     modifier: Modifier = Modifier,
     detail: GameDetailUiModel,
     screenshotsState: ScreenshotsUiState,
-    isFavorite: Boolean,
     onFavoriteChange: (Boolean) -> Unit,
     onScreenshotClicked: (selectedItem: Int) -> Unit,
     onBackClicked: () -> Unit,
@@ -86,7 +84,7 @@ internal fun GameDetailView(
                 imageUrl = detail.imageUrl,
                 scrollBehavior = scrollBehavior,
                 onBackClicked = onBackClicked,
-                isFavorite = isFavorite,
+                isFavorite = detail.isFavorite,
                 onFavoriteChange = onFavoriteChange
             )
         },
@@ -237,7 +235,6 @@ private fun ReleasedDate(modifier: Modifier = Modifier, date: LocalDate) {
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun Stores(
     stores: List<StoreEntity>,
@@ -263,7 +260,10 @@ private fun Stores(
                         store.tryFindIcon()?.let { icon ->
                             Icon(
                                 painter = icon,
-                                contentDescription = stringResource(R.string.store_icon, store.name),
+                                contentDescription = stringResource(
+                                    R.string.store_icon,
+                                    store.name
+                                ),
                                 modifier = modifier.size(24.dp)
                             )
                         }
@@ -323,12 +323,12 @@ private fun GameDetailViewPreview() {
             ParentPlatformEntity(1, "Xbox One")
         ),
         ratings = ratings,
-        stores = null
+        stores = emptyList(),
+        isFavorite = false
     )
     GameDetailView(
         detail = detail.toGameDetailUiModel(),
         screenshotsState = ScreenshotsUiState.NoScreenshots,
-        isFavorite = false,
         onFavoriteChange = {},
         onScreenshotClicked = {},
         onBackClicked = {},

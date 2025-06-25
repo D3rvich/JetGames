@@ -13,7 +13,6 @@ internal sealed interface GameDetailUiState : UiState {
     data class Detail(
         val gameDetail: GameDetailEntity,
         val screenshots: ScreenshotsUiState,
-        val isFavorite: Boolean,
     ) : GameDetailUiState
 
     class Error(val errorMessage: String) : GameDetailUiState

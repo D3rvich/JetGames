@@ -29,6 +29,7 @@ internal data class GameDetailUiModel(
     val ratings: ImmutableList<RatingEntity>?,
     val parentPlatforms: ImmutableList<ParentPlatformEntity>?,
     val stores: ImmutableList<StoreEntity>?,
+    val isFavorite: Boolean,
 )
 
 internal fun GameDetailEntity.toGameDetailUiModel(): GameDetailUiModel =
@@ -45,5 +46,6 @@ internal fun GameDetailEntity.toGameDetailUiModel(): GameDetailUiModel =
         rating = rating,
         parentPlatforms = parentPlatforms?.toImmutableList(),
         ratings = ratings?.toImmutableList(),
-        stores = stores?.toImmutableList()
+        stores = stores.toImmutableList(),
+        isFavorite = isFavorite
     )

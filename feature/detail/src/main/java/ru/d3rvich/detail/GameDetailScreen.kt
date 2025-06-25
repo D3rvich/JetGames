@@ -52,7 +52,6 @@ internal fun GameDetailScreen(
                 modifier = modifier,
                 detail = state.gameDetail.toGameDetailUiModel(),
                 screenshotsState = state.screenshots,
-                isFavorite = state.isFavorite,
                 onFavoriteChange = onFavoriteChange,
                 onBackClicked = onNavigateBack,
                 onScreenshotClicked = { selectedItem ->

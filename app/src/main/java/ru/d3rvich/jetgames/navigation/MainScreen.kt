@@ -30,7 +30,6 @@ import ru.d3rvich.common.navigation.Screens
 import ru.d3rvich.common.navigation.navigateToFilterScreen
 import ru.d3rvich.common.navigation.navigateToGameDetailScreen
 import ru.d3rvich.common.navigation.navigateToSettingsScreen
-import ru.d3rvich.core.domain.model.LoadSource
 import ru.d3rvich.favorites.FavoritesScreen
 import ru.d3rvich.home.HomeScreen
 
@@ -48,7 +47,8 @@ fun MainScreen(
     val showBottomBar = !showNavRail
     val navController = rememberNavController()
     val navState = rememberNavRouter(navController = navController)
-    Scaffold(modifier = modifier.fillMaxSize(),
+    Scaffold(
+        modifier = modifier.fillMaxSize(),
         contentWindowInsets = if (showNavRail) {
             WindowInsets.navigationBars.only(WindowInsetsSides.Bottom)
         } else {
@@ -89,10 +89,7 @@ fun MainScreen(
                     FavoritesScreen(
                         contentPadding = paddingValues,
                         navigateToGameDetail = { gameId ->
-                            externalNavController.navigateToGameDetailScreen(
-                                gameId = gameId,
-                                loadSource = LoadSource.Local
-                            )
+                            externalNavController.navigateToGameDetailScreen(gameId = gameId)
                         },
                         navigateToSettingsScreen = { externalNavController.navigateToSettingsScreen() }
                     )
@@ -108,7 +105,8 @@ private fun NavRail(modifier: Modifier = Modifier, navRouter: NavRouter) {
         navRouter.topLevelDestinations.forEach { destination ->
             val currentRoute = navRouter.currentRoute
             val isSelected = currentRoute == destination.route::class.qualifiedName
-            NavigationRailItem(selected = isSelected,
+            NavigationRailItem(
+                selected = isSelected,
                 onClick = {
                     if (!isSelected) {
                         navRouter.navigateToDestination(destination)

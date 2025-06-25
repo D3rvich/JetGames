@@ -18,16 +18,13 @@ import androidx.navigation.toRoute
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import ru.d3rvich.common.navigation.NavType
 import ru.d3rvich.common.navigation.Screens
-import ru.d3rvich.core.domain.model.LoadSource
 import ru.d3rvich.detail.GameDetailScreen
 import ru.d3rvich.filter.FilterScreen
 import ru.d3rvich.screenshots.ScreenshotsScreen
 import ru.d3rvich.settings.SettingsScreen
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
-import kotlin.reflect.typeOf
 
 @Composable
 fun SetupNavGraph(
@@ -75,7 +72,7 @@ private fun NavGraphBuilder.addGameDetailScreen(
     navController: NavController,
     windowSizeClass: WindowSizeClass,
 ) {
-    composable<Screens.GameDetail>(typeMap = mapOf(typeOf<LoadSource>() to LoadSource.NavType)) { backStackEntry ->
+    composable<Screens.GameDetail> { backStackEntry ->
         var showScreenshots by rememberSaveable {
             mutableStateOf(false)
         }
