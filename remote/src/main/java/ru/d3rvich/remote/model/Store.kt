@@ -20,7 +20,7 @@ data class StoreWrapper(
 )
 
 @Serializable
-data class GameStore(
+data class StoreLink(
     @SerialName("id")
     val id: Int,
     @SerialName("store_id")

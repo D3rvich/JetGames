@@ -12,13 +12,14 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.d3rvich.common.navigation.Screens
 import ru.d3rvich.core.domain.entities.GameDetailEntity
-import ru.d3rvich.core.domain.entities.GameStoreEntity
+import ru.d3rvich.core.domain.entities.StoreEntity
+import ru.d3rvich.core.domain.entities.StoreLinkEntity
 import ru.d3rvich.core.domain.model.Result
 import ru.d3rvich.core.domain.model.Status
 import ru.d3rvich.core.domain.usecases.AddToFavoritesUseCase
 import ru.d3rvich.core.domain.usecases.GetGameDetailUseCase
-import ru.d3rvich.core.domain.usecases.GetGameStoresByIdUseCase
 import ru.d3rvich.core.domain.usecases.GetScreenshotsUseCase
+import ru.d3rvich.core.domain.usecases.GetStoreLinksByGameIdUseCase
 import ru.d3rvich.core.domain.usecases.RemoveFromFavoritesUseCase
 import ru.d3rvich.core.ui.base.BaseViewModel
 import ru.d3rvich.detail.browser.BrowserManager
@@ -40,7 +41,7 @@ internal class GameDetailViewModel @Inject constructor(
     private val getScreenshotsUseCase: Provider<GetScreenshotsUseCase>,
     private val addToFavoritesUseCase: Provider<AddToFavoritesUseCase>,
     private val removeFromFavoritesUseCase: Provider<RemoveFromFavoritesUseCase>,
-    private val getGamesStoresUseCase: Provider<GetGameStoresByIdUseCase>
+    private val getStoreLinksUseCase: Provider<GetStoreLinksByGameIdUseCase>
 ) : BaseViewModel<GameDetailUiState, GameDetailUiEvent, GameDetailUiAction>() {
     override fun createInitialState(): GameDetailUiState = GameDetailUiState.Loading
 
@@ -60,11 +61,10 @@ internal class GameDetailViewModel @Inject constructor(
 
     private val browserManager = BrowserManager(context)
 
-    private var gameStores: List<GameStoreEntity>? = null
+    private var gameStoreLinks: List<StoreLinkEntity> = emptyList()
 
     private val gameId: Int = savedStateHandle.toRoute<Screens.GameDetail>().gameId.also { id ->
         loadGameDetail(gameId = id)
-        loadStores(id)
     }
 
     private fun loadGameDetail(gameId: Int) {
@@ -73,6 +73,19 @@ internal class GameDetailViewModel @Inject constructor(
                 when (status) {
                     Status.Loading -> setState(GameDetailUiState.Loading)
                     is Status.Success -> {
+                        if (status.value.stores.first().url != null) {
+                            loadLinks(gameId)
+                            if (status.value.isFavorite && gameStoreLinks.isNotEmpty()) {
+                                addToFavoritesUseCase.get().invoke(
+                                    status.value.copy(
+                                        stores = uniteStoresWithLinks(
+                                            stores = status.value.stores,
+                                            links = gameStoreLinks
+                                        )
+                                    )
+                                )
+                            }
+                        }
                         setState(
                             GameDetailUiState.Detail(
                                 gameDetail = status.value,
@@ -94,15 +107,11 @@ internal class GameDetailViewModel @Inject constructor(
         }
     }
 
-    private fun loadStores(gameId: Int, selectedStore: Int? = null) {
+    private fun loadLinks(gameId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            when (val result = getGamesStoresUseCase.get().invoke(gameId = gameId)) {
+            when (val result = getStoreLinksUseCase.get().invoke(gameId = gameId)) {
                 is Result.Success -> {
-                    gameStores = result.value
-                    selectedStore?.let {
-                        val storeUrl = result.value.find { it.storeId == selectedStore }?.url!!
-                        browserManager.launchUrl(storeUrl.toUri())
-                    }
+                    gameStoreLinks = result.value
                 }
 
                 is Result.Failure -> {
@@ -148,7 +157,18 @@ internal class GameDetailViewModel @Inject constructor(
             is GameDetailUiEvent.OnFavoriteChange -> {
                 viewModelScope.launch {
                     if (event.isFavorite) {
-                        addToFavoritesUseCase.get().invoke(state.gameDetail)
+                        val gameDetail: GameDetailEntity = if (gameStoreLinks.isNotEmpty()) {
+                            val storesWithUrls: MutableList<StoreEntity> = mutableListOf()
+                            state.gameDetail.stores.forEach { store ->
+                                gameStoreLinks.find { it.storeId == store.id }?.let {
+                                    storesWithUrls.add(store.copy(url = it.url))
+                                }
+                            }
+                            state.gameDetail.copy(stores = storesWithUrls)
+                        } else {
+                            state.gameDetail
+                        }
+                        addToFavoritesUseCase.get().invoke(gameDetail)
                     } else {
                         removeFromFavoritesUseCase.get().invoke(state.gameDetail)
                     }
@@ -157,8 +177,8 @@ internal class GameDetailViewModel @Inject constructor(
             }
 
             is GameDetailUiEvent.OnGameStoreSelected -> {
-                if (!gameStores.isNullOrEmpty()) {
-                    val storeUrl = gameStores?.find { it.storeId == event.storeId }?.url!!
+                if (gameStoreLinks.isNotEmpty()) {
+                    val storeUrl = gameStoreLinks.find { it.storeId == event.storeId }?.url!!
                     browserManager.launchUrl(storeUrl.toUri())
                 }
             }
@@ -176,4 +196,15 @@ internal class GameDetailViewModel @Inject constructor(
             else -> unexpectedEventError(event, state)
         }
     }
+}
+
+private fun uniteStoresWithLinks(
+    stores: List<StoreEntity>,
+    links: List<StoreLinkEntity>
+): List<StoreEntity> {
+    val result = mutableListOf<StoreEntity>()
+    links.forEach { link ->
+        stores.find { store -> store.id == link.storeId }!!.let { result.add(it) }
+    }
+    return result
 }

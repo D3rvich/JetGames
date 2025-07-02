@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import ru.d3rvich.core.domain.entities.GameDetailEntity
 import ru.d3rvich.core.domain.entities.GameEntity
+import ru.d3rvich.core.domain.entities.StoreLinkEntity
 import ru.d3rvich.core.domain.entities.ScreenshotEntity
 import ru.d3rvich.core.domain.model.Result
 import ru.d3rvich.core.domain.model.map
@@ -16,6 +17,7 @@ import ru.d3rvich.core.domain.repositories.GamesRepository
 import ru.d3rvich.data.mapper.toGameDBO
 import ru.d3rvich.data.mapper.toGameDetailEntity
 import ru.d3rvich.data.mapper.toGameEntity
+import ru.d3rvich.data.mapper.toGameStoreEntity
 import ru.d3rvich.data.mapper.toScreenshotEntityList
 import ru.d3rvich.data.paging.GamesPagingSource
 import ru.d3rvich.data.util.safeApiCall
@@ -65,6 +67,11 @@ internal class GamesRepositoryImpl(
         safeApiCall {
             apiService.getScreenshots(gameId = gameId)
         }.map { it.results.toScreenshotEntityList() }
+
+    override suspend fun getStoreLinksBy(gameId: Int): Result<List<StoreLinkEntity>> =
+        safeApiCall {
+            apiService.getGameStoresById(gameId)
+        }.map { result -> result.results.map { it.toGameStoreEntity() } }
 
     override fun getFavoriteGames(search: String): Flow<PagingData<GameEntity>> {
         return Pager(

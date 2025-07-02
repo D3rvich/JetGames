@@ -3,7 +3,7 @@ package ru.d3rvich.data.mapper
 import kotlinx.datetime.Clock
 import ru.d3rvich.core.domain.entities.GameDetailEntity
 import ru.d3rvich.core.domain.entities.GameEntity
-import ru.d3rvich.core.domain.entities.GameStoreEntity
+import ru.d3rvich.core.domain.entities.StoreLinkEntity
 import ru.d3rvich.core.domain.entities.GenreEntity
 import ru.d3rvich.core.domain.entities.GenreFullEntity
 import ru.d3rvich.core.domain.entities.ParentPlatformEntity
@@ -18,7 +18,7 @@ import ru.d3rvich.database.model.ParentPlatformDBO
 import ru.d3rvich.database.model.PlatformDBO
 import ru.d3rvich.database.model.RatingDBO
 import ru.d3rvich.database.model.StoreDBO
-import ru.d3rvich.remote.model.GameStore
+import ru.d3rvich.remote.model.StoreLink
 import ru.d3rvich.remote.model.Genre
 import ru.d3rvich.remote.model.GenreFull
 import ru.d3rvich.remote.model.ParentPlatform
@@ -75,7 +75,7 @@ internal fun GameDetailEntity.toGameDBO(): GameDBO = GameDBO(
     ratings = ratings?.map { it.toRatingDBO() },
     parentPlatforms = parentPlatforms?.map { it.toParentPlatformDBO() },
     addingTime = Clock.System.now().toEpochMilliseconds(),
-    stores = stores.map { it.toStoreBDO(it.url) }
+    stores = stores.map { it.toStoreBDO() }
 )
 
 internal fun GameDBO.toGameDetailEntity(): GameDetailEntity =
@@ -152,9 +152,9 @@ internal fun RatingEntity.toRatingDBO(): RatingDBO = RatingDBO(id, title, count,
 
 internal fun Store.toStoreEntity(): StoreEntity = StoreEntity(id, name)
 
-internal fun GameStore.toGameStoreEntity(): GameStoreEntity = GameStoreEntity(id, storeId, url)
+internal fun StoreLink.toGameStoreEntity(): StoreLinkEntity = StoreLinkEntity(id, storeId, url)
 
-internal fun StoreEntity.toStoreBDO(url: String? = null): StoreDBO = StoreDBO(id, name, url)
+internal fun StoreEntity.toStoreBDO(): StoreDBO = StoreDBO(id, name, url)
 
 internal fun StoreDBO.toStoreEntity(): StoreEntity = StoreEntity(id, name, url)
 

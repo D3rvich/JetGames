@@ -6,6 +6,7 @@ import ru.d3rvich.core.domain.model.Result
 import ru.d3rvich.core.domain.preferences.FilterPreferencesBody
 import ru.d3rvich.core.domain.entities.GameDetailEntity
 import ru.d3rvich.core.domain.entities.GameEntity
+import ru.d3rvich.core.domain.entities.StoreLinkEntity
 import ru.d3rvich.core.domain.entities.ScreenshotEntity
 
 interface GamesRepository {
@@ -17,6 +18,8 @@ interface GamesRepository {
     suspend fun getGameDetail(gameId: Int): Result<GameDetailEntity>
 
     suspend fun getGameScreenshots(gameId: Int): Result<List<ScreenshotEntity>>
+
+    suspend fun getStoreLinksBy(gameId: Int): Result<List<StoreLinkEntity>>
 
     fun getFavoriteGames(search: String): Flow<PagingData<GameEntity>>
 

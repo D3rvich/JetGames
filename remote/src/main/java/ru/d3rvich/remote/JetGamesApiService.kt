@@ -11,7 +11,7 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 import ru.d3rvich.remote.model.ApiPagingResult
-import ru.d3rvich.remote.model.GameStore
+import ru.d3rvich.remote.model.StoreLink
 import ru.d3rvich.remote.model.GenreFull
 import ru.d3rvich.remote.model.Platform
 import ru.d3rvich.remote.model.Screenshot
@@ -73,7 +73,7 @@ interface JetGamesApiService {
         @Path("id") gameId: Int,
         @Query("page") page: Int = 1,
         @Query("page_size") pageSize: Int = RAWG_MAX_PAGE_SIZE
-    ): RetrofitResult<ApiPagingResult<GameStore>>
+    ): RetrofitResult<ApiPagingResult<StoreLink>>
 
     /**
      * Api [doc](https://api.rawg.io/docs/#operation/platforms_list)

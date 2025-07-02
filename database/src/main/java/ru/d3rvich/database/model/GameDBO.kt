@@ -10,6 +10,7 @@ import ru.d3rvich.database.converters.GenresConverter
 import ru.d3rvich.database.converters.ParentPlatformsConverter
 import ru.d3rvich.database.converters.RatingsConverter
 import ru.d3rvich.database.converters.ScreenshotsConverter
+import ru.d3rvich.database.converters.StoresConverter
 
 /**
  * Created by Ilya Deryabin at 26.03.2024
@@ -21,6 +22,7 @@ import ru.d3rvich.database.converters.ScreenshotsConverter
     ParentPlatformsConverter::class,
     ScreenshotsConverter::class,
     RatingsConverter::class,
+    StoresConverter::class,
 )
 data class GameDBO(
     @PrimaryKey @ColumnInfo("id") val id: Int,
@@ -36,5 +38,5 @@ data class GameDBO(
     @ColumnInfo(name = "rating") val rating: Float?,
     @ColumnInfo(name = "ratings") val ratings: List<RatingDBO>?,
     @ColumnInfo(name = "parent_platforms") val parentPlatforms: List<ParentPlatformDBO>?,
+    @ColumnInfo(name = "stores") val stores: List<StoreDBO>,
 )
-

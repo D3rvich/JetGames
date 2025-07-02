@@ -21,5 +21,5 @@ data class GameDetail(
     @SerialName("ratings") val ratings: List<Rating>?,
     @SerialName("screenshots_count") val screenshotCount: Int,
     @SerialName("parent_platforms") val parentPlatforms: List<ParentPlatformWrapper>?,
-    @SerialName("stores") val stores: List<StoreWrapper>?,
+    @SerialName("stores") val stores: List<StoreWrapper>,
 )

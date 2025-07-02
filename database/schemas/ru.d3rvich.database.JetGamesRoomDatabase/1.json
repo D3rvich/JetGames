@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "3060299397cf79912faddbd13070b4a8",
+    "identityHash": "ff47680409aaabc3940fec6d5b3fba31",
     "entities": [
       {
         "tableName": "platforms",
@@ -23,8 +23,7 @@
           {
             "fieldPath": "imageUrl",
             "columnName": "image_url",
-            "affinity": "TEXT",
-            "notNull": false
+            "affinity": "TEXT"
           },
           {
             "fieldPath": "gamesCount",
@@ -38,13 +37,11 @@
           "columnNames": [
             "id"
           ]
-        },
-        "indices": [],
-        "foreignKeys": []
+        }
       },
       {
         "tableName": "games",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, `description` TEXT, `screenshot_count` INTEGER NOT NULL, `screenshots` TEXT NOT NULL, `released` TEXT, `adding_time` INTEGER NOT NULL, `metacritic` INTEGER, `image_url` TEXT, `genres` TEXT, `rating` REAL, `ratings` TEXT, `parent_platforms` TEXT, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, `description` TEXT, `screenshot_count` INTEGER NOT NULL, `screenshots` TEXT NOT NULL, `released` TEXT, `adding_time` INTEGER NOT NULL, `metacritic` INTEGER, `image_url` TEXT, `genres` TEXT, `rating` REAL, `ratings` TEXT, `parent_platforms` TEXT, `stores` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -61,8 +58,7 @@
           {
             "fieldPath": "description",
             "columnName": "description",
-            "affinity": "TEXT",
-            "notNull": false
+            "affinity": "TEXT"
           },
           {
             "fieldPath": "screenshotCount",
@@ -79,8 +75,7 @@
           {
             "fieldPath": "released",
             "columnName": "released",
-            "affinity": "TEXT",
-            "notNull": false
+            "affinity": "TEXT"
           },
           {
             "fieldPath": "addingTime",
@@ -91,38 +86,38 @@
           {
             "fieldPath": "metacritic",
             "columnName": "metacritic",
-            "affinity": "INTEGER",
-            "notNull": false
+            "affinity": "INTEGER"
           },
           {
             "fieldPath": "imageUrl",
             "columnName": "image_url",
-            "affinity": "TEXT",
-            "notNull": false
+            "affinity": "TEXT"
           },
           {
             "fieldPath": "genres",
             "columnName": "genres",
-            "affinity": "TEXT",
-            "notNull": false
+            "affinity": "TEXT"
           },
           {
             "fieldPath": "rating",
             "columnName": "rating",
-            "affinity": "REAL",
-            "notNull": false
+            "affinity": "REAL"
           },
           {
             "fieldPath": "ratings",
             "columnName": "ratings",
-            "affinity": "TEXT",
-            "notNull": false
+            "affinity": "TEXT"
           },
           {
             "fieldPath": "parentPlatforms",
             "columnName": "parent_platforms",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "stores",
+            "columnName": "stores",
             "affinity": "TEXT",
-            "notNull": false
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -130,9 +125,7 @@
           "columnNames": [
             "id"
           ]
-        },
-        "indices": [],
-        "foreignKeys": []
+        }
       },
       {
         "tableName": "genres",
@@ -153,8 +146,7 @@
           {
             "fieldPath": "imageUrl",
             "columnName": "image_background",
-            "affinity": "TEXT",
-            "notNull": false
+            "affinity": "TEXT"
           },
           {
             "fieldPath": "gamesCount",
@@ -168,15 +160,12 @@
           "columnNames": [
             "id"
           ]
-        },
-        "indices": [],
-        "foreignKeys": []
+        }
       }
     ],
-    "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3060299397cf79912faddbd13070b4a8')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ff47680409aaabc3940fec6d5b3fba31')"
     ]
   }
 }
