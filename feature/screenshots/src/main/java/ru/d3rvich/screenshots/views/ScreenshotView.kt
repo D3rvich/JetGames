@@ -2,13 +2,10 @@ package ru.d3rvich.screenshots.views
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
-import androidx.compose.material3.windowsizeclass.WindowSizeClass
-import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.util.lerp
 import coil3.compose.AsyncImage
@@ -25,18 +22,12 @@ internal fun ScreenshotView(
     screenshot: String,
     pageOffset: Float,
     dragToDismissState: DragToDismissState,
-    windowSizeClass: WindowSizeClass,
     onHeightOffsetChange: () -> Unit,
     onDismissRequest: () -> Unit,
 ) {
     AsyncImage(
         model = screenshot,
         contentDescription = null,
-        contentScale = if (windowSizeClass.widthSizeClass == WindowWidthSizeClass.Compact) {
-            ContentScale.FillWidth
-        } else {
-            ContentScale.FillHeight
-        },
         alignment = Alignment.Center,
         modifier = modifier
             .fillMaxWidth()

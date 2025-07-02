@@ -43,12 +43,10 @@ fun SetupNavGraph(
         )
         addGameDetailScreen(
             navController = navController,
-            windowSizeClass = windowSizeClass,
         )
         addFilterScreen(navController = navController)
         addScreenshotsScreen(
             navController = navController,
-            windowSizeClass = windowSizeClass,
         )
         addSettingsScreen(
             navController = navController,
@@ -70,7 +68,6 @@ private fun NavGraphBuilder.addMainScreen(
 
 private fun NavGraphBuilder.addGameDetailScreen(
     navController: NavController,
-    windowSizeClass: WindowSizeClass,
 ) {
     composable<Screens.GameDetail> { backStackEntry ->
         var showScreenshots by rememberSaveable {
@@ -96,7 +93,6 @@ private fun NavGraphBuilder.addGameDetailScreen(
             ScreenshotsScreen(
                 screenshots = args?.screenshots ?: emptyList(),
                 selectedItem = args?.selectedScreenshot ?: 0,
-                windowSizeClass = windowSizeClass
             ) {
                 showScreenshots = false
             }
@@ -105,9 +101,10 @@ private fun NavGraphBuilder.addGameDetailScreen(
 }
 
 private fun NavGraphBuilder.addFilterScreen(navController: NavController) {
-    composable<Screens.Filter>(enterTransition = {
-        slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left)
-    },
+    composable<Screens.Filter>(
+        enterTransition = {
+            slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left)
+        },
         exitTransition = {
             slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right)
         }) {
@@ -117,7 +114,6 @@ private fun NavGraphBuilder.addFilterScreen(navController: NavController) {
 
 private fun NavGraphBuilder.addScreenshotsScreen(
     navController: NavController,
-    windowSizeClass: WindowSizeClass,
 ) {
     composable<Screens.Screenshots> { backStackEntry ->
         val args: Screens.Screenshots = backStackEntry.toRoute()
@@ -126,7 +122,6 @@ private fun NavGraphBuilder.addScreenshotsScreen(
                 URLDecoder.decode(it, StandardCharsets.UTF_8.name())
             },
             selectedItem = args.selectedScreenshot,
-            windowSizeClass = windowSizeClass,
         ) {
             navController.popBackStack()
         }
@@ -134,9 +129,10 @@ private fun NavGraphBuilder.addScreenshotsScreen(
 }
 
 private fun NavGraphBuilder.addSettingsScreen(navController: NavController) {
-    composable<Screens.Settings>(enterTransition = {
-        slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left)
-    },
+    composable<Screens.Settings>(
+        enterTransition = {
+            slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left)
+        },
         exitTransition = {
             slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right)
         }) {

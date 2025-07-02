@@ -7,8 +7,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.LocalOverscrollConfiguration
+import androidx.compose.foundation.LocalOverscrollFactory
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -29,7 +28,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
@@ -62,13 +60,12 @@ import kotlin.math.absoluteValue
 /**
  * Created by Ilya Deryabin at 12.04.2024
  */
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScreenshotsScreen(
     modifier: Modifier = Modifier,
     screenshots: List<String>,
     selectedItem: Int = 0,
-    windowSizeClass: WindowSizeClass,
     onBackPressed: () -> Unit,
 ) {
     var showWidgets: Boolean by rememberSaveable {
@@ -79,7 +76,7 @@ fun ScreenshotsScreen(
     }
     SystemBarsController(showSystemBars = showWidgets)
     JetGamesTheme(dynamicColor = false, darkTheme = true) {
-        CompositionLocalProvider(LocalOverscrollConfiguration provides null) {
+        CompositionLocalProvider(LocalOverscrollFactory provides null) {
             BoxWithConstraints {
                 val heightToDismiss = with(LocalDensity.current) {
                     maxHeight.toPx() / 6
@@ -123,7 +120,6 @@ fun ScreenshotsScreen(
                                         pagerState.currentPageOffsetFraction)
                                     .absoluteValue,
                                 dragToDismissState = dragState,
-                                windowSizeClass = windowSizeClass,
                                 onHeightOffsetChange = {
                                     showWidgets = false
                                 },
