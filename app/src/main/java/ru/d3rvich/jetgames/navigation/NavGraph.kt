@@ -2,6 +2,7 @@ package ru.d3rvich.jetgames.navigation
 
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -16,7 +17,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import ru.d3rvich.common.navigation.Screens
 import ru.d3rvich.detail.GameDetailScreen
@@ -58,7 +58,7 @@ private fun NavGraphBuilder.addMainScreen(
     navController: NavController,
     windowSizeClass: WindowSizeClass,
 ) {
-    composable<MainScreen> {
+    composable<MainScreen>(popEnterTransition = { EnterTransition.None }) {
         MainScreen(
             externalNavController = navController,
             windowSizeClass = windowSizeClass

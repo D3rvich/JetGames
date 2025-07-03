@@ -1,5 +1,7 @@
 package ru.d3rvich.jetgames.navigation
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
@@ -72,7 +74,10 @@ fun MainScreen(
                 startDestination = startDestination,
                 modifier = Modifier.weight(1f)
             ) {
-                composable<Screens.Home> {
+                composable<Screens.Home>(
+                    enterTransition = { EnterTransition.None },
+                    popEnterTransition = { EnterTransition.None },
+                    popExitTransition = { ExitTransition.None }) {
                     HomeScreen(
                         contentPadding = paddingValues,
                         navigateToFilterScreen = { externalNavController.navigateToFilterScreen() },
@@ -82,10 +87,16 @@ fun MainScreen(
                         navigateToSettingsScreen = { externalNavController.navigateToSettingsScreen() }
                     )
                 }
-                composable<Screens.Browse> {
+                composable<Screens.Browse>(
+                    enterTransition = { EnterTransition.None },
+                    popEnterTransition = { EnterTransition.None },
+                    popExitTransition = { ExitTransition.None }) {
                     BrowseScreen(contentPadding = paddingValues)
                 }
-                composable<Screens.Favorites> {
+                composable<Screens.Favorites>(
+                    enterTransition = { EnterTransition.None },
+                    popEnterTransition = { EnterTransition.None },
+                    popExitTransition = { ExitTransition.None }) {
                     FavoritesScreen(
                         contentPadding = paddingValues,
                         navigateToGameDetail = { gameId ->

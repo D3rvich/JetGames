@@ -3,13 +3,15 @@ package ru.d3rvich.data.util
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 import ru.d3rvich.core.domain.model.Result
 import ru.d3rvich.core.domain.model.Status
 import ru.d3rvich.core.domain.model.asStatus
 import ru.d3rvich.data.model.SynchronizeTimeHolder
 import ru.d3rvich.remote.retrofit_result.RetrofitResult
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 internal inline fun <T : Any> cashedRemoteRequest(
     crossinline syncTimeProvider: () -> Long,
     crossinline syncTimeSaver: (Long) -> Unit,

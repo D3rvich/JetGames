@@ -36,7 +36,7 @@ import javax.inject.Provider
 @HiltViewModel
 internal class GameDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    @ApplicationContext private val context: Context,
+    @param:ApplicationContext private val context: Context,
     private val getGameDetailUseCase: Provider<GetGameDetailUseCase>,
     private val getScreenshotsUseCase: Provider<GetScreenshotsUseCase>,
     private val addToFavoritesUseCase: Provider<AddToFavoritesUseCase>,

@@ -30,6 +30,6 @@ private inline fun <T : Any> collectAllPagingSource(apiCall: (Int, Int) -> Retro
             }
         }
         page += 1
-    } while (result is RetrofitResult.Success && result.value.next != null)
+    } while (result.value.next != null)
     return RetrofitResult.Success.Value(resultList.toList())
 }

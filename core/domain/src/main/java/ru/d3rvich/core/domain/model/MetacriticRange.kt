@@ -6,8 +6,8 @@ import androidx.annotation.FloatRange
  * Created by Ilya Deryabin at 16.05.2024
  */
 data class MetacriticRange(
-    @FloatRange(from = 0.0, to = 100.0) val min: Float = 0f,
-    @FloatRange(from = 0.0, to = 100.0) val max: Float = 100f,
+    @param:FloatRange(from = 0.0, to = 100.0) val min: Float = 0f,
+    @param:FloatRange(from = 0.0, to = 100.0) val max: Float = 100f,
 ) {
     companion object {
         val None = MetacriticRange(min = Float.NaN, max = Float.NaN)

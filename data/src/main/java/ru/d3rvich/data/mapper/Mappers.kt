@@ -1,6 +1,6 @@
 package ru.d3rvich.data.mapper
 
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 import ru.d3rvich.core.domain.entities.GameDetailEntity
 import ru.d3rvich.core.domain.entities.GameEntity
 import ru.d3rvich.core.domain.entities.StoreLinkEntity
@@ -29,6 +29,7 @@ import ru.d3rvich.remote.model.game.Game
 import ru.d3rvich.remote.model.game.GameDetail
 import ru.d3rvich.remote.model.Store
 import ru.d3rvich.remote.retrofit_result.RetrofitResult
+import kotlin.time.ExperimentalTime
 
 internal fun Game.toGameEntity(): GameEntity =
     GameEntity(
@@ -61,6 +62,7 @@ internal fun GameDetail.toGameDetailEntity(): GameDetailEntity =
         isFavorite = false,
     )
 
+@OptIn(ExperimentalTime::class)
 internal fun GameDetailEntity.toGameDBO(): GameDBO = GameDBO(
     id = id,
     name = name,

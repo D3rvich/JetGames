@@ -11,8 +11,8 @@ import androidx.compose.ui.unit.LayoutDirection
 
 @Stable
 internal class FractionalStarShape(
-    @FloatRange(from = 0.0, to = 1.0) private val startFraction: Float,
-    @FloatRange(from = 0.0, to = 1.0) private val endFraction: Float,
+    @param:FloatRange(from = 0.0, to = 1.0) private val startFraction: Float,
+    @param:FloatRange(from = 0.0, to = 1.0) private val endFraction: Float,
 ) : Shape {
     override fun createOutline(
         size: Size,
