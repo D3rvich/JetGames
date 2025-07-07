@@ -5,6 +5,7 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -19,7 +20,7 @@ import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.systemBarsIgnoringVisibility
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -62,7 +63,7 @@ import ru.d3rvich.detail.model.toGameDetailUiModel
 /**
  * Created by Ilya Deryabin at 11.03.2024
  */
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 internal fun GameDetailView(
     modifier: Modifier = Modifier,
@@ -98,7 +99,8 @@ internal fun GameDetailView(
             verticalArrangement = Arrangement.spacedBy(32.dp),
             contentPadding = PaddingValues(
                 top = 20.dp,
-                bottom = WindowInsets.systemBars.asPaddingValues().calculateBottomPadding()
+                bottom = WindowInsets.systemBarsIgnoringVisibility.asPaddingValues()
+                    .calculateBottomPadding()
             )
         ) {
             if (detail.metacritic != null || detail.rating != null) {
@@ -222,7 +224,7 @@ private fun ReleasedDate(modifier: Modifier = Modifier, date: LocalDate) {
             val dateFormat = LocalDate.Format {
                 monthName(MonthNames.ENGLISH_ABBREVIATED)
                 char(' ')
-                dayOfMonth()
+                day()
                 chars(", ")
                 year()
             }

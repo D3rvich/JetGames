@@ -1,6 +1,5 @@
 package ru.d3rvich.screenshots
 
-import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -34,7 +33,6 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -47,8 +45,6 @@ import androidx.compose.ui.util.lerp
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import ru.d3rvich.core.ui.theme.JetGamesTheme
 import ru.d3rvich.core.ui.utils.findActivity
 import ru.d3rvich.screenshots.model.draggableScreenshot
@@ -79,7 +75,7 @@ fun ScreenshotsScreen(
         CompositionLocalProvider(LocalOverscrollFactory provides null) {
             BoxWithConstraints {
                 val heightToDismiss = with(LocalDensity.current) {
-                    maxHeight.toPx() / 6
+                    this@BoxWithConstraints.maxHeight.toPx() / 6
                 }
                 val dragState = rememberDragToDismissState(heightToDismiss = heightToDismiss)
                 Surface(
@@ -198,36 +194,23 @@ private enum class AnimationDirection {
     Down
 }
 
-@SuppressLint("WrongConstant")
 @Composable
 private fun SystemBarsController(showSystemBars: Boolean) {
     val context = LocalContext.current
     val view = LocalView.current
-    val scope = rememberCoroutineScope()
     val window = context.findActivity().window
-    val insetsController =
-        window?.let { WindowCompat.getInsetsController(window, window.decorView) }
+    val insetsController = WindowCompat.getInsetsController(window, window.decorView)
     val darkTheme = isSystemInDarkTheme()
     DisposableEffect(showSystemBars) {
         if (!showSystemBars) {
-            insetsController?.apply {
+            insetsController.apply {
                 hide(WindowInsetsCompat.Type.systemBars())
                 systemBarsBehavior =
                     WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
             }
         }
-        scope.launch {
-            delay(300)
-            if (!showSystemBars) {
-                insetsController?.apply {
-                    hide(WindowInsetsCompat.Type.systemBars())
-                    systemBarsBehavior =
-                        WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-                }
-            }
-        }
         onDispose {
-            insetsController?.apply {
+            insetsController.apply {
                 show(WindowInsetsCompat.Type.systemBars())
                 systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
             }
