@@ -11,6 +11,8 @@ dependencies {
     implementation(libs.coil.network)
     implementation(libs.coil.compose)
 
+    implementation(libs.kotlinx.datetime)
+
     implementation(libs.androidx.datastore)
 
     implementation(libs.androidx.paging.compose)

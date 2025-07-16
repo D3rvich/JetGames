@@ -27,5 +27,7 @@ dependencies {
     implementation(project(":database"))
     implementation(project(":remote"))
 
+    implementation(libs.kotlinx.datetime)
+
     implementation(libs.androidx.paging.runtime.ktx)
 }

@@ -11,6 +11,7 @@ dependencies {
     implementation(project(":common"))
 
     implementation(libs.kotlinx.collections.immutable)
+    implementation(libs.kotlinx.datetime)
 
     implementation(libs.coil.network)
     implementation(libs.coil.compose)

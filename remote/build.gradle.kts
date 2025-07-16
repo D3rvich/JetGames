@@ -7,6 +7,7 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.retrofit.loggingInterceptor)
     implementation(libs.kotlinx.serializationJson)
+    implementation(libs.kotlinx.datetime)
     implementation(libs.retrofit.kotlinSerailization)
 
     testImplementation(libs.junit)
