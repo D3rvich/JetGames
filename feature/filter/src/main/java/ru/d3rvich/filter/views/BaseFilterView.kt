@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -31,51 +32,54 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import ru.d3rvich.core.ui.theme.JetGamesTheme
 import ru.d3rvich.filter.R
 
 /**
  * Created by Ilya Deryabin at 03.05.2024
  */
 @Composable
-internal fun BaseSection(
-    modifier: Modifier = Modifier,
+internal fun BaseFilterView(
     label: String,
-    selectedItem: (@Composable () -> Unit)? = null,
-    icon: @Composable (Boolean) -> Unit,
+    trailingIcon: @Composable (isInnerContainerVisible: Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+    selectedItemView: (@Composable () -> Unit)? = null,
     innerContent: @Composable () -> Unit,
 ) {
     var isInnerContentVisible by rememberSaveable {
         mutableStateOf(false)
     }
-    BaseSection(
+    BaseFilterView(
         modifier = modifier,
         label = label,
         isInnerContainerVisible = isInnerContentVisible,
         onInnerContainerVisibilityChange = { isInnerContentVisible = it },
-        selectedItem = selectedItem,
-        icon = icon,
+        selectedItem = selectedItemView,
+        trailingIcon = trailingIcon,
         innerContent = innerContent
     )
 }
 
 @Composable
-internal fun BaseSection(
-    modifier: Modifier = Modifier,
+internal fun BaseFilterView(
     label: String,
     isInnerContainerVisible: Boolean,
-    onInnerContainerVisibilityChange: (Boolean) -> Unit,
+    onInnerContainerVisibilityChange: (isInnerContainerVisible: Boolean) -> Unit,
+    trailingIcon: @Composable (isInnerContainerVisible: Boolean) -> Unit,
+    modifier: Modifier = Modifier,
     selectedItem: (@Composable () -> Unit)? = null,
-    icon: @Composable (Boolean) -> Unit,
     innerContent: @Composable () -> Unit,
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
-        Row(modifier = Modifier
-            .fillMaxWidth()
-            .clickable {
-                onInnerContainerVisibilityChange(!isInnerContainerVisible)
-            }
-            .padding(start = 16.dp, end = 8.dp, top = 16.dp, bottom = 16.dp),
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable {
+                    onInnerContainerVisibilityChange(!isInnerContainerVisible)
+                }
+                .padding(start = 16.dp, end = 8.dp, top = 16.dp, bottom = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -86,7 +90,7 @@ internal fun BaseSection(
                 textAlign = TextAlign.Start
             )
             selectedItem?.invoke()
-            icon(isInnerContainerVisible)
+            trailingIcon(isInnerContainerVisible)
         }
         ChangeVisibilityContainer(visible = isInnerContainerVisible) {
             innerContent()
@@ -95,15 +99,15 @@ internal fun BaseSection(
 }
 
 @Composable
-internal fun <T> BaseSelectedListSection(
-    modifier: Modifier = Modifier,
+internal fun <T> BaseListSelectFilterView(
     label: String,
     selectedItems: List<T>,
     itemName: (item: T) -> String,
+    onRemoveSelectedItem: (item: T) -> Unit,
+    onClearSelectedItems: () -> Unit,
+    onRequestSelectDialog: () -> Unit,
+    modifier: Modifier = Modifier,
     itemKey: ((item: T) -> Any)? = null,
-    onRemoveItem: (item: T) -> Unit,
-    onClear: () -> Unit,
-    requestSelectDialog: () -> Unit,
 ) {
     val listHolder by remember(selectedItems) {
         derivedStateOf { selectedItems.isNotEmpty() }
@@ -111,45 +115,46 @@ internal fun <T> BaseSelectedListSection(
     var showInnerContent by rememberSaveable(listHolder) {
         mutableStateOf(false)
     }
-    BaseSection(
+    BaseFilterView(
         modifier = modifier,
         label = label,
         isInnerContainerVisible = showInnerContent,
         onInnerContainerVisibilityChange = {
             if (selectedItems.isEmpty()) {
-                requestSelectDialog()
-            }
-            else {
+                onRequestSelectDialog()
+            } else {
                 showInnerContent = it
             }
         },
-        icon = {
-            ChangeVisibilityContainerDefaults.ThreeStateIcon(
+        trailingIcon = {
+            ChangeVisibilityContainerDefaults.MultiStateIcon(
                 iconDirection = when {
                     selectedItems.isEmpty() -> IconDirection.Right
                     showInnerContent -> IconDirection.Down
                     else -> IconDirection.Up
                 }
             )
-        }) {
-        Column(modifier = Modifier.fillMaxWidth()) {
-            InnerContentListHeader(
-                onEditButtonClicked = requestSelectDialog,
-                onClearAllButtonClicked = onClear
-            )
-            InnerContentSelectedItems(items = selectedItems,
-                itemName = itemName,
-                itemKey = itemKey,
-                onRemoveItem = { onRemoveItem(it) })
-        }
-    }
+        },
+        innerContent = {
+            Column(modifier = Modifier.fillMaxWidth()) {
+                InnerContentListHeader(
+                    onEditButtonClicked = onRequestSelectDialog,
+                    onClearAllButtonClicked = onClearSelectedItems
+                )
+                InnerContentSelectedItems(
+                    items = selectedItems,
+                    itemName = itemName,
+                    itemKey = itemKey,
+                    onRemoveItem = { onRemoveSelectedItem(it) })
+            }
+        })
 }
 
 @Composable
 internal fun InnerContentListHeader(
-    modifier: Modifier = Modifier,
     onEditButtonClicked: () -> Unit,
     onClearAllButtonClicked: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
         Row(
@@ -190,11 +195,11 @@ internal fun InnerContentListHeader(
 
 @Composable
 private fun <T> InnerContentSelectedItems(
-    modifier: Modifier = Modifier,
     items: List<T>,
     itemName: (item: T) -> String,
-    itemKey: ((item: T) -> Any)? = null,
     onRemoveItem: (item: T) -> Unit,
+    modifier: Modifier = Modifier,
+    itemKey: ((item: T) -> Any)? = null,
 ) {
     LazyColumn(
         modifier = modifier
@@ -203,7 +208,7 @@ private fun <T> InnerContentSelectedItems(
             .padding(start = 8.dp),
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        items(items, key = itemKey) { item ->
+        items(items = items, key = itemKey) { item ->
             Row(
                 modifier = Modifier
                     .animateItem()
@@ -221,5 +226,39 @@ private fun <T> InnerContentSelectedItems(
                 }
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun BaseSectionClosedPreview() {
+    JetGamesTheme {
+        BaseFilterView(
+            label = "Preview label",
+            isInnerContainerVisible = false,
+            onInnerContainerVisibilityChange = {},
+            trailingIcon = {},
+            innerContent = { })
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun BaseSectionOpenPreview() {
+    JetGamesTheme {
+        BaseFilterView(
+            label = "Preview label",
+            isInnerContainerVisible = true,
+            onInnerContainerVisibilityChange = {},
+            trailingIcon = {},
+            innerContent = {
+                Text(
+                    text = "Inner content",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(60.dp),
+                    textAlign = TextAlign.Center
+                )
+            })
     }
 }

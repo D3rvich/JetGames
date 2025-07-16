@@ -70,7 +70,7 @@ internal object ChangeVisibilityContainerDefaults {
     }
 
     @Composable
-    fun ThreeStateIcon(modifier: Modifier = Modifier, iconDirection: IconDirection) {
+    fun MultiStateIcon(iconDirection: IconDirection, modifier: Modifier = Modifier) {
         val rotate by animateFloatAsState(
             targetValue = when (iconDirection) {
                 IconDirection.Right -> -90f
@@ -85,7 +85,6 @@ internal object ChangeVisibilityContainerDefaults {
             modifier = modifier.graphicsLayer(rotationZ = rotate)
         )
     }
-
 }
 
 internal enum class IconDirection {

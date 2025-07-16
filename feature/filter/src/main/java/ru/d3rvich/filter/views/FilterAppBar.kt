@@ -14,6 +14,8 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import ru.d3rvich.core.ui.theme.JetGamesTheme
 import ru.d3rvich.filter.R
 
 /**
@@ -22,12 +24,13 @@ import ru.d3rvich.filter.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun FilterAppBar(
-    modifier: Modifier = Modifier,
     isResetButtonVisible: Boolean,
     onBackClicked: () -> Unit,
     onResetClicked: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    TopAppBar(modifier = modifier,
+    TopAppBar(
+        modifier = modifier,
         title = { Text(text = stringResource(R.string.filter_label)) },
         navigationIcon = {
             IconButton(onClick = onBackClicked) {
@@ -49,4 +52,16 @@ internal fun FilterAppBar(
             }
         }
     )
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun FilterAppBarPreview() {
+    JetGamesTheme {
+        FilterAppBar(
+            isResetButtonVisible = true,
+            onBackClicked = {},
+            onResetClicked = {}
+        )
+    }
 }

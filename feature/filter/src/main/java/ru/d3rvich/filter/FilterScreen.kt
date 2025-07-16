@@ -1,12 +1,5 @@
 package ru.d3rvich.filter
 
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
-import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
@@ -32,7 +25,6 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.RangeSlider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -47,50 +39,99 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import ru.d3rvich.core.domain.model.MetacriticRange
-import ru.d3rvich.core.domain.preferences.isDefault
 import ru.d3rvich.core.domain.entities.GenreFullEntity
 import ru.d3rvich.core.domain.entities.PlatformEntity
 import ru.d3rvich.core.domain.entities.SortingEntity
+import ru.d3rvich.core.domain.model.MetacriticRange
+import ru.d3rvich.core.domain.preferences.FilterPreferencesBody
+import ru.d3rvich.core.domain.preferences.isDefault
+import ru.d3rvich.core.ui.theme.JetGamesTheme
 import ru.d3rvich.filter.model.FilterUiAction
 import ru.d3rvich.filter.model.FilterUiEvent
+import ru.d3rvich.filter.model.FilterUiState
 import ru.d3rvich.filter.model.ListAction
-import ru.d3rvich.filter.views.BaseSection
-import ru.d3rvich.filter.views.BaseSelectedListSection
-import ru.d3rvich.filter.views.ChangeVisibilityContainerDefaults
 import ru.d3rvich.filter.views.FilterAppBar
+import ru.d3rvich.filter.views.GenresView
+import ru.d3rvich.filter.views.MetacriticView
+import ru.d3rvich.filter.views.PlatformsView
 import ru.d3rvich.filter.views.SortingView
-import kotlin.math.roundToInt
 
 /**
  * Created by Ilya Deryabin at 29.02.2024
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FilterScreen(navController: NavController) {
+fun FilterScreen(navController: NavController, modifier: Modifier = Modifier) {
     val viewModel: FilterViewModel = hiltViewModel()
     val state = viewModel.uiState.collectAsStateWithLifecycle().value
+    FilterScreen(
+        modifier = modifier,
+        state = state,
+        onApply = { viewModel.obtainEvent(FilterUiEvent.OnApplyClicked) },
+        onReset = { viewModel.obtainEvent(FilterUiEvent.OnResetClicked) },
+        onNavigateBack = { navController.popBackStack() },
+        onSelectedGenresChange = { listAction ->
+            viewModel.obtainEvent(FilterUiEvent.OnSelectedGenresChange(listAction))
+        },
+        onSelectedPlatformsChange = { listAction ->
+            viewModel.obtainEvent(FilterUiEvent.OnSelectedPlatformsChange(listAction))
+        },
+        onSortChange = { sortingEntity ->
+            viewModel.obtainEvent(FilterUiEvent.OnSortChange(sortingEntity))
+        },
+        onSortReversedChange = { isReversed ->
+            viewModel.obtainEvent(FilterUiEvent.OnReversedChange(isReversed))
+        },
+        onMetacriticRangeChange = { metacriticRange ->
+            viewModel.obtainEvent(FilterUiEvent.OnMetacriticRangeChange(metacriticRange))
+        },
+    )
+    LaunchedEffect(viewModel) {
+        viewModel.uiAction.collect { action ->
+            when (action) {
+                FilterUiAction.NavigateBack -> navController.popBackStack()
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun FilterScreen(
+    state: FilterUiState,
+    modifier: Modifier = Modifier,
+    onApply: () -> Unit,
+    onReset: () -> Unit,
+    onNavigateBack: () -> Unit,
+    onSelectedGenresChange: (ListAction<GenreFullEntity>) -> Unit,
+    onSelectedPlatformsChange: (ListAction<PlatformEntity>) -> Unit,
+    onSortChange: (SortingEntity) -> Unit,
+    onSortReversedChange: (Boolean) -> Unit,
+    onMetacriticRangeChange: (MetacriticRange) -> Unit,
+) {
     var specToShow: FilterSpecToShow? by rememberSaveable {
         mutableStateOf(null)
     }
     val showResetButton: Boolean by remember(state.filterPreferencesBody) {
         derivedStateOf { !state.filterPreferencesBody.isDefault() }
     }
-    Scaffold(modifier = Modifier
-        .fillMaxSize()
-        .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)),
+    Scaffold(
+        modifier = modifier
+            .fillMaxSize()
+            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)),
         topBar = {
             FilterAppBar(
                 isResetButtonVisible = showResetButton,
-                onBackClicked = { navController.popBackStack() },
-                onResetClicked = { viewModel.obtainEvent(FilterUiEvent.OnResetClicked) })
+                onBackClicked = onNavigateBack,
+                onResetClicked = onReset,
+            )
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = { viewModel.obtainEvent(FilterUiEvent.OnApplyClicked) }) {
+            FloatingActionButton(onClick = onApply) {
                 Icon(
                     imageVector = Icons.Default.Check,
                     contentDescription = stringResource(R.string.apply_filter)
@@ -104,49 +145,33 @@ fun FilterScreen(navController: NavController) {
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
-            GenresSection(
+            GenresView(
                 selectedGenres = state.filterPreferencesBody.selectedGenres,
                 onRemoveGenre = {
-                    viewModel.obtainEvent(
-                        FilterUiEvent.OnSelectedGenresChange(
-                            ListAction.RemoveItem(it)
-                        )
-                    )
+                    onSelectedGenresChange(ListAction.RemoveItem(it))
                 },
                 onClearRequest = {
-                    viewModel.obtainEvent(
-                        FilterUiEvent.OnSelectedGenresChange(
-                            ListAction.Clear()
-                        )
-                    )
+                    onSelectedGenresChange(ListAction.Clear())
                 },
                 requestGenresDialog = { specToShow = FilterSpecToShow.Genres })
-            PlatformsSection(
+            PlatformsView(
                 selectedPlatforms = state.filterPreferencesBody.selectedPlatforms,
-                onRemovePlatform = {
-                    viewModel.obtainEvent(
-                        FilterUiEvent.OnSelectedPlatformsChange(
-                            ListAction.RemoveItem(it)
-                        )
-                    )
+                onRemovePlatform = { item ->
+                    onSelectedPlatformsChange(ListAction.RemoveItem(item))
                 },
                 onClearRequest = {
-                    viewModel.obtainEvent(
-                        FilterUiEvent.OnSelectedPlatformsChange(
-                            ListAction.Clear()
-                        )
-                    )
+                    onSelectedPlatformsChange(ListAction.Clear())
                 },
                 requestPlatformsDialog = { specToShow = FilterSpecToShow.Platform })
-            SortingSection(
+            SortingView(
                 sortingList = state.sortingList,
                 selectedSorting = state.filterPreferencesBody.sortBy,
                 isSortReversed = state.filterPreferencesBody.isReversed,
                 onSortingSelected = { sorting ->
-                    viewModel.obtainEvent(FilterUiEvent.OnSortChange(sorting))
+                    onSortChange(sorting)
                 },
-                onReversedChange = { reversed ->
-                    viewModel.obtainEvent(FilterUiEvent.OnReversedChange(reversed))
+                onReversedChange = { isReversed ->
+                    onSortReversedChange(isReversed)
                 }
             )
             val metacriticRange =
@@ -157,11 +182,11 @@ fun FilterScreen(navController: NavController) {
                 } else {
                     0f..100f
                 }
-            MetacriticSection(
+            MetacriticView(
                 range = metacriticRange,
                 onRangeChange = { floatRange ->
                     val range = MetacriticRange(floatRange = floatRange)
-                    viewModel.obtainEvent(FilterUiEvent.OnMetacriticRangeChange(range))
+                    onMetacriticRangeChange(range)
                 },
             )
         }
@@ -175,18 +200,10 @@ fun FilterScreen(navController: NavController) {
                             items = state.genres.sortedBy { it.name },
                             selectedItems = state.filterPreferencesBody.selectedGenres,
                             onItemSelected = {
-                                viewModel.obtainEvent(
-                                    FilterUiEvent.OnSelectedGenresChange(
-                                        ListAction.AddItem(it)
-                                    )
-                                )
+                                onSelectedGenresChange(ListAction.AddItem(it))
                             },
                             onItemRemoved = {
-                                viewModel.obtainEvent(
-                                    FilterUiEvent.OnSelectedGenresChange(
-                                        ListAction.RemoveItem(it)
-                                    )
-                                )
+                                FilterUiEvent.OnSelectedGenresChange(ListAction.RemoveItem(it))
                             },
                             getItemName = GenreFullEntity::name
                         )
@@ -197,64 +214,15 @@ fun FilterScreen(navController: NavController) {
                             items = state.platforms.sortedBy { it.name },
                             selectedItems = state.filterPreferencesBody.selectedPlatforms,
                             onItemSelected = {
-                                viewModel.obtainEvent(
-                                    FilterUiEvent.OnSelectedPlatformsChange(
-                                        ListAction.AddItem(it)
-                                    )
-                                )
+                                onSelectedPlatformsChange(ListAction.AddItem(it))
                             },
                             onItemRemoved = {
-                                viewModel.obtainEvent(
-                                    FilterUiEvent.OnSelectedPlatformsChange(
-                                        ListAction.RemoveItem(it)
-                                    )
-                                )
+                                onSelectedPlatformsChange(ListAction.RemoveItem(it))
                             },
                             getItemName = PlatformEntity::name
                         )
                     }
                 }
-            }
-        }
-    }
-    LaunchedEffect(Unit) {
-        viewModel.uiAction.collect { action ->
-            when (action) {
-                FilterUiAction.NavigateBack -> navController.popBackStack()
-            }
-        }
-    }
-}
-
-@Composable
-internal fun MetacriticSection(
-    modifier: Modifier = Modifier,
-    range: ClosedFloatingPointRange<Float>,
-    onRangeChange: (ClosedFloatingPointRange<Float>) -> Unit,
-) {
-    BaseSection(
-        modifier = modifier,
-        label = stringResource(id = R.string.metacritic_label),
-        icon = { isOpen ->
-            ChangeVisibilityContainerDefaults.DefaultIcon(isOpen = isOpen)
-        }) {
-        Column(
-            modifier = Modifier.padding(vertical = 12.dp, horizontal = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
-            RangeSlider(
-                valueRange = 0f..100f,
-                value = range,
-                onValueChange = onRangeChange
-            )
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(text = range.start.roundToInt().toString())
-                Text(text = range.endInclusive.roundToInt().toString())
             }
         }
     }
@@ -264,10 +232,10 @@ internal fun MetacriticSection(
 private fun <T> BottomSheetContent(
     items: List<T>,
     selectedItems: List<T>,
+    modifier: Modifier = Modifier,
     onItemSelected: (T) -> Unit,
     onItemRemoved: (T) -> Unit,
     getItemName: (T) -> String,
-    modifier: Modifier = Modifier,
 ) {
     LazyColumn(
         modifier = modifier
@@ -306,88 +274,31 @@ private fun <T> BottomSheetContent(
     }
 }
 
-@Composable
-internal fun PlatformsSection(
-    modifier: Modifier = Modifier,
-    selectedPlatforms: List<PlatformEntity>,
-    onRemovePlatform: (PlatformEntity) -> Unit,
-    onClearRequest: () -> Unit,
-    requestPlatformsDialog: () -> Unit,
-) {
-    BaseSelectedListSection(
-        modifier = modifier,
-        label = stringResource(id = R.string.platforms_label, selectedPlatforms.size),
-        selectedItems = selectedPlatforms,
-        itemName = PlatformEntity::name,
-        itemKey = PlatformEntity::id,
-        onRemoveItem = onRemovePlatform,
-        onClear = onClearRequest,
-        requestSelectDialog = requestPlatformsDialog
-    )
-}
-
-@Composable
-internal fun GenresSection(
-    modifier: Modifier = Modifier,
-    selectedGenres: List<GenreFullEntity>,
-    onRemoveGenre: (GenreFullEntity) -> Unit,
-    onClearRequest: () -> Unit,
-    requestGenresDialog: () -> Unit,
-) {
-    BaseSelectedListSection(
-        modifier = modifier,
-        label = stringResource(id = R.string.genres_label, selectedGenres.size),
-        selectedItems = selectedGenres,
-        itemName = GenreFullEntity::name,
-        itemKey = GenreFullEntity::id,
-        onRemoveItem = onRemoveGenre,
-        onClear = onClearRequest,
-        requestSelectDialog = requestGenresDialog
-    )
-}
-
-@Composable
-private fun SortingSection(
-    modifier: Modifier = Modifier,
-    sortingList: List<SortingEntity>,
-    selectedSorting: SortingEntity,
-    isSortReversed: Boolean,
-    onSortingSelected: (SortingEntity) -> Unit,
-    onReversedChange: (isReversed: Boolean) -> Unit,
-) {
-    BaseSection(
-        modifier = modifier,
-        label = stringResource(id = R.string.sort_by_label),
-        icon = { isOpen -> ChangeVisibilityContainerDefaults.DefaultIcon(isOpen = isOpen) },
-        selectedItem = {
-            AnimatedContent(
-                targetState = selectedSorting,
-                transitionSpec = {
-                    when {
-                        initialState == SortingEntity.NoSorting ||
-                                targetState == SortingEntity.NoSorting -> {
-                            fadeIn() togetherWith fadeOut()
-                        }
-
-                        else -> slideInVertically { it } togetherWith slideOutVertically { -it }
-                    }
-                },
-                label = "textAnimation"
-            ) { entity ->
-                Text(text = if (entity != SortingEntity.NoSorting) entity.name else "")
-            }
-        }) {
-        SortingView(
-            sortingList = sortingList,
-            selectedSorting = selectedSorting,
-            isReversed = isSortReversed,
-            onSortingSelected = onSortingSelected,
-            onReversedChange = onReversedChange
-        )
-    }
-}
-
 private enum class FilterSpecToShow {
     Platform,
     Genres
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun FilterScreenPreview() {
+    JetGamesTheme {
+        val state = FilterUiState(
+            sortingList = SortingEntity.entries,
+            platforms = emptyList(),
+            genres = emptyList(),
+            filterPreferencesBody = FilterPreferencesBody.default()
+        )
+        FilterScreen(
+            state = state,
+            onApply = { },
+            onReset = { },
+            onNavigateBack = { },
+            onSelectedGenresChange = { },
+            onSelectedPlatformsChange = { },
+            onSortChange = { },
+            onSortReversedChange = { },
+            onMetacriticRangeChange = { },
+        )
+    }
 }

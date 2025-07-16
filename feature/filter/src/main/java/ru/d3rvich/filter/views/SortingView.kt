@@ -1,6 +1,12 @@
 package ru.d3rvich.filter.views
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -35,9 +41,50 @@ import ru.d3rvich.filter.R as FilterR
 /**
  * Created by Ilya Deryabin at 29.02.2024
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun SortingView(
+    sortingList: List<SortingEntity>,
+    selectedSorting: SortingEntity,
+    isSortReversed: Boolean,
+    modifier: Modifier = Modifier,
+    onSortingSelected: (SortingEntity) -> Unit,
+    onReversedChange: (isReversed: Boolean) -> Unit,
+) {
+    BaseFilterView(
+        modifier = modifier,
+        label = stringResource(id = FilterR.string.sort_by_label),
+        trailingIcon = { isOpen -> ChangeVisibilityContainerDefaults.DefaultIcon(isOpen = isOpen) },
+        selectedItemView = {
+            AnimatedContent(
+                targetState = selectedSorting,
+                transitionSpec = {
+                    when {
+                        initialState == SortingEntity.NoSorting ||
+                                targetState == SortingEntity.NoSorting -> {
+                            fadeIn() togetherWith fadeOut()
+                        }
+
+                        else -> slideInVertically { it } togetherWith slideOutVertically { -it }
+                    }
+                },
+                label = "textAnimation"
+            ) { entity ->
+                Text(text = if (entity != SortingEntity.NoSorting) entity.name else "")
+            }
+        }) {
+        SortingViewContent(
+            sortingList = sortingList,
+            selectedSorting = selectedSorting,
+            isReversed = isSortReversed,
+            onSortingSelected = onSortingSelected,
+            onReversedChange = onReversedChange
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun SortingViewContent(
     sortingList: List<SortingEntity>,
     selectedSorting: SortingEntity,
     isReversed: Boolean,
@@ -48,13 +95,12 @@ internal fun SortingView(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(bottom = 8.dp, start = 8.dp, end = 8.dp),
+            .padding(top = 4.dp, bottom = 8.dp, start = 8.dp, end = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         var expanded by remember {
             mutableStateOf(false)
         }
-
         ExposedDropdownMenuBox(
             expanded = expanded,
             onExpandedChange = { expanded = !expanded },
@@ -115,7 +161,7 @@ private fun SortingEntity.getStringRes(): String =
 @Composable
 private fun SortingViewPreview() {
     Box(modifier = Modifier.fillMaxSize()) {
-        SortingView(
+        SortingViewContent(
             sortingList = SortingEntity.entries,
             selectedSorting = SortingEntity.Rating,
             isReversed = true,
