@@ -13,8 +13,6 @@ dependencies {
 
     implementation(libs.kotlinx.datetime)
 
-    implementation(libs.androidx.datastore)
-
     implementation(libs.androidx.paging.compose)
 
     androidTestImplementation(libs.androidx.test.ext.junit)

@@ -78,7 +78,7 @@ internal fun HomeScreen(
             ListViewMode.Grid -> 160.dp
             else -> 300.dp
         }
-        val maxItemsInColumn = (maxWidth / itemWidth).roundToInt()
+        val maxItemsInColumn = (this.maxWidth / itemWidth).roundToInt()
         val isButtonVisible by remember {
             derivedStateOf {
                 gridState.firstVisibleItemIndex > maxItemsInColumn * 3
