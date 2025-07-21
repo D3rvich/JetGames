@@ -39,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.LocalDensity
@@ -46,7 +47,6 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastFirst
 import kotlin.math.abs
@@ -56,12 +56,12 @@ import kotlin.math.roundToInt
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CollapsingTopAppBar(
-    modifier: Modifier = Modifier,
     title: @Composable () -> Unit,
+    modifier: Modifier = Modifier,
     titleTextStyle: TextStyle = MaterialTheme.typography.titleLarge,
-    navigationIcon: (@Composable () -> Unit) = {},
-    actions: (@Composable RowScope.() -> Unit) = {},
-    expandedContent: (@Composable () -> Unit) = {},
+    navigationIcon: @Composable () -> Unit = {},
+    actions: @Composable RowScope.() -> Unit = {},
+    expandedContent: @Composable () -> Unit = {},
     collapsedHeight: Dp = CollapsedHeight,
     expandedHeight: Dp = ExpandedHeight,
     scrollBehavior: TopAppBarScrollBehavior? = null,
@@ -73,13 +73,16 @@ fun CollapsingTopAppBar(
     }
     val collapsedHeightPx: Float
     val expandedHeightPx: Float
+    val topWindowInsetsPx: Float
     with(LocalDensity.current) {
         collapsedHeightPx = collapsedHeight.toPx()
         expandedHeightPx = expandedHeight.toPx()
+        topWindowInsetsPx = windowInsets.getTop(this).toFloat()
     }
     SideEffect {
-        if (scrollBehavior?.state?.heightOffsetLimit != collapsedHeightPx - expandedHeightPx) {
-            scrollBehavior?.state?.heightOffsetLimit = collapsedHeightPx - expandedHeightPx
+        val heightOffsetLimit = collapsedHeightPx - expandedHeightPx + topWindowInsetsPx
+        if (scrollBehavior != null && scrollBehavior.state.heightOffsetLimit != heightOffsetLimit) {
+            scrollBehavior.state.heightOffsetLimit = heightOffsetLimit
         }
     }
     val collapsedFraction = scrollBehavior?.state?.collapsedFraction ?: 1f
@@ -122,7 +125,6 @@ fun CollapsingTopAppBar(
         Box {
             ExpandedContentLayout(
                 modifier = Modifier
-                    .windowInsetsPadding(windowInsets)
                     .clipToBounds()
                     .heightIn(max = expandedHeight)
                     .graphicsLayer {
@@ -132,11 +134,10 @@ fun CollapsingTopAppBar(
                 scrolledOffset = { scrollBehavior?.state?.heightOffset ?: 0f }
             )
             TopAppBarLayout(
-                Modifier
+                modifier = Modifier
                     .windowInsetsPadding(windowInsets)
                     .clipToBounds()
                     .heightIn(max = collapsedHeight),
-                scrolledOffset = { 0f },
                 navigationIconContentColor = colors.navigationIconContentColor,
                 titleContentColor = colors.titleContentColor,
                 actionIconContentColor = colors.actionsContentColor,
@@ -153,17 +154,16 @@ fun CollapsingTopAppBar(
 
 @Composable
 private fun TopAppBarLayout(
-    modifier: Modifier = Modifier,
-    scrolledOffset: ScrolledOffset,
-    navigationIconContentColor: Color,
-    titleContentColor: Color,
-    actionIconContentColor: Color,
     title: @Composable () -> Unit,
-    titleTextStyle: TextStyle,
-    titleAlpha: Float,
-    hideTitleSemantics: Boolean,
     navigationIcon: @Composable () -> Unit,
     actions: @Composable () -> Unit,
+    titleContentColor: Color,
+    navigationIconContentColor: Color,
+    actionIconContentColor: Color,
+    titleAlpha: Float,
+    titleTextStyle: TextStyle,
+    hideTitleSemantics: Boolean,
+    modifier: Modifier = Modifier,
 ) {
     Layout(
         content = {
@@ -220,15 +220,7 @@ private fun TopAppBarLayout(
         val titlePlaceable = measurables.fastFirst { it.layoutId == TitleId }
             .measure(constraints.copy(minWidth = 0, maxWidth = titleMaxWidth))
 
-        val scrolledOffsetValue = scrolledOffset.offset()
-        val heightOffset = if (scrolledOffsetValue.isNaN()) 0 else scrolledOffsetValue.roundToInt()
-
-        val layoutHeight =
-            if (constraints.maxHeight == Constraints.Infinity) {
-                constraints.maxHeight
-            } else {
-                constraints.maxHeight + heightOffset
-            }
+        val layoutHeight = constraints.maxHeight
 
         layout(constraints.maxWidth, layoutHeight) {
 
@@ -252,9 +244,9 @@ private fun TopAppBarLayout(
 
 @Composable
 private fun ExpandedContentLayout(
+    scrolledOffset: ScrolledOffset,
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit,
-    scrolledOffset: ScrolledOffset,
 ) {
     Layout(
         content = {
@@ -307,15 +299,14 @@ private suspend fun settleAppBar(
     velocity: Float,
     flingAnimationSpec: DecayAnimationSpec<Float>?,
     snapAnimationSpec: AnimationSpec<Float>?
-): Velocity {
+) {
     // Check if the app bar is completely collapsed/expanded. If so, no need to settle the app bar,
     // and just return Zero Velocity.
     // Note that we don't check for 0f due to float precision with the collapsedFraction
     // calculation.
     if (state.collapsedFraction < 0.01f || state.collapsedFraction == 1f) {
-        return Velocity.Zero
+        return
     }
-    var remainingVelocity = velocity
     // In case there is an initial velocity that was left after a previous user fling, animate to
     // continue the motion to expand or collapse the app bar.
     if (flingAnimationSpec != null && abs(velocity) > 1f) {
@@ -330,7 +321,6 @@ private suspend fun settleAppBar(
                 state.heightOffset = initialHeightOffset + delta
                 val consumed = abs(initialHeightOffset - state.heightOffset)
                 lastValue = value
-                remainingVelocity = this.velocity
                 // avoid rounding errors and stop if anything is unconsumed
                 if (abs(delta - consumed) > 0.5f) this.cancelAnimation()
             }
@@ -350,8 +340,6 @@ private suspend fun settleAppBar(
             }
         }
     }
-
-    return Velocity(0f, remainingVelocity)
 }
 
 @Stable
@@ -363,13 +351,11 @@ class CollapsingTopAppBarColors(
     val actionsContentColor: Color,
 ) {
     @Stable
-    internal fun containerColor(colorTransitionFraction: Float): Color {
-        return androidx.compose.ui.graphics.lerp(
-            containerColor,
-            scrolledContainerColor,
-            FastOutLinearInEasing.transform(colorTransitionFraction)
-        )
-    }
+    internal fun containerColor(colorTransitionFraction: Float): Color = lerp(
+        containerColor,
+        scrolledContainerColor,
+        FastOutLinearInEasing.transform(colorTransitionFraction)
+    )
 }
 
 object CollapsingTopAppBarDefaults {

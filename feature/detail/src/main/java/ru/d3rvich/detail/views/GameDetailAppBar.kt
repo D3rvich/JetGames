@@ -12,9 +12,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.systemBarsIgnoringVisibility
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
@@ -57,19 +59,20 @@ import ru.d3rvich.detail.R
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 internal fun GameDetailAppBar(
-    modifier: Modifier = Modifier,
     title: String,
     imageUrl: String?,
-    scrollBehavior: TopAppBarScrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(),
     isFavorite: Boolean,
     onBackClicked: () -> Unit,
     onFavoriteChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+    scrollBehavior: TopAppBarScrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(),
 ) {
     val animateIconBackground by animateFloatAsState(
         targetValue = 0.5f * (1 - scrollBehavior.state.collapsedFraction),
         label = "iconBackground"
     )
-    val expandedHeight = 320.dp
+    val statusBarHeight = LocalDensity.current.run { WindowInsets.statusBars.getTop(this).toDp() }
+    val expandedHeight = INIT_EXPANDED_HEIGHT + statusBarHeight
     CollapsingTopAppBar(
         modifier = modifier,
         title = {
@@ -106,9 +109,9 @@ internal fun GameDetailAppBar(
 
 @Composable
 private fun NavigationIcon(
-    modifier: Modifier = Modifier,
     alphaFraction: Float,
-    onBackClicked: () -> Unit
+    onBackClicked: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     IconButton(
         modifier = modifier,
@@ -125,10 +128,10 @@ private fun NavigationIcon(
 
 @Composable
 private fun Actions(
-    modifier: Modifier = Modifier,
-    alphaFraction: Float,
     isFavorite: Boolean,
-    onFavoriteChange: (Boolean) -> Unit
+    alphaFraction: Float,
+    onFavoriteChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val backgroundColor =
         MaterialTheme.colorScheme.background.copy(alpha = alphaFraction)
@@ -156,10 +159,10 @@ private fun Actions(
 
 @Composable
 private fun ExpandedContent(
-    modifier: Modifier = Modifier,
-    height: Dp,
+    title: String,
     imageUrl: String?,
-    title: String
+    height: Dp,
+    modifier: Modifier = Modifier,
 ) {
     Box(
         modifier = modifier
@@ -176,11 +179,19 @@ private fun ExpandedContent(
                 contentScale = ContentScale.Crop
             )
         }
+        val backgroundColor = MaterialTheme.colorScheme.background.copy(alpha = 0.5f)
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .windowInsetsTopHeight(WindowInsets.statusBars)
+                .background(backgroundColor)
+                .align(Alignment.TopStart)
+        )
         var backgroundHeight by remember { mutableStateOf(Dp.Unspecified) }
         val brush = Brush.verticalGradient(
             listOf(
                 Color.Transparent,
-                MaterialTheme.colorScheme.background.copy(0.9f)
+                backgroundColor.copy(0.9f)
             )
         )
         Box(
@@ -197,15 +208,17 @@ private fun ExpandedContent(
                 .align(Alignment.BottomStart)
                 .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Horizontal))
                 .padding(bottom = 8.dp, start = 8.dp)
-                .onSizeChanged {
+                .onSizeChanged { size ->
                     with(density) {
-                        backgroundHeight = it.height.toDp()
+                        backgroundHeight = size.height.toDp()
                     }
                 },
             style = MaterialTheme.typography.headlineMedium
         )
     }
 }
+
+private val INIT_EXPANDED_HEIGHT = 320.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(showBackground = true)
