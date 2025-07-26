@@ -24,10 +24,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,6 +42,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.lerp
 import ru.d3rvich.common.components.SearchField
 import ru.d3rvich.core.ui.theme.JetGamesTheme
 import ru.d3rvich.home.R
@@ -54,31 +56,34 @@ import ru.d3rvich.home.R as HomeR
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun HomeAppBar(
-    modifier: Modifier = Modifier,
     searchText: String,
-    onSearchChange: (String) -> Unit,
     isFilterEdited: Boolean,
     currentListViewMode: ListViewMode,
+    onSearchChange: (String) -> Unit,
     onListViewModeChange: (ListViewMode) -> Unit,
-    scrollBehavior: TopAppBarScrollBehavior? = null,
     navigateToFilterScreen: () -> Unit,
     navigateToSettingsScreen: () -> Unit,
+    modifier: Modifier = Modifier,
+    scrollBehavior: TopAppBarScrollBehavior? = null,
 ) {
-    var showSearch by rememberSaveable {
-        mutableStateOf(false)
-    }
-    val focusRequester = remember {
-        FocusRequester()
-    }
+    var showSearch by rememberSaveable { mutableStateOf(false) }
+    val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
-    DisposableEffect(showSearch) {
+    LaunchedEffect(showSearch) {
         if (showSearch) {
             focusRequester.requestFocus()
         }
-        onDispose {}
+    }
+    val alphaFraction = remember {
+        lerp(1f, 0.5f, scrollBehavior?.state?.collapsedFraction ?: 1f)
     }
     TopAppBar(
         modifier = modifier,
+        colors = TopAppBarDefaults.topAppBarColors()
+            .copy(
+                scrolledContainerColor =
+                    TopAppBarDefaults.topAppBarColors().scrolledContainerColor.copy(alpha = alphaFraction)
+            ),
         scrollBehavior = scrollBehavior,
         navigationIcon = {
             AnimatedVisibility(visible = !showSearch) {
@@ -152,11 +157,11 @@ internal fun HomeAppBar(
 
 @Composable
 private fun ListViewModeMenu(
-    modifier: Modifier = Modifier,
     showMenu: Boolean,
-    onShowMenuChange: (Boolean) -> Unit,
     currentListViewMode: ListViewMode,
+    onShowMenuChange: (Boolean) -> Unit,
     onListViewModeChange: (ListViewMode) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Box(modifier = modifier, contentAlignment = Alignment.TopEnd) {
         IconButton(onClick = { onShowMenuChange(!showMenu) }) {
