@@ -4,12 +4,12 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
-import kotlinx.coroutines.CoroutineScope
 import ru.d3rvich.core.domain.repositories.GamesRepository
 import ru.d3rvich.core.domain.repositories.GenresRepository
 import ru.d3rvich.core.domain.repositories.PlatformsRepository
 import ru.d3rvich.core.domain.repositories.SettingsRepository
-import ru.d3rvich.data.model.SynchronizeTimeHolder
+import ru.d3rvich.data.model.SyncField
+import ru.d3rvich.data.model.SyncTimeManagerImpl
 import ru.d3rvich.data.paging.GamesPagingSource
 import ru.d3rvich.data.repositoties.GamesRepositoryImpl
 import ru.d3rvich.data.repositoties.GenresRepositoryImpl
@@ -41,30 +41,22 @@ internal object DataModule {
     fun providePlatformsRepository(
         apiService: JetGamesApiService,
         database: JetGamesDatabase,
-        coroutineScope: CoroutineScope,
-        dataStore: JetGamesPreferencesDataStore,
+        syncManagerFactory: SyncTimeManagerImpl.Factory,
     ): PlatformsRepository = PlatformsRepositoryImpl(
         apiService = apiService,
         database = database,
-        synchronizeTimeHolder = SynchronizeTimeHolder(
-            coroutineScope = coroutineScope,
-            dataStore = dataStore
-        )
+        syncTimeManager = syncManagerFactory.create(SyncField.Platforms)
     )
 
     @Provides
     fun providesGenresRepository(
         apiService: JetGamesApiService,
         database: JetGamesDatabase,
-        coroutineScope: CoroutineScope,
-        dataStore: JetGamesPreferencesDataStore,
+        syncManagerFactory: SyncTimeManagerImpl.Factory,
     ): GenresRepository = GenresRepositoryImpl(
         apiService = apiService,
         database = database,
-        syncTimeHolder = SynchronizeTimeHolder(
-            coroutineScope = coroutineScope,
-            dataStore = dataStore
-        )
+        syncTimeManager = syncManagerFactory.create(SyncField.Genres)
     )
 
     @Provides
