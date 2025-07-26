@@ -14,7 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ru.d3rvich.browse.R
 import ru.d3rvich.core.domain.entities.GenreFullEntity
-import ru.d3rvich.core.domain.model.Status
+import ru.d3rvich.core.domain.model.LoadingResult
 import ru.d3rvich.core.ui.theme.JetGamesTheme
 
 /**
@@ -23,7 +23,7 @@ import ru.d3rvich.core.ui.theme.JetGamesTheme
 @Composable
 internal fun GenresView(
     modifier: Modifier = Modifier,
-    genresStatus: Status<List<GenreFullEntity>>,
+    genresStatus: LoadingResult<List<GenreFullEntity>>,
 ) {
     SectionTemplateView(
         modifier = modifier,

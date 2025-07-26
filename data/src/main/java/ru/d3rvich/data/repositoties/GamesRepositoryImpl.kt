@@ -20,7 +20,7 @@ import ru.d3rvich.data.mapper.toGameEntity
 import ru.d3rvich.data.mapper.toGameStoreEntity
 import ru.d3rvich.data.mapper.toScreenshotEntityList
 import ru.d3rvich.data.paging.GamesPagingSource
-import ru.d3rvich.data.util.safeApiCall
+import ru.d3rvich.data.util.repeatableCall
 import ru.d3rvich.database.JetGamesDatabase
 import ru.d3rvich.remote.JetGamesApiService
 
@@ -53,8 +53,8 @@ internal class GamesRepositoryImpl(
 
     override suspend fun getGameDetail(gameId: Int): Result<GameDetailEntity> {
         return when (val detail = database.gamesDao.gameDetail(gameId)) {
-            null -> safeApiCall {
-                apiService.getGameDetail(gameId = gameId)
+            null -> apiService.repeatableCall {
+                getGameDetail(gameId = gameId)
             }.map { it.toGameDetailEntity() }
 
             else -> {
@@ -64,12 +64,12 @@ internal class GamesRepositoryImpl(
     }
 
     override suspend fun getGameScreenshots(gameId: Int): Result<List<ScreenshotEntity>> =
-        safeApiCall {
-            apiService.getScreenshots(gameId = gameId)
+        apiService.repeatableCall {
+            getScreenshots(gameId = gameId)
         }.map { it.results.toScreenshotEntityList() }
 
     override suspend fun getStoreLinksBy(gameId: Int): Result<List<StoreLinkEntity>> =
-        safeApiCall {
+        apiService.repeatableCall {
             apiService.getGameStoresById(gameId)
         }.map { result -> result.results.map { it.toGameStoreEntity() } }
 

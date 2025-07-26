@@ -11,7 +11,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ru.d3rvich.browse.R
 import ru.d3rvich.core.domain.entities.PlatformEntity
-import ru.d3rvich.core.domain.model.Status
+import ru.d3rvich.core.domain.model.LoadingResult
 
 /**
  * Created by Ilya Deryabin at 29.10.2024
@@ -19,7 +19,7 @@ import ru.d3rvich.core.domain.model.Status
 @Composable
 internal fun PlatformsView(
     modifier: Modifier = Modifier,
-    platformsStatus: Status<List<PlatformEntity>>,
+    platformsStatus: LoadingResult<List<PlatformEntity>>,
 ) {
     SectionTemplateView(
         modifier = modifier,

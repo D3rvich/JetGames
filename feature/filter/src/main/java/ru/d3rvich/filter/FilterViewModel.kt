@@ -6,7 +6,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ru.d3rvich.core.ui.base.BaseViewModel
 import ru.d3rvich.core.domain.model.MetacriticRange
-import ru.d3rvich.core.domain.model.Status
+import ru.d3rvich.core.domain.model.LoadingResult
 import ru.d3rvich.core.domain.preferences.FilterPreferences
 import ru.d3rvich.core.domain.preferences.FilterPreferencesBody
 import ru.d3rvich.core.domain.usecases.GetGenresUseCase
@@ -37,14 +37,14 @@ internal class FilterViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             launch {
                 getPlatformsUseCase.get().invoke().collect { status ->
-                    if (status is Status.Success) {
+                    if (status is LoadingResult.Success) {
                         setState(currentState.copy(platforms = status.value))
                     }
                 }
             }
             launch {
                 getGenresUseCase.get().invoke().collect { status ->
-                    if (status is Status.Success) {
+                    if (status is LoadingResult.Success) {
                         setState(currentState.copy(genres = status.value))
                     }
                 }

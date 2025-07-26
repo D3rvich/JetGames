@@ -15,7 +15,7 @@ import ru.d3rvich.core.domain.entities.GameDetailEntity
 import ru.d3rvich.core.domain.entities.StoreEntity
 import ru.d3rvich.core.domain.entities.StoreLinkEntity
 import ru.d3rvich.core.domain.model.Result
-import ru.d3rvich.core.domain.model.Status
+import ru.d3rvich.core.domain.model.LoadingResult
 import ru.d3rvich.core.domain.usecases.AddToFavoritesUseCase
 import ru.d3rvich.core.domain.usecases.GetGameDetailUseCase
 import ru.d3rvich.core.domain.usecases.GetScreenshotsUseCase
@@ -71,8 +71,8 @@ internal class GameDetailViewModel @Inject constructor(
         viewModelScope.launch {
             getGameDetailUseCase.get().invoke(gameId).collect { status ->
                 when (status) {
-                    Status.Loading -> setState(GameDetailUiState.Loading)
-                    is Status.Success -> {
+                    LoadingResult.Loading -> setState(GameDetailUiState.Loading)
+                    is LoadingResult.Success -> {
                         if (status.value.stores.first().url != null) {
                             loadLinks(gameId)
                             if (status.value.isFavorite && gameStoreLinks.isNotEmpty()) {
@@ -97,7 +97,7 @@ internal class GameDetailViewModel @Inject constructor(
                         }
                     }
 
-                    is Status.Error -> setState(
+                    is LoadingResult.Error -> setState(
                         GameDetailUiState.Error(
                             status.throwable.localizedMessage ?: "error"
                         )

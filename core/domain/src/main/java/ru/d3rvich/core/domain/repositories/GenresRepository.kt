@@ -1,7 +1,7 @@
 package ru.d3rvich.core.domain.repositories
 
 import kotlinx.coroutines.flow.Flow
-import ru.d3rvich.core.domain.model.Status
+import ru.d3rvich.core.domain.model.LoadingResult
 import ru.d3rvich.core.domain.entities.GenreFullEntity
 
 /**
@@ -9,5 +9,5 @@ import ru.d3rvich.core.domain.entities.GenreFullEntity
  */
 interface GenresRepository {
 
-    fun getGenres(): Flow<Status<List<GenreFullEntity>>>
+    fun getGenres(): Flow<LoadingResult<List<GenreFullEntity>>>
 }

@@ -12,7 +12,7 @@ import ru.d3rvich.core.domain.model.MetacriticRange
 import ru.d3rvich.core.domain.model.Result
 import ru.d3rvich.core.domain.preferences.FilterPreferencesBody
 import ru.d3rvich.data.mapper.toGameEntity
-import ru.d3rvich.data.util.safeApiCall
+import ru.d3rvich.data.util.repeatableCall
 import ru.d3rvich.remote.JetGamesApiService
 import kotlin.math.roundToInt
 
@@ -59,8 +59,8 @@ internal class GamesPagingSource @AssistedInject constructor(
         } else {
             null
         }
-        return when (val result = safeApiCall {
-            apiService.getGames(
+        return when (val result = apiService.repeatableCall {
+            getGames(
                 page = pageNumber,
                 pageSize = pageSize,
                 search = search.ifBlank { null },

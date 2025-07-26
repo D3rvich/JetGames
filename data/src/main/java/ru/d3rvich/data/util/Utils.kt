@@ -3,31 +3,37 @@ package ru.d3rvich.data.util
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlin.time.Clock
+import ru.d3rvich.core.domain.model.LoadingResult
 import ru.d3rvich.core.domain.model.Result
-import ru.d3rvich.core.domain.model.Status
-import ru.d3rvich.core.domain.model.asStatus
 import ru.d3rvich.data.model.SynchronizeTimeHolder
+import ru.d3rvich.core.domain.model.asLoadingResult
+import ru.d3rvich.data.model.LocalDataSource
+import ru.d3rvich.remote.JetGamesApiService
 import ru.d3rvich.remote.retrofit_result.RetrofitResult
+import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
-internal inline fun <T : Any> cashedRemoteRequest(
-    crossinline syncTimeProvider: () -> Long,
-    crossinline syncTimeSaver: (Long) -> Unit,
+internal fun <T : Any> cashedRemoteRequest(
+    syncTimeProvider: suspend () -> Long?,
+    syncTimeSaver: suspend (Long) -> Unit,
     localDataSource: LocalDataSource<T>,
-    crossinline remoteCall: suspend () -> Result<T>,
-): Flow<Status<T>> = flow {
-    val currentTime = Clock.System.now().toEpochMilliseconds()
-    if (syncTimeProvider() != SynchronizeTimeHolder.DEFAULT_TIMESTAMP) {
-        val diff = currentTime - syncTimeProvider()
-        val diffInDays = diff / 1000 / 60 / 60 / 24
-        val minSyncTimeInDays = 7
-        if (localDataSource.checkIsDataExist()) {
-            emit(localDataSource.execute())
-        }
-        if (diffInDays >= minSyncTimeInDays) {
-            when (val result = remoteCall()) {
+    remoteCall: suspend () -> Result<T>,
+    minDaysToSync: Int = MIN_SYNC_DAYS,
+): Flow<LoadingResult<T>> = flow {
+    require(minDaysToSync >= 0) { "minDaysToSync is expected to be greater or equal 0" }
+    val duration = syncTimeProvider()?.let { lastSyncNotNull ->
+        Clock.System.now() - Instant.fromEpochMilliseconds(lastSyncNotNull)
+    }
+    var isDataEmitted = false
+    localDataSource.execute()?.also { localData ->
+        emit(localData)
+        isDataEmitted = true
+    }
+    if (duration != null && duration.inWholeDays >= minDaysToSync) {
+        remoteCall().also { result ->
+            when (result) {
                 is Result.Success -> {
                     localDataSource.update(result.value)
                     syncTimeSaver(Clock.System.now().toEpochMilliseconds())
@@ -35,57 +41,25 @@ internal inline fun <T : Any> cashedRemoteRequest(
                 }
 
                 is Result.Failure -> {
-                    if (!localDataSource.checkIsDataExist()) {
+                    if (!isDataEmitted) {
                         throw result.throwable
                     }
                 }
             }
         }
-    } else {
-        when (val result = remoteCall()) {
-            is Result.Success -> {
-                localDataSource.update(result.value)
-                syncTimeSaver(Clock.System.now().toEpochMilliseconds())
-                emit(result.value)
-            }
-
-            is Result.Failure -> {
-                throw result.throwable
-            }
-        }
     }
-}.asStatus()
+}.asLoadingResult()
 
-internal interface LocalDataSource<T : Any> {
-    suspend fun checkIsDataExist(): Boolean
-
-    suspend fun execute(): T
-
-    suspend fun update(value: T)
-}
-
-internal inline fun <T : Any> LocalDataSource(
-    crossinline execute: suspend () -> T,
-    crossinline update: suspend (value: T) -> Unit,
-    crossinline checkIsDataExist: suspend () -> Boolean = { false },
-): LocalDataSource<T> =
-    object : LocalDataSource<T> {
-        override suspend fun checkIsDataExist(): Boolean = checkIsDataExist()
-
-        override suspend fun execute(): T = execute()
-
-        override suspend fun update(value: T) = update(value)
-    }
-
-internal suspend fun <T : Any> safeApiCall(
-    isErrorExpected: Boolean = true,
-    call: suspend () -> RetrofitResult<T>,
+internal suspend fun <T : Any> JetGamesApiService.repeatableCall(
+    repeatTimes: Int = 1,
+    call: suspend JetGamesApiService.() -> RetrofitResult<T>,
 ): Result<T> {
+    require(repeatTimes >= 0) { "repeatTimes is expected to be greater or equal 0" }
     return when (val result = call()) {
         is RetrofitResult.Failure<*> -> {
-            if (isErrorExpected) {
+            if (repeatTimes > 0) {
                 delay(DelayTimeMillis)
-                safeApiCall(false, call)
+                repeatableCall(repeatTimes - 1, call)
             } else {
                 Result.Failure(result.error ?: Exception("Unknown error"))
             }
@@ -98,3 +72,4 @@ internal suspend fun <T : Any> safeApiCall(
 }
 
 private const val DelayTimeMillis = 5000L
+private const val MIN_SYNC_DAYS = 7
