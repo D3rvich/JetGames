@@ -74,9 +74,8 @@ internal fun HomeAppBar(
             focusRequester.requestFocus()
         }
     }
-    val alphaFraction = remember {
-        lerp(1f, 0.5f, scrollBehavior?.state?.collapsedFraction ?: 1f)
-    }
+    val alphaFraction =
+        lerp(1f, 0.5f, scrollBehavior?.state?.collapsedFraction ?: 0f)
     TopAppBar(
         modifier = modifier,
         colors = TopAppBarDefaults.topAppBarColors()
