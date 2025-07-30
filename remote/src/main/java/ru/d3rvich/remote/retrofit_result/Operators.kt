@@ -6,33 +6,33 @@ import kotlin.contracts.contract
 /**
  * Created by Ilya Deryabin at 09.02.2024
  */
-fun <T> RetrofitResult<T>.isSuccess(): Boolean {
-    return this is RetrofitResult.Success
+fun <T> NetworkResult<T>.isSuccess(): Boolean {
+    return this is NetworkResult.Success
 }
 
-fun <T> RetrofitResult<T>.asSuccess(): RetrofitResult.Success<T> {
-    return this as RetrofitResult.Success<T>
+fun <T> NetworkResult<T>.asSuccess(): NetworkResult.Success<T> {
+    return this as NetworkResult.Success<T>
 }
 
 @ExperimentalContracts
-fun <T> RetrofitResult<T>.isFailure(): Boolean {
+fun <T> NetworkResult<T>.isFailure(): Boolean {
     contract {
-        returns(true) implies (this@isFailure is RetrofitResult.Failure<*>)
+        returns(true) implies (this@isFailure is NetworkResult.Failure<*>)
     }
-    return this is RetrofitResult.Failure<*>
+    return this is NetworkResult.Failure<*>
 }
 
-fun <T> RetrofitResult<T>.asFailure(): RetrofitResult.Failure<*> {
-    return this as RetrofitResult.Failure<*>
+fun <T> NetworkResult<T>.asFailure(): NetworkResult.Failure<*> {
+    return this as NetworkResult.Failure<*>
 }
 
-fun <T, R> RetrofitResult<T>.map(transform: (value: T) -> R): RetrofitResult<R> {
+fun <T, R> NetworkResult<T>.map(transform: (value: T) -> R): NetworkResult<R> {
     return when(this) {
-        is RetrofitResult.Success -> RetrofitResult.Success.Value(transform(value))
-        is RetrofitResult.Failure<*> -> this
+        is NetworkResult.Success -> NetworkResult.Success.Value(transform(value))
+        is NetworkResult.Failure<*> -> this
     }
 }
 
-fun <T, R> RetrofitResult<T>.flatMap(transform: (result: RetrofitResult<T>) -> RetrofitResult<R>): RetrofitResult<R> {
+fun <T, R> NetworkResult<T>.flatMap(transform: (result: NetworkResult<T>) -> NetworkResult<R>): NetworkResult<R> {
     return transform(this)
 }

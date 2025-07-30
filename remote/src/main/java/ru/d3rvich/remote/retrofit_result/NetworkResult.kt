@@ -3,9 +3,9 @@ package ru.d3rvich.remote.retrofit_result
 /**
  * Created by Ilya Deryabin at 09.02.2024
  */
-sealed class RetrofitResult<out T> {
+sealed class NetworkResult<out T> {
 
-    sealed class Success<T> : RetrofitResult<T>() {
+    sealed class Success<T> : NetworkResult<T>() {
 
         abstract val value: T
 
@@ -28,7 +28,7 @@ sealed class RetrofitResult<out T> {
         }
     }
 
-    sealed class Failure<E : Throwable>(open val error: E? = null) : RetrofitResult<Nothing>() {
+    sealed class Failure<E : Throwable>(open val error: E? = null) : NetworkResult<Nothing>() {
 
         override fun toString() = "Failure($error)"
 
@@ -46,4 +46,4 @@ sealed class RetrofitResult<out T> {
     }
 }
 
-typealias EmptyResult = RetrofitResult<Nothing>
+typealias EmptyResult = NetworkResult<Nothing>

@@ -8,8 +8,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import ru.d3rvich.core.domain.entities.GameDetailEntity
 import ru.d3rvich.core.domain.entities.GameEntity
-import ru.d3rvich.core.domain.entities.StoreLinkEntity
 import ru.d3rvich.core.domain.entities.ScreenshotEntity
+import ru.d3rvich.core.domain.entities.StoreLinkEntity
 import ru.d3rvich.core.domain.model.Result
 import ru.d3rvich.core.domain.model.map
 import ru.d3rvich.core.domain.preferences.FilterPreferencesBody
@@ -22,14 +22,14 @@ import ru.d3rvich.data.mapper.toScreenshotEntityList
 import ru.d3rvich.data.paging.GamesPagingSource
 import ru.d3rvich.data.util.repeatableCall
 import ru.d3rvich.database.JetGamesDatabase
-import ru.d3rvich.remote.JetGamesApiService
+import ru.d3rvich.remote.JetGamesNetworkDataSource
 
 /**
  * Created by Ilya Deryabin at 01.02.2024
  */
 internal class GamesRepositoryImpl(
     private val gamesPagingSourceFactory: GamesPagingSource.GamesPagingSourceFactory,
-    private val apiService: JetGamesApiService,
+    private val apiService: JetGamesNetworkDataSource,
     private val database: JetGamesDatabase,
 ) : GamesRepository {
 
@@ -70,7 +70,7 @@ internal class GamesRepositoryImpl(
 
     override suspend fun getStoreLinksBy(gameId: Int): Result<List<StoreLinkEntity>> =
         apiService.repeatableCall {
-            apiService.getGameStoresById(gameId)
+            getGameStoresById(gameId)
         }.map { result -> result.results.map { it.toGameStoreEntity() } }
 
     override fun getFavoriteGames(search: String): Flow<PagingData<GameEntity>> {

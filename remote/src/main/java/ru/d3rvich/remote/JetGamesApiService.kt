@@ -18,7 +18,7 @@ import ru.d3rvich.remote.model.Screenshot
 import ru.d3rvich.remote.model.game.Game
 import ru.d3rvich.remote.model.game.GameDetail
 import ru.d3rvich.remote.result_adapter.ResultAdapterFactory
-import ru.d3rvich.remote.retrofit_result.RetrofitResult
+import ru.d3rvich.remote.retrofit_result.NetworkResult
 import ru.d3rvich.remote.util.AuthInterceptor
 
 /**
@@ -26,11 +26,11 @@ import ru.d3rvich.remote.util.AuthInterceptor
  *
  * Api documentation [here](https://api.rawg.io/docs/)
  */
+@Deprecated("")
 interface JetGamesApiService {
 
     companion object {
         internal const val BASE_URL = "https://api.rawg.io/api/"
-        private const val RAWG_MAX_PAGE_SIZE = 40
     }
 
     /**
@@ -47,13 +47,13 @@ interface JetGamesApiService {
         @Query("platforms") platforms: String? = null,
         @Query("genres") genres: String? = null,
         @Query("metacritic") metacritic: String? = null,
-    ): RetrofitResult<ApiPagingResult<Game>>
+    ): NetworkResult<ApiPagingResult<Game>>
 
     /**
      * Api [doc](https://api.rawg.io/docs/#operation/games_read)
      * */
     @GET("games/{id}")
-    suspend fun getGameDetail(@Path("id") gameId: Int): RetrofitResult<GameDetail>
+    suspend fun getGameDetail(@Path("id") gameId: Int): NetworkResult<GameDetail>
 
     /**
      * Api [doc](https://api.rawg.io/docs/#operation/games_screenshots_list)
@@ -63,7 +63,7 @@ interface JetGamesApiService {
         @Path("id") gameId: Int,
         @Query("page") page: Int = 1,
         @Query("page_size") pageSize: Int = 10,
-    ): RetrofitResult<ApiPagingResult<Screenshot>>
+    ): NetworkResult<ApiPagingResult<Screenshot>>
 
     /**
      * Api [doc](https://api.rawg.io/docs/#operation/games_stores_list)
@@ -73,7 +73,7 @@ interface JetGamesApiService {
         @Path("id") gameId: Int,
         @Query("page") page: Int = 1,
         @Query("page_size") pageSize: Int = RAWG_MAX_PAGE_SIZE
-    ): RetrofitResult<ApiPagingResult<StoreLink>>
+    ): NetworkResult<ApiPagingResult<StoreLink>>
 
     /**
      * Api [doc](https://api.rawg.io/docs/#operation/platforms_list)
@@ -82,7 +82,7 @@ interface JetGamesApiService {
     suspend fun getPlatforms(
         @Query("page") page: Int,
         @Query("page_size") pageSize: Int,
-    ): RetrofitResult<ApiPagingResult<Platform>>
+    ): NetworkResult<ApiPagingResult<Platform>>
 
     /**
      * Api [doc](https://api.rawg.io/docs/#operation/genres_list)
@@ -91,7 +91,7 @@ interface JetGamesApiService {
     suspend fun getGenres(
         @Query("page") page: Int,
         @Query("page_size") pageSize: Int,
-    ): RetrofitResult<ApiPagingResult<GenreFull>>
+    ): NetworkResult<ApiPagingResult<GenreFull>>
 }
 
 fun JetGamesApiService(apiKey: String): JetGamesApiService {
@@ -126,3 +126,43 @@ private fun okHttpClient(apiKey: String): OkHttpClient {
         addInterceptor(authInterceptor)
     }.build()
 }
+
+interface JetGamesNetworkDataSource {
+    suspend fun getGames(
+        page: Int,
+        pageSize: Int,
+        search: String? = null,
+        searchPrecise: Boolean = true,
+        sorting: String? = null,
+        tags: String? = null,
+        platforms: String? = null,
+        genres: String? = null,
+        metacritic: String? = null,
+    ): NetworkResult<ApiPagingResult<Game>>
+
+    suspend fun getGameDetail(gameId: Int): NetworkResult<GameDetail>
+
+    suspend fun getScreenshots(
+        gameId: Int,
+        page: Int = 1,
+        pageSize: Int = 10,
+    ): NetworkResult<ApiPagingResult<Screenshot>>
+
+    suspend fun getGameStoresById(
+        gameId: Int,
+        page: Int = 1,
+        pageSize: Int = RAWG_MAX_PAGE_SIZE
+    ): NetworkResult<ApiPagingResult<StoreLink>>
+
+    suspend fun getPlatforms(
+        page: Int,
+        pageSize: Int,
+    ): NetworkResult<ApiPagingResult<Platform>>
+
+    suspend fun getGenres(
+        page: Int,
+        pageSize: Int,
+    ): NetworkResult<ApiPagingResult<GenreFull>>
+}
+
+private const val RAWG_MAX_PAGE_SIZE = 40

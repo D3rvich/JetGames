@@ -11,16 +11,16 @@ import ru.d3rvich.core.domain.entities.getReversed
 import ru.d3rvich.core.domain.model.MetacriticRange
 import ru.d3rvich.core.domain.model.Result
 import ru.d3rvich.core.domain.preferences.FilterPreferencesBody
+import ru.d3rvich.data.mapper.asResult
 import ru.d3rvich.data.mapper.toGameEntity
-import ru.d3rvich.data.util.repeatableCall
-import ru.d3rvich.remote.JetGamesApiService
+import ru.d3rvich.remote.JetGamesNetworkDataSource
 import kotlin.math.roundToInt
 
 /**
  * Created by Ilya Deryabin at 12.02.2024
  */
 internal class GamesPagingSource @AssistedInject constructor(
-    private val apiService: JetGamesApiService,
+    private val apiService: JetGamesNetworkDataSource,
     @Assisted private val search: String = "",
     @Assisted private val filterPreferencesBody: FilterPreferencesBody,
 ) : PagingSource<Int, GameEntity>() {
@@ -59,17 +59,15 @@ internal class GamesPagingSource @AssistedInject constructor(
         } else {
             null
         }
-        return when (val result = apiService.repeatableCall {
-            getGames(
-                page = pageNumber,
-                pageSize = pageSize,
-                search = search.ifBlank { null },
-                sorting = sorting,
-                platforms = platforms,
-                genres = genres,
-                metacritic = metacritic
-            )
-        }) {
+        return when (val result = apiService.getGames(
+            page = pageNumber,
+            pageSize = pageSize,
+            search = search.ifBlank { null },
+            sorting = sorting,
+            platforms = platforms,
+            genres = genres,
+            metacritic = metacritic
+        ).asResult()) {
             is Result.Success -> {
                 val games = result.value.results.map { it.toGameEntity() }
                 val prevPageNumber = if (result.value.previous != null) pageNumber - 1 else null

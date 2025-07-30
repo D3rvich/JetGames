@@ -3,7 +3,7 @@ package ru.d3rvich.remote.result_adapter
 import retrofit2.Call
 import retrofit2.CallAdapter
 import retrofit2.Retrofit
-import ru.d3rvich.remote.retrofit_result.RetrofitResult
+import ru.d3rvich.remote.retrofit_result.NetworkResult
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 
@@ -20,7 +20,7 @@ internal class ResultAdapterFactory : CallAdapter.Factory() {
         if (rawReturnType == Call::class.java) {
             if (returnType is ParameterizedType) {
                 val callInnerType: Type = getParameterUpperBound(0, returnType)
-                if (getRawType(callInnerType) == RetrofitResult::class.java) {
+                if (getRawType(callInnerType) == NetworkResult::class.java) {
                     // resultType is Call<Result<*>> | callInnerType is Result<*>
                     if (callInnerType is ParameterizedType) {
                         val resultInnerType = getParameterUpperBound(0, callInnerType)
@@ -36,9 +36,9 @@ internal class ResultAdapterFactory : CallAdapter.Factory() {
 }
 
 private class ResultCallAdapter<R>(private val type: Type) :
-    CallAdapter<R, Call<RetrofitResult<R>>> {
+    CallAdapter<R, Call<NetworkResult<R>>> {
 
     override fun responseType() = type
 
-    override fun adapt(call: Call<R>): Call<RetrofitResult<R>> = ResultCall(call)
+    override fun adapt(call: Call<R>): Call<NetworkResult<R>> = ResultCall(call)
 }

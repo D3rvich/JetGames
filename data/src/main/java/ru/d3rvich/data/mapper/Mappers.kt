@@ -28,7 +28,7 @@ import ru.d3rvich.remote.model.Screenshot
 import ru.d3rvich.remote.model.game.Game
 import ru.d3rvich.remote.model.game.GameDetail
 import ru.d3rvich.remote.model.Store
-import ru.d3rvich.remote.retrofit_result.RetrofitResult
+import ru.d3rvich.remote.retrofit_result.NetworkResult
 import kotlin.time.ExperimentalTime
 
 internal fun Game.toGameEntity(): GameEntity =
@@ -160,7 +160,7 @@ internal fun StoreEntity.toStoreBDO(): StoreDBO = StoreDBO(id, name, url)
 
 internal fun StoreDBO.toStoreEntity(): StoreEntity = StoreEntity(id, name, url)
 
-internal fun <T : Any> RetrofitResult<T>.asResult(): Result<T> = when (this) {
-    is RetrofitResult.Failure<*> -> Result.Failure(this.error ?: Exception("Unknown error"))
-    is RetrofitResult.Success -> Result.Success(this.value)
+internal fun <T : Any> NetworkResult<T>.asResult(): Result<T> = when (this) {
+    is NetworkResult.Failure<*> -> Result.Failure(this.error ?: Exception("Unknown error"))
+    is NetworkResult.Success -> Result.Success(this.value)
 }
