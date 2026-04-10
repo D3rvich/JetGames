@@ -1,6 +1,7 @@
 package ru.d3rvich.remote.model.game
 
 import kotlinx.datetime.LocalDate
+import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import ru.d3rvich.remote.model.Genre
@@ -11,6 +12,7 @@ import ru.d3rvich.remote.model.Rating
  * Created by Ilya Deryabin at 05.02.2024
  */
 @Serializable
+@OptIn(InternalSerializationApi::class)
 data class Game(
     @SerialName("id") val id: Int,
     @SerialName("name") val name: String,

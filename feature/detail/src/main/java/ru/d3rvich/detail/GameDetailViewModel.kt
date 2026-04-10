@@ -73,13 +73,14 @@ internal class GameDetailViewModel @Inject constructor(
                 when (status) {
                     LoadingResult.Loading -> setState(GameDetailUiState.Loading)
                     is LoadingResult.Success -> {
-                        if (status.value.stores.first().url != null) {
+                        val stores = status.value.stores
+                        if (stores.isNotEmpty()) {
                             loadLinks(gameId)
                             if (status.value.isFavorite && gameStoreLinks.isNotEmpty()) {
                                 addToFavoritesUseCase.get().invoke(
                                     status.value.copy(
                                         stores = uniteStoresWithLinks(
-                                            stores = status.value.stores,
+                                            stores = stores,
                                             links = gameStoreLinks
                                         )
                                     )

@@ -49,16 +49,19 @@ internal class JetGamesNetworkClient(private val client: HttpClient) : JetGamesN
         gameId: Int,
         page: Int,
         pageSize: Int
-    ): NetworkResult<ApiPagingResult<Screenshot>> =
-        client.performCall(Routes.Games.Detail.Screenshots(gameId = gameId))
+    ): NetworkResult<ApiPagingResult<Screenshot>> {
+        val detail = Routes.Games.Detail(gameId = gameId)
+        return client.performCall(Routes.Games.Detail.Screenshots(detail))
+    }
 
     override suspend fun getGameStoresById(
         gameId: Int,
         page: Int,
         pageSize: Int
-    ): NetworkResult<ApiPagingResult<StoreLink>> = client.performCall(
-        Routes.Games.Detail.Stores(gameId = gameId)
-    )
+    ): NetworkResult<ApiPagingResult<StoreLink>> {
+        val detail = Routes.Games.Detail(gameId = gameId)
+        return client.performCall(Routes.Games.Detail.Stores(detail))
+    }
 
     override suspend fun getPlatforms(
         page: Int,

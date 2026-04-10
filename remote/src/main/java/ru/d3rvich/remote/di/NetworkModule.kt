@@ -6,6 +6,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
+import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.ANDROID
@@ -16,6 +17,7 @@ import io.ktor.client.plugins.resources.Resources
 import io.ktor.http.ContentType
 import io.ktor.http.URLProtocol
 import io.ktor.http.contentType
+import io.ktor.http.path
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.json.Json
@@ -31,6 +33,11 @@ internal object NetworkModule {
     @Singleton
     @Provides
     fun provideHttpClient(): HttpClient = HttpClient(Android) {
+        install(HttpTimeout) {
+            requestTimeoutMillis = 5_000
+            connectTimeoutMillis = 15_000
+            socketTimeoutMillis = 30_000
+        }
         install(Logging) {
             logger = Logger.ANDROID
             level = LogLevel.BODY
@@ -45,7 +52,8 @@ internal object NetworkModule {
         defaultRequest {
             url {
                 protocol = URLProtocol.HTTPS
-                host = "api.rawg.io/api"
+                host = "api.rawg.io"
+                path("api/")
                 parameters.append("key", BuildConfig.API_KEY)
             }
             contentType(ContentType.Application.Json)

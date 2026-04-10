@@ -1,9 +1,11 @@
 package ru.d3rvich.remote.model
 
+import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
+@OptIn(InternalSerializationApi::class)
 data class Store(
     @SerialName("id")
     val id: Int,
@@ -12,6 +14,7 @@ data class Store(
 )
 
 @Serializable
+@OptIn(InternalSerializationApi::class)
 data class StoreWrapper(
     @SerialName("store")
     val store: Store,
@@ -20,6 +23,7 @@ data class StoreWrapper(
 )
 
 @Serializable
+@OptIn(InternalSerializationApi::class)
 data class StoreLink(
     @SerialName("id")
     val id: Int,

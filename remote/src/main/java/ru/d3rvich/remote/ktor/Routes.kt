@@ -24,14 +24,14 @@ internal object Routes {
 
             @Resource("screenshots")
             class Screenshots(
-                @SerialName("id") val gameId: Int,
+                val parent: Detail,
                 @SerialName("page") val page: Int = 1,
                 @SerialName("page_size") val pageSize: Int = 10,
             )
 
             @Resource("stores")
             class Stores(
-                @SerialName("id") val gameId: Int,
+                val parent: Detail,
                 @SerialName("page") val page: Int = 1,
                 @SerialName("page_size") val pageSize: Int = RAWG_MAX_PAGE_SIZE
             )
