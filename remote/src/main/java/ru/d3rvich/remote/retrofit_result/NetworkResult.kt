@@ -19,13 +19,6 @@ sealed class NetworkResult<out T> {
             override val statusMessage: String? = null,
             override val url: String? = null
         ) : Success<T>(), ru.d3rvich.remote.retrofit_result.HttpResponse
-
-        object Empty : Success<Nothing>() {
-
-            override val value: Nothing get() = error("No value")
-
-            override fun toString() = "Success"
-        }
     }
 
     sealed class Failure<E : Throwable>(open val error: E? = null) : NetworkResult<Nothing>() {
@@ -45,5 +38,3 @@ sealed class NetworkResult<out T> {
         }
     }
 }
-
-typealias EmptyResult = NetworkResult<Nothing>

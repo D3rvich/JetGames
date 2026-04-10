@@ -15,6 +15,9 @@ import ru.d3rvich.remote.model.game.GameDetail
 import ru.d3rvich.remote.retrofit_result.HttpException
 import ru.d3rvich.remote.retrofit_result.NetworkResult
 
+/**
+ * Api documentation [here](https://api.rawg.io/docs/)
+ * */
 @InternalSerializationApi
 internal class JetGamesNetworkClient(private val client: HttpClient) : JetGamesNetworkDataSource {
 
