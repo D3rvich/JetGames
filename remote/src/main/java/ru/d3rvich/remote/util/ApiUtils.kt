@@ -1,10 +1,10 @@
 package ru.d3rvich.remote.util
 
 import ru.d3rvich.remote.JetGamesNetworkDataSource
+import ru.d3rvich.remote.ktor.NetworkResult
 import ru.d3rvich.remote.model.ApiPagingResult
 import ru.d3rvich.remote.model.GenreFull
 import ru.d3rvich.remote.model.Platform
-import ru.d3rvich.remote.retrofit_result.NetworkResult
 
 suspend fun JetGamesNetworkDataSource.getAllPlatforms(): NetworkResult<List<Platform>> {
     return collectAllPagingSource(apiCall = { page, pageSize -> getPlatforms(page, pageSize) })
@@ -31,5 +31,5 @@ private inline fun <T : Any> collectAllPagingSource(apiCall: (Int, Int) -> Netwo
         }
         page += 1
     } while (result.value.next != null)
-    return NetworkResult.Success.Value(resultList.toList())
+    return NetworkResult.Success(resultList.toList())
 }

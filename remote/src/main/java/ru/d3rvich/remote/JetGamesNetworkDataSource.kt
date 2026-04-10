@@ -1,5 +1,6 @@
 package ru.d3rvich.remote
 
+import ru.d3rvich.remote.ktor.NetworkResult
 import ru.d3rvich.remote.model.ApiPagingResult
 import ru.d3rvich.remote.model.GenreFull
 import ru.d3rvich.remote.model.Platform
@@ -7,7 +8,6 @@ import ru.d3rvich.remote.model.Screenshot
 import ru.d3rvich.remote.model.StoreLink
 import ru.d3rvich.remote.model.game.Game
 import ru.d3rvich.remote.model.game.GameDetail
-import ru.d3rvich.remote.retrofit_result.NetworkResult
 
 interface JetGamesNetworkDataSource {
     suspend fun getGames(

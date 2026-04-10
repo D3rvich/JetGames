@@ -9,7 +9,7 @@ import ru.d3rvich.core.domain.model.asLoadingResult
 import ru.d3rvich.data.model.LocalDataSource
 import ru.d3rvich.data.model.SyncTimeManager
 import ru.d3rvich.remote.JetGamesNetworkDataSource
-import ru.d3rvich.remote.retrofit_result.NetworkResult
+import ru.d3rvich.remote.ktor.NetworkResult
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant

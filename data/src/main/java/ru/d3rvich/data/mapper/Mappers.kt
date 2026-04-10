@@ -18,6 +18,7 @@ import ru.d3rvich.database.model.ParentPlatformDBO
 import ru.d3rvich.database.model.PlatformDBO
 import ru.d3rvich.database.model.RatingDBO
 import ru.d3rvich.database.model.StoreDBO
+import ru.d3rvich.remote.ktor.NetworkResult
 import ru.d3rvich.remote.model.StoreLink
 import ru.d3rvich.remote.model.Genre
 import ru.d3rvich.remote.model.GenreFull
@@ -28,7 +29,6 @@ import ru.d3rvich.remote.model.Screenshot
 import ru.d3rvich.remote.model.game.Game
 import ru.d3rvich.remote.model.game.GameDetail
 import ru.d3rvich.remote.model.Store
-import ru.d3rvich.remote.retrofit_result.NetworkResult
 import kotlin.time.ExperimentalTime
 
 internal fun Game.toGameEntity(): GameEntity =
