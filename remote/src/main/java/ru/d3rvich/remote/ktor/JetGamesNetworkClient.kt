@@ -3,13 +3,15 @@ package ru.d3rvich.remote.ktor
 import io.ktor.client.HttpClient
 import kotlinx.serialization.InternalSerializationApi
 import ru.d3rvich.remote.JetGamesNetworkDataSource
-import ru.d3rvich.remote.model.ApiPagingResult
-import ru.d3rvich.remote.model.GenreFull
-import ru.d3rvich.remote.model.Platform
-import ru.d3rvich.remote.model.Screenshot
-import ru.d3rvich.remote.model.StoreLink
+import ru.d3rvich.remote.model.common.ApiPagingResult
+import ru.d3rvich.remote.model.metadata.GenreFull
+import ru.d3rvich.remote.model.metadata.Platform
+import ru.d3rvich.remote.model.details.Screenshot
+import ru.d3rvich.remote.model.details.StoreLink
 import ru.d3rvich.remote.model.game.Game
-import ru.d3rvich.remote.model.game.GameDetail
+import ru.d3rvich.remote.model.details.GameDetails
+import ru.d3rvich.remote.result.NetworkResult
+import ru.d3rvich.remote.result.safeApiCall
 
 /**
  * Api documentation [here](https://api.rawg.io/docs/)
@@ -41,7 +43,7 @@ internal class JetGamesNetworkClient(private val client: HttpClient) : JetGamesN
         )
     }
 
-    override suspend fun getGameDetail(gameId: Int): NetworkResult<GameDetail> =
+    override suspend fun getGameDetail(gameId: Int): NetworkResult<GameDetails> =
         client.safeApiCall { Routes.Games.Detail(gameId = gameId) }
 
     override suspend fun getScreenshots(

@@ -23,7 +23,7 @@ import ru.d3rvich.data.mapper.toScreenshotEntityList
 import ru.d3rvich.data.paging.GamesPagingSource
 import ru.d3rvich.database.JetGamesDatabase
 import ru.d3rvich.remote.JetGamesNetworkDataSource
-import ru.d3rvich.remote.model.game.GameDetail
+import ru.d3rvich.remote.model.details.GameDetails
 
 /**
  * Created by Ilya Deryabin at 01.02.2024
@@ -55,7 +55,7 @@ internal class GamesRepositoryImpl(
         when (val detail = database.gamesDao.gameDetail(gameId)) {
             null -> {
                 apiService.getGameDetail(gameId = gameId).asResult()
-                    .map(GameDetail::toGameDetailEntity)
+                    .map(GameDetails::toGameDetailEntity)
             }
 
             else -> {

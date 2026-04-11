@@ -1,19 +1,15 @@
-package ru.d3rvich.remote.model
+package ru.d3rvich.remote.model.metadata
 
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
- * Created by Ilya Deryabin at 12.03.2024
+ * Created by Ilya Deryabin at 02.04.2024
  */
 @Serializable
 @OptIn(InternalSerializationApi::class)
-data class Genre(@SerialName("id") val id: Int, @SerialName("name") val name: String)
-
-@Serializable
-@OptIn(InternalSerializationApi::class)
-data class GenreFull(
+data class Platform(
     @SerialName("id") val id: Int,
     @SerialName("name") val name: String,
     @SerialName("image_background") val imageUrl: String?,

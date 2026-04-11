@@ -1,13 +1,13 @@
 package ru.d3rvich.remote
 
-import ru.d3rvich.remote.ktor.NetworkResult
-import ru.d3rvich.remote.model.ApiPagingResult
-import ru.d3rvich.remote.model.GenreFull
-import ru.d3rvich.remote.model.Platform
-import ru.d3rvich.remote.model.Screenshot
-import ru.d3rvich.remote.model.StoreLink
+import ru.d3rvich.remote.model.common.ApiPagingResult
+import ru.d3rvich.remote.model.metadata.GenreFull
+import ru.d3rvich.remote.model.metadata.Platform
+import ru.d3rvich.remote.model.details.Screenshot
+import ru.d3rvich.remote.model.details.StoreLink
 import ru.d3rvich.remote.model.game.Game
-import ru.d3rvich.remote.model.game.GameDetail
+import ru.d3rvich.remote.model.details.GameDetails
+import ru.d3rvich.remote.result.NetworkResult
 
 interface JetGamesNetworkDataSource {
     suspend fun getGames(
@@ -22,7 +22,7 @@ interface JetGamesNetworkDataSource {
         metacritic: String? = null,
     ): NetworkResult<ApiPagingResult<Game>>
 
-    suspend fun getGameDetail(gameId: Int): NetworkResult<GameDetail>
+    suspend fun getGameDetail(gameId: Int): NetworkResult<GameDetails>
 
     suspend fun getScreenshots(
         gameId: Int,

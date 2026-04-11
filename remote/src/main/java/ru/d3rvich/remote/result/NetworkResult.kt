@@ -1,4 +1,4 @@
-package ru.d3rvich.remote.ktor
+package ru.d3rvich.remote.result
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body

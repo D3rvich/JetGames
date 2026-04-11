@@ -1,17 +1,16 @@
-package ru.d3rvich.remote.model.game
+package ru.d3rvich.remote.model.details
 
 import kotlinx.datetime.LocalDate
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import ru.d3rvich.remote.model.GenreFull
-import ru.d3rvich.remote.model.ParentPlatformWrapper
-import ru.d3rvich.remote.model.Rating
-import ru.d3rvich.remote.model.StoreWrapper
+import ru.d3rvich.remote.model.metadata.GenreFull
+import ru.d3rvich.remote.model.metadata.ParentPlatformWrapper
+import ru.d3rvich.remote.model.metadata.Rating
 
 @Serializable
 @OptIn(InternalSerializationApi::class)
-data class GameDetail(
+data class GameDetails(
     @SerialName("id") val id: Int,
     @SerialName("name") val name: String,
     @SerialName("description_raw") val description: String?,
