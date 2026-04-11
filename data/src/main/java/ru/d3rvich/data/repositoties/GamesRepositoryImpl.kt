@@ -14,15 +14,16 @@ import ru.d3rvich.core.domain.model.Result
 import ru.d3rvich.core.domain.model.map
 import ru.d3rvich.core.domain.preferences.FilterPreferencesBody
 import ru.d3rvich.core.domain.repositories.GamesRepository
+import ru.d3rvich.data.mapper.asResult
 import ru.d3rvich.data.mapper.toGameDBO
 import ru.d3rvich.data.mapper.toGameDetailEntity
 import ru.d3rvich.data.mapper.toGameEntity
 import ru.d3rvich.data.mapper.toGameStoreEntity
 import ru.d3rvich.data.mapper.toScreenshotEntityList
 import ru.d3rvich.data.paging.GamesPagingSource
-import ru.d3rvich.data.util.repeatableCall
 import ru.d3rvich.database.JetGamesDatabase
 import ru.d3rvich.remote.JetGamesNetworkDataSource
+import ru.d3rvich.remote.model.game.GameDetail
 
 /**
  * Created by Ilya Deryabin at 01.02.2024
@@ -38,10 +39,10 @@ internal class GamesRepositoryImpl(
     }
 
     override fun getGames(
-        search: String,
         filterPreferencesBody: FilterPreferencesBody,
-    ): Flow<PagingData<GameEntity>> {
-        return Pager(
+        search: String,
+    ): Flow<PagingData<GameEntity>> =
+        Pager(
             config = PagingConfig(
                 pageSize = DEFAULT_PAGE_SIZE,
                 enablePlaceholders = false
@@ -49,32 +50,29 @@ internal class GamesRepositoryImpl(
             pagingSourceFactory = {
                 gamesPagingSourceFactory.create(search, filterPreferencesBody)
             }).flow
-    }
 
-    override suspend fun getGameDetail(gameId: Int): Result<GameDetailEntity> {
-        return when (val detail = database.gamesDao.gameDetail(gameId)) {
-            null -> apiService.repeatableCall {
-                getGameDetail(gameId = gameId)
-            }.map { it.toGameDetailEntity() }
+    override suspend fun getGameDetail(gameId: Int): Result<GameDetailEntity> =
+        when (val detail = database.gamesDao.gameDetail(gameId)) {
+            null -> {
+                apiService.getGameDetail(gameId = gameId).asResult()
+                    .map(GameDetail::toGameDetailEntity)
+            }
 
             else -> {
                 Result.Success(detail.toGameDetailEntity())
             }
         }
-    }
 
     override suspend fun getGameScreenshots(gameId: Int): Result<List<ScreenshotEntity>> =
-        apiService.repeatableCall {
-            getScreenshots(gameId = gameId)
-        }.map { it.results.toScreenshotEntityList() }
+        apiService.getScreenshots(gameId = gameId).asResult()
+            .map { it.results.toScreenshotEntityList() }
 
     override suspend fun getStoreLinksBy(gameId: Int): Result<List<StoreLinkEntity>> =
-        apiService.repeatableCall {
-            getGameStoresById(gameId)
-        }.map { result -> result.results.map { it.toGameStoreEntity() } }
+        apiService.getGameStoresById(gameId = gameId).asResult()
+            .map { result -> result.results.map { it.toGameStoreEntity() } }
 
-    override fun getFavoriteGames(search: String): Flow<PagingData<GameEntity>> {
-        return Pager(
+    override fun getFavoriteGames(search: String): Flow<PagingData<GameEntity>> =
+        Pager(
             config = PagingConfig(
                 pageSize = DEFAULT_PAGE_SIZE,
                 enablePlaceholders = false
@@ -87,26 +85,23 @@ internal class GamesRepositoryImpl(
                 }
             }
         ).flow.map { pagingData -> pagingData.map { gameDBO -> gameDBO.toGameEntity() } }
-    }
 
     override suspend fun isGameFavorite(gameId: Int): Boolean =
         database.gamesDao.isGameExist(gameId = gameId)
 
-    override suspend fun saveGameDetail(gameDetail: GameDetailEntity): Result<Unit> {
-        return try {
+    override suspend fun saveGameDetail(gameDetail: GameDetailEntity): Result<Unit> =
+        try {
             database.gamesDao.insert(game = gameDetail.toGameDBO())
             Result.Success(Unit)
         } catch (e: Exception) {
             Result.Failure(e)
         }
-    }
 
-    override suspend fun deleteGameDetail(gameDetail: GameDetailEntity): Result<Unit> {
-        return try {
+    override suspend fun deleteGameDetail(gameDetail: GameDetailEntity): Result<Unit> =
+        try {
             database.gamesDao.delete(game = gameDetail.toGameDBO())
             Result.Success(Unit)
         } catch (e: Exception) {
             Result.Failure(e)
         }
-    }
 }

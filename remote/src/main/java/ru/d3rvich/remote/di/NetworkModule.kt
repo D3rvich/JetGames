@@ -6,6 +6,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
+import io.ktor.client.plugins.HttpRequestRetry
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
@@ -34,7 +35,7 @@ internal object NetworkModule {
     @Provides
     fun provideHttpClient(): HttpClient = HttpClient(Android) {
         install(HttpTimeout) {
-            requestTimeoutMillis = 5_000
+            requestTimeoutMillis = 10_000
             connectTimeoutMillis = 15_000
             socketTimeoutMillis = 30_000
         }
@@ -48,6 +49,11 @@ internal object NetworkModule {
                 ignoreUnknownKeys = true
                 isLenient = true
             })
+        }
+        install(HttpRequestRetry) {
+            maxRetries = 2
+
+            delayMillis { retry -> retry * 1000L }
         }
         defaultRequest {
             url {
