@@ -1,31 +1,29 @@
 [versions]
 androidGradlePlugin = "8.11.1"
 androidTools = "31.11.1"
-androidxCore = "1.16.0"
+androidxCore = "1.18.0"
 kotlin = "2.2.0"
 hilt = "2.56.2"
 ksp = "2.2.0-2.0.2"
-androidxLifecycle = "2.9.1"
-androidxActivity = "1.10.1"
-androidxCompose = "1.8.3"
+androidxLifecycle = "2.10.0"
+androidxActivity = "1.13.0"
+androidxCompose = "1.10.6"
 androidxComposeMaterial3 = "1.3.2"
-androidxComposeBom = "2025.06.01"
-androidxPaging = "3.3.6"
-androidxComposeNavigation = "2.9.1"
-androidxHiltNavigationCompose = "1.2.0"
-androidxRoom = "2.7.2"
-androidxDataStore = "1.1.7"
-androidxBrowser = "1.8.0"
+androidxComposeBom = "2026.03.01"
+androidxPaging = "3.4.2"
+androidxComposeNavigation = "2.9.7"
+androidxHiltNavigationCompose = "1.3.0"
+androidxRoom = "2.8.4"
+androidxDataStore = "1.2.1"
+androidxBrowser = "1.10.0"
 timber = "5.0.1"
-coil = "3.2.0"
+coil = "3.4.0"
 kotlinxCoroutines = "1.10.2"
-kotlinxSerializationJson = "1.9.0"
+kotlinxSerializationJson = "1.10.0"
 kotlinxDatetime = "0.7.1"
 kotlinxCollectionsImmutable = "0.4.0"
-ktor = "3.2.2"
+ktor = "3.4.2"
 slf4j = "2.0.17-0"
-retrofit = "3.0.0"
-loggingInterceptor = "5.1.0"
 junit = "4.13.2"
 androidx-test-ext-junit = "1.2.1"
 espresso-core = "3.6.1"
@@ -60,9 +58,6 @@ coil-network = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", versi
 coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
 kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
-retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
-retrofit-kotlinSerailization = { group = "com.squareup.retrofit2", name = "converter-kotlinx-serialization", version.ref = "retrofit" }
-retrofit-loggingInterceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "loggingInterceptor" }
 ktor-client-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
 ktor-client-android = { group = "io.ktor", name = "ktor-client-android", version.ref = "ktor" }
 ktor-client-resources = { group = "io.ktor", name = "ktor-client-resources", version.ref = "ktor" }

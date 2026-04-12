@@ -23,11 +23,8 @@ android {
 }
 
 dependencies {
-    implementation(libs.retrofit)
-    implementation(libs.retrofit.loggingInterceptor)
     implementation(libs.kotlinx.serializationJson)
     implementation(libs.kotlinx.datetime)
-    implementation(libs.retrofit.kotlinSerailization)
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.android)
     implementation(libs.ktor.client.resources)

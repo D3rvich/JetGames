@@ -1,12 +1,11 @@
 package ru.d3rvich.common.components
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import ru.d3rvich.common.R
 
@@ -22,7 +21,7 @@ fun ScrollToTopButton(
     AnimatedVisibility(visible = isVisible, modifier = modifier) {
         FloatingActionButton(onClick = onButtonClick) {
             Icon(
-                imageVector = Icons.Default.KeyboardArrowUp,
+                painter = painterResource(R.drawable.keyboard_arrow_up_24px),
                 contentDescription = stringResource(R.string.scroll_to_top)
             )
         }

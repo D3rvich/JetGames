@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -24,9 +22,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -35,6 +34,7 @@ import ru.d3rvich.common.components.DefaultErrorView
 import ru.d3rvich.core.ui.components.GameListItemView
 import ru.d3rvich.core.ui.mapper.toGameUiModel
 import ru.d3rvich.favorites.model.FavoritesUiState
+import ru.d3rvich.common.R as uiR
 
 /**
  * Created by Ilya Deryabin at 26.04.2024
@@ -79,7 +79,7 @@ internal fun FavoritesScreen(
                 actions = {
                     IconButton(onClick = navigateToSettingsScreen) {
                         Icon(
-                            imageVector = Icons.Default.Settings,
+                            painter = painterResource(uiR.drawable.settings_24px),
                             contentDescription = stringResource(R.string.open_settings)
                         )
                     }
@@ -116,7 +116,8 @@ internal fun FavoritesScreen(
                 }
             }
 
-            items(count = pagingItems.itemCount,
+            items(
+                count = pagingItems.itemCount,
                 key = pagingItems.itemKey { it.id }) { index ->
                 pagingItems[index]?.let { item ->
                     GameListItemView(

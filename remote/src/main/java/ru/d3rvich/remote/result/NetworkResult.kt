@@ -6,8 +6,8 @@ import io.ktor.client.plugins.ResponseException
 import io.ktor.client.plugins.resources.get
 import io.ktor.client.statement.bodyAsText
 import io.ktor.client.statement.request
+import kotlinx.io.IOException
 import kotlinx.serialization.SerializationException
-import okio.IOException
 
 sealed interface NetworkResult<out T> {
     class Success<T>(val value: T) : NetworkResult<T>

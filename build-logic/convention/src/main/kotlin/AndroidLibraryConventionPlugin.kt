@@ -21,9 +21,9 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
 
             extensions.configure<LibraryExtension> {
                 configureKotlinAndroid(this)
-                lint.targetSdk = 35
+                lint.targetSdk = 36
                 testOptions {
-                    targetSdk = 35
+                    targetSdk = 36
                 }
                 buildTypes {
                     release {
