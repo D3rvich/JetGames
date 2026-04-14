@@ -12,14 +12,14 @@ import ru.d3rvich.data.model.SyncTimeManager
 import ru.d3rvich.data.model.localDataSource
 import ru.d3rvich.data.util.cashedRemoteRequest
 import ru.d3rvich.database.JetGamesDatabase
-import ru.d3rvich.remote.JetGamesApiService
+import ru.d3rvich.remote.JetGamesNetworkDataSource
 import ru.d3rvich.remote.util.getAllGenres
 
 /**
  * Created by Ilya Deryabin at 04.04.2024
  */
 internal class GenresRepositoryImpl(
-    private val apiService: JetGamesApiService,
+    private val apiService: JetGamesNetworkDataSource,
     private val database: JetGamesDatabase,
     private val syncTimeManager: SyncTimeManager,
 ) : GenresRepository {

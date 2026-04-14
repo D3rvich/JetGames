@@ -10,8 +10,6 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -19,7 +17,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import ru.d3rvich.filter.R
 
 /**
  * Created by Ilya Deryabin at 03.05.2024
@@ -63,7 +63,7 @@ internal object ChangeVisibilityContainerDefaults {
             label = "iconRotation"
         )
         Icon(
-            imageVector = Icons.Default.KeyboardArrowDown,
+            painter = painterResource(R.drawable.keyboard_arrow_down_24px),
             contentDescription = null,
             modifier = modifier.graphicsLayer(rotationZ = rotate)
         )
@@ -80,7 +80,7 @@ internal object ChangeVisibilityContainerDefaults {
             label = "iconRotation"
         )
         Icon(
-            imageVector = Icons.Default.KeyboardArrowDown,
+            painter = painterResource(R.drawable.keyboard_arrow_down_24px),
             contentDescription = null,
             modifier = modifier.graphicsLayer(rotationZ = rotate)
         )

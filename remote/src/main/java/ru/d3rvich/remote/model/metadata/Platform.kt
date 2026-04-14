@@ -1,5 +1,6 @@
-package ru.d3rvich.remote.model
+package ru.d3rvich.remote.model.metadata
 
+import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -7,6 +8,7 @@ import kotlinx.serialization.Serializable
  * Created by Ilya Deryabin at 02.04.2024
  */
 @Serializable
+@OptIn(InternalSerializationApi::class)
 data class Platform(
     @SerialName("id") val id: Int,
     @SerialName("name") val name: String,

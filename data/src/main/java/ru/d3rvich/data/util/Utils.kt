@@ -1,6 +1,5 @@
 package ru.d3rvich.data.util
 
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import ru.d3rvich.core.domain.model.LoadingResult
@@ -8,8 +7,6 @@ import ru.d3rvich.core.domain.model.Result
 import ru.d3rvich.core.domain.model.asLoadingResult
 import ru.d3rvich.data.model.LocalDataSource
 import ru.d3rvich.data.model.SyncTimeManager
-import ru.d3rvich.remote.JetGamesApiService
-import ru.d3rvich.remote.retrofit_result.RetrofitResult
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
@@ -49,26 +46,4 @@ internal fun <T : Any> cashedRemoteRequest(
     }
 }.asLoadingResult()
 
-internal suspend fun <T : Any> JetGamesApiService.repeatableCall(
-    repeatTimes: Int = 1,
-    call: suspend JetGamesApiService.() -> RetrofitResult<T>,
-): Result<T> {
-    require(repeatTimes >= 0) { "repeatTimes is expected to be greater or equal 0" }
-    return when (val result = call()) {
-        is RetrofitResult.Failure<*> -> {
-            if (repeatTimes > 0) {
-                delay(DelayTimeMillis)
-                repeatableCall(repeatTimes - 1, call)
-            } else {
-                Result.Failure(result.error ?: Exception("Unknown error"))
-            }
-        }
-
-        is RetrofitResult.Success -> {
-            Result.Success(result.value)
-        }
-    }
-}
-
-private const val DelayTimeMillis = 5000L
 private const val MIN_SYNC_DAYS = 7

@@ -18,8 +18,6 @@ import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -41,6 +39,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.util.lerp
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -52,6 +51,7 @@ import ru.d3rvich.screenshots.model.rememberDragToDismissState
 import ru.d3rvich.screenshots.views.PageIndicator
 import ru.d3rvich.screenshots.views.ScreenshotView
 import kotlin.math.absoluteValue
+import ru.d3rvich.common.R as uiR
 
 /**
  * Created by Ilya Deryabin at 12.04.2024
@@ -136,7 +136,7 @@ fun ScreenshotsScreen(
                                 navigationIcon = {
                                     IconButton(onClick = onBackPressed) {
                                         Icon(
-                                            imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                                            painter = painterResource(uiR.drawable.arrow_back_24px),
                                             contentDescription = "Navigate back"
                                         )
                                     }

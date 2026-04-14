@@ -11,8 +11,8 @@ import ru.d3rvich.core.domain.entities.ScreenshotEntity
 
 interface GamesRepository {
     fun getGames(
-        search: String = "",
         filterPreferencesBody: FilterPreferencesBody,
+        search: String = "",
     ): Flow<PagingData<GameEntity>>
 
     suspend fun getGameDetail(gameId: Int): Result<GameDetailEntity>

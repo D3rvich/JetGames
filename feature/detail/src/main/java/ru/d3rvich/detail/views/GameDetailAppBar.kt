@@ -17,10 +17,6 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.systemBarsIgnoringVisibility
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.windowInsetsTopHeight
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -43,6 +39,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -52,6 +49,7 @@ import coil3.compose.AsyncImage
 import ru.d3rvich.common.components.collapsing_appbar.CollapsingTopAppBar
 import ru.d3rvich.core.ui.theme.JetGamesTheme
 import ru.d3rvich.detail.R
+import ru.d3rvich.common.R as uiR
 
 /**
  * Created by Ilya Deryabin at 13.03.2024
@@ -120,7 +118,7 @@ private fun NavigationIcon(
             .copy(containerColor = MaterialTheme.colorScheme.background.copy(alpha = alphaFraction))
     ) {
         Icon(
-            imageVector = Icons.AutoMirrored.Default.ArrowBack,
+            painter = painterResource(uiR.drawable.arrow_back_24px),
             contentDescription = stringResource(R.string.navigate_back),
         )
     }
@@ -149,7 +147,10 @@ private fun Actions(
             label = "tint"
         )
         Icon(
-            imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+            painter = painterResource(
+                if (isFavorite) uiR.drawable.favorite_filled_24px
+                else uiR.drawable.favorite_24px
+            ),
             tint = tintAnimation,
             contentDescription = if (isFavorite) stringResource(R.string.remove_from_favorites) else
                 stringResource(R.string.add_to_favorites)

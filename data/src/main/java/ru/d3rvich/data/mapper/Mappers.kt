@@ -1,9 +1,7 @@
 package ru.d3rvich.data.mapper
 
-import kotlin.time.Clock
 import ru.d3rvich.core.domain.entities.GameDetailEntity
 import ru.d3rvich.core.domain.entities.GameEntity
-import ru.d3rvich.core.domain.entities.StoreLinkEntity
 import ru.d3rvich.core.domain.entities.GenreEntity
 import ru.d3rvich.core.domain.entities.GenreFullEntity
 import ru.d3rvich.core.domain.entities.ParentPlatformEntity
@@ -11,6 +9,7 @@ import ru.d3rvich.core.domain.entities.PlatformEntity
 import ru.d3rvich.core.domain.entities.RatingEntity
 import ru.d3rvich.core.domain.entities.ScreenshotEntity
 import ru.d3rvich.core.domain.entities.StoreEntity
+import ru.d3rvich.core.domain.entities.StoreLinkEntity
 import ru.d3rvich.core.domain.model.Result
 import ru.d3rvich.database.model.GameDBO
 import ru.d3rvich.database.model.GenreDBO
@@ -18,17 +17,18 @@ import ru.d3rvich.database.model.ParentPlatformDBO
 import ru.d3rvich.database.model.PlatformDBO
 import ru.d3rvich.database.model.RatingDBO
 import ru.d3rvich.database.model.StoreDBO
-import ru.d3rvich.remote.model.StoreLink
-import ru.d3rvich.remote.model.Genre
-import ru.d3rvich.remote.model.GenreFull
-import ru.d3rvich.remote.model.ParentPlatform
-import ru.d3rvich.remote.model.Platform
-import ru.d3rvich.remote.model.Rating
-import ru.d3rvich.remote.model.Screenshot
+import ru.d3rvich.remote.model.metadata.Genre
+import ru.d3rvich.remote.model.metadata.GenreFull
+import ru.d3rvich.remote.model.metadata.ParentPlatform
+import ru.d3rvich.remote.model.metadata.Platform
+import ru.d3rvich.remote.model.metadata.Rating
+import ru.d3rvich.remote.model.details.Screenshot
+import ru.d3rvich.remote.model.details.Store
+import ru.d3rvich.remote.model.details.StoreLink
 import ru.d3rvich.remote.model.game.Game
-import ru.d3rvich.remote.model.game.GameDetail
-import ru.d3rvich.remote.model.Store
-import ru.d3rvich.remote.retrofit_result.RetrofitResult
+import ru.d3rvich.remote.model.details.GameDetails
+import ru.d3rvich.remote.result.NetworkResult
+import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 internal fun Game.toGameEntity(): GameEntity =
@@ -44,7 +44,7 @@ internal fun Game.toGameEntity(): GameEntity =
         ratings = ratings?.map { it.toRatingEntity() }
     )
 
-internal fun GameDetail.toGameDetailEntity(): GameDetailEntity =
+internal fun GameDetails.toGameDetailEntity(): GameDetailEntity =
     GameDetailEntity(
         id = id,
         name = name,
@@ -160,7 +160,7 @@ internal fun StoreEntity.toStoreBDO(): StoreDBO = StoreDBO(id, name, url)
 
 internal fun StoreDBO.toStoreEntity(): StoreEntity = StoreEntity(id, name, url)
 
-internal fun <T : Any> RetrofitResult<T>.asResult(): Result<T> = when (this) {
-    is RetrofitResult.Failure<*> -> Result.Failure(this.error ?: Exception("Unknown error"))
-    is RetrofitResult.Success -> Result.Success(this.value)
+internal fun <T : Any> NetworkResult<T>.asResult(): Result<T> = when (this) {
+    is NetworkResult.Failure<*> -> Result.Failure(this.error ?: Exception("Unknown error"))
+    is NetworkResult.Success -> Result.Success(this.value)
 }

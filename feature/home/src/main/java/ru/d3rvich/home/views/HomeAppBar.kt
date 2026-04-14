@@ -8,10 +8,6 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.DropdownMenu
@@ -90,7 +86,7 @@ internal fun HomeAppBar(
                     showSearch = true
                 }) {
                     Icon(
-                        imageVector = Icons.Default.Search,
+                        painter = painterResource(CommonR.drawable.search_24px),
                         contentDescription = stringResource(HomeR.string.open_search)
                     )
                 }
@@ -147,7 +143,7 @@ internal fun HomeAppBar(
             )
             IconButton(onClick = navigateToSettingsScreen) {
                 Icon(
-                    imageVector = Icons.Default.Settings,
+                    painter = painterResource(CommonR.drawable.settings_24px),
                     contentDescription = stringResource(R.string.open_settings)
                 )
             }
@@ -198,7 +194,7 @@ private fun ListViewModeMenu(
                     trailingIcon = {
                         AnimatedVisibility(visible = isSelected) {
                             Icon(
-                                imageVector = Icons.Default.Check,
+                                painter = painterResource(CommonR.drawable.check_24px),
                                 contentDescription = stringResource(HomeR.string.selected)
                             )
                         }

@@ -17,7 +17,7 @@ import ru.d3rvich.data.repositoties.PlatformsRepositoryImpl
 import ru.d3rvich.data.repositoties.SettingsRepositoryImpl
 import ru.d3rvich.database.JetGamesDatabase
 import ru.d3rvich.datastore.JetGamesPreferencesDataStore
-import ru.d3rvich.remote.JetGamesApiService
+import ru.d3rvich.remote.JetGamesNetworkDataSource
 
 /**
  * Created by Ilya Deryabin at 01.02.2024
@@ -29,7 +29,7 @@ internal object DataModule {
     @Provides
     fun provideGamesRepository(
         pagingSourceFactory: GamesPagingSource.GamesPagingSourceFactory,
-        apiService: JetGamesApiService,
+        apiService: JetGamesNetworkDataSource,
         database: JetGamesDatabase,
     ): GamesRepository = GamesRepositoryImpl(
         gamesPagingSourceFactory = pagingSourceFactory,
@@ -39,7 +39,7 @@ internal object DataModule {
 
     @Provides
     fun providePlatformsRepository(
-        apiService: JetGamesApiService,
+        apiService: JetGamesNetworkDataSource,
         database: JetGamesDatabase,
         syncManagerFactory: SyncTimeManagerImpl.Factory,
     ): PlatformsRepository = PlatformsRepositoryImpl(
@@ -50,7 +50,7 @@ internal object DataModule {
 
     @Provides
     fun providesGenresRepository(
-        apiService: JetGamesApiService,
+        apiService: JetGamesNetworkDataSource,
         database: JetGamesDatabase,
         syncManagerFactory: SyncTimeManagerImpl.Factory,
     ): GenresRepository = GenresRepositoryImpl(

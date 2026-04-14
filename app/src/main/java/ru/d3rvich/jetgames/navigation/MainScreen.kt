@@ -22,6 +22,7 @@ import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
@@ -125,11 +126,10 @@ private fun NavRail(modifier: Modifier = Modifier, navRouter: NavRouter) {
                 },
                 icon = {
                     Icon(
-                        imageVector = if (isSelected) {
-                            destination.selectedIcon
-                        } else {
-                            destination.unselectedIcon
-                        },
+                        painter = painterResource(
+                            if (isSelected) destination.selectedIconResId
+                            else destination.unselectedIconResId
+                        ),
                         contentDescription = destination.route.toString()
                     )
                 },
@@ -157,11 +157,10 @@ private fun BottomNavBar(modifier: Modifier = Modifier, navRouter: NavRouter) {
                 },
                 icon = {
                     Icon(
-                        imageVector = if (isSelected) {
-                            destination.selectedIcon
-                        } else {
-                            destination.unselectedIcon
-                        },
+                        painter = painterResource(
+                            if (isSelected) destination.selectedIconResId
+                            else destination.unselectedIconResId
+                        ),
                         contentDescription = destination.route.toString()
                     )
                 },
