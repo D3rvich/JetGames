@@ -4,9 +4,8 @@ import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.dependencies
 import ru.d3rvich.jetgames.configureKotlinAndroid
-import ru.d3rvich.jetgames.implementation
 import ru.d3rvich.jetgames.libs
-import ru.d3rvich.jetgames.testImplementation
+import org.gradle.kotlin.dsl.apply
 
 /**
  * Created by Ilya Deryabin at 11.05.2024
@@ -14,10 +13,7 @@ import ru.d3rvich.jetgames.testImplementation
 class AndroidLibraryConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
-            pluginManager.apply {
-                apply("com.android.library")
-                apply("org.jetbrains.kotlin.android")
-            }
+            apply(plugin = "com.android.library")
 
             extensions.configure<LibraryExtension> {
                 configureKotlinAndroid(this)
@@ -41,9 +37,9 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
             }
 
             dependencies {
-                implementation(libs.findLibrary("timber").get())
+                "implementation"(libs.findLibrary("timber").get())
 
-                testImplementation(libs.findLibrary("junit").get())
+                "testImplementation"(libs.findLibrary("junit").get())
             }
         }
     }
