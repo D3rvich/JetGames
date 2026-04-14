@@ -34,6 +34,7 @@ internal object NetworkModule {
     @Singleton
     @Provides
     fun provideHttpClient(): HttpClient = HttpClient(Android) {
+        expectSuccess = true
         install(HttpTimeout) {
             requestTimeoutMillis = 10_000
             connectTimeoutMillis = 15_000
