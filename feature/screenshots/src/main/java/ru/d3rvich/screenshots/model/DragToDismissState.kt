@@ -9,6 +9,7 @@ import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.saveable.Saver
@@ -72,10 +73,11 @@ internal class DragToDismissState internal constructor(
 
     var heightOffset by mutableFloatStateOf(initialHeightOffset)
 
-    val fraction: Float
-        get() = if (heightToDismiss != 0f) {
+    val fraction: Float by derivedStateOf {
+        if (heightToDismiss != 0f) {
             (abs(heightOffset) / heightToDismiss).coerceIn(0f, 1f)
         } else 0f
+    }
 }
 
 internal object DragToDismissStateDefaults {

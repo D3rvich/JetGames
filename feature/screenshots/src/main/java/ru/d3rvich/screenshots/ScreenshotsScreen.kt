@@ -28,6 +28,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,10 +36,10 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.util.lerp
 import androidx.core.view.WindowCompat
@@ -78,11 +79,15 @@ fun ScreenshotsScreen(
                     this@BoxWithConstraints.maxHeight.toPx() / 6
                 }
                 val dragState = rememberDragToDismissState(heightToDismiss = heightToDismiss)
+                val backgroundColor = MaterialTheme.colorScheme.background
                 Surface(
-                    modifier = modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background.copy(
-                        alpha = lerp(1f, 0.5f, dragState.fraction)
-                    )
+                    modifier = modifier
+                        .fillMaxSize()
+                        .drawBehind {
+                            val alpha = lerp(1f, 0.5f, dragState.fraction)
+                            drawRect(color = backgroundColor.copy(alpha = alpha))
+                        },
+                    color = Color.Transparent
                 ) {
                     Box(
                         modifier = Modifier
@@ -112,16 +117,11 @@ fun ScreenshotsScreen(
                             val screenshot = screenshots[page]
                             ScreenshotView(
                                 screenshot = screenshot,
-                                pageOffset = ((pagerState.currentPage - page) +
-                                        pagerState.currentPageOffsetFraction)
-                                    .absoluteValue,
-                                dragToDismissState = dragState,
-                                onHeightOffsetChange = {
-                                    showWidgets = false
+                                pageOffset = {
+                                    ((pagerState.currentPage - page) +
+                                            pagerState.currentPageOffsetFraction).absoluteValue
                                 },
-                                onDismissRequest = {
-                                    onBackPressed()
-                                }
+                                dragToDismissState = dragState
                             )
                         }
                         AnimateWidgetVisibility(
@@ -197,20 +197,17 @@ private enum class AnimationDirection {
 @Composable
 private fun SystemBarsController(showSystemBars: Boolean) {
     val context = LocalContext.current
-    val view = LocalView.current
-    val window = context.findActivity().window
-    val insetsController = WindowCompat.getInsetsController(window, window.decorView)
+    val window = remember(context) { context.findActivity().window }
+    val insetsController =
+        remember(window) { WindowCompat.getInsetsController(window, window.decorView) }
     val darkTheme = isSystemInDarkTheme()
-    DisposableEffect(showSystemBars) {
-        if (!showSystemBars) {
-            insetsController.apply {
+    LaunchedEffect(showSystemBars) {
+        insetsController.apply {
+            if (!showSystemBars) {
                 hide(WindowInsetsCompat.Type.systemBars())
                 systemBarsBehavior =
                     WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-            }
-        }
-        onDispose {
-            insetsController.apply {
+            } else {
                 show(WindowInsetsCompat.Type.systemBars())
                 systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
             }
@@ -218,7 +215,9 @@ private fun SystemBarsController(showSystemBars: Boolean) {
     }
     DisposableEffect(Unit) {
         onDispose {
-            WindowCompat.getInsetsController(window, view).apply {
+            insetsController.apply {
+                show(WindowInsetsCompat.Type.systemBars())
+                systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
                 isAppearanceLightStatusBars = !darkTheme
                 isAppearanceLightNavigationBars = !darkTheme
             }
