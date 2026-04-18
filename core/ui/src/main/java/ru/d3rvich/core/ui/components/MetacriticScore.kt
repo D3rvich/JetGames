@@ -22,6 +22,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import ru.d3rvich.core.domain.model.ThemeType
+import ru.d3rvich.core.domain.model.UserPreferences
+import ru.d3rvich.core.ui.model.asUiState
 import ru.d3rvich.core.ui.theme.JetGamesTheme
 
 /**
@@ -63,7 +66,7 @@ fun MetacriticScore(
 @Preview(showBackground = true)
 @Composable
 private fun MetacriticPreview_Light() {
-    JetGamesTheme(darkTheme = false) {
+    JetGamesTheme(UserPreferences(theme = ThemeType.Light).asUiState()) {
         Row(
             modifier = Modifier
                 .height(100.dp)
@@ -85,7 +88,7 @@ private fun MetacriticPreview_Light() {
 )
 @Composable
 private fun MetacriticScorePreview_Dark() {
-    JetGamesTheme(darkTheme = true) {
+    JetGamesTheme(UserPreferences(theme = ThemeType.Dark).asUiState()) {
         Surface(color = MaterialTheme.colorScheme.background) {
             Row(
                 modifier = Modifier

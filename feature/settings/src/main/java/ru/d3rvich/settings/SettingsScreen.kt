@@ -33,8 +33,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import ru.d3rvich.core.domain.repositories.ColorModeType
-import ru.d3rvich.core.domain.repositories.ThemeType
+import ru.d3rvich.core.domain.model.ColorModeType
+import ru.d3rvich.core.domain.model.ThemeType
 import ru.d3rvich.core.ui.theme.JetGamesTheme
 import ru.d3rvich.common.R as uiR
 

@@ -9,10 +9,16 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import ru.d3rvich.core.domain.model.ColorModeType
+import ru.d3rvich.core.domain.model.ThemeType
+import ru.d3rvich.core.domain.model.UserPreferences
+import ru.d3rvich.core.ui.model.UserPreferencesUiState
+import ru.d3rvich.core.ui.model.asUiState
 import ru.d3rvich.core.ui.utils.findActivity
 
 private val DarkColorScheme = darkColorScheme(
@@ -41,11 +47,18 @@ private val LightColorScheme = lightColorScheme(
 
 @Composable
 fun JetGamesTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    userPreferencesUiState: UserPreferencesUiState = UserPreferences().asUiState(),
     content: @Composable () -> Unit,
 ) {
+    val userPreferences =
+        remember(userPreferencesUiState) { userPreferencesUiState.userPreferences }
+    val dynamicColor =
+        remember(userPreferences) { userPreferences.colorMode == ColorModeType.Dynamic }
+    val darkTheme = when (userPreferences.theme) {
+        ThemeType.Light -> false
+        ThemeType.Dark -> true
+        ThemeType.System -> isSystemInDarkTheme()
+    }
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current

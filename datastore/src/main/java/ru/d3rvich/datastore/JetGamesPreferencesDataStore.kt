@@ -9,9 +9,9 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import ru.d3rvich.core.domain.repositories.ColorModeType
-import ru.d3rvich.core.domain.repositories.SettingsData
-import ru.d3rvich.core.domain.repositories.ThemeType
+import ru.d3rvich.core.domain.model.ColorModeType
+import ru.d3rvich.core.domain.model.ThemeType
+import ru.d3rvich.core.domain.model.UserPreferences
 
 class JetGamesPreferencesDataStore(private val context: Context) {
 
@@ -25,12 +25,12 @@ class JetGamesPreferencesDataStore(private val context: Context) {
         preferences[PreferencesScheme.SYNC_TIME_GENRES] ?: DEFAULT_TIMESTAMP
     }
 
-    val settingsData: Flow<SettingsData?> = context.dataStore.data.map { preferences ->
+    val userPreferences: Flow<UserPreferences> = context.dataStore.data.map { preferences ->
         val themeRaw = preferences[PreferencesScheme.THEME_TYPE]
         val colorRaw = preferences[PreferencesScheme.COLOR_MODE]
         val theme = if (themeRaw != null) ThemeType.valueOf(themeRaw) else ThemeType.System
         val color = if (colorRaw != null) ColorModeType.valueOf(colorRaw) else ColorModeType.Default
-        SettingsData(theme, color)
+        UserPreferences(theme, color)
     }
 
     suspend fun setTheme(theme: ThemeType) {
@@ -59,7 +59,7 @@ class JetGamesPreferencesDataStore(private val context: Context) {
 }
 
 
-private const val DATASTORE_NAME = "settings"
+private const val DATASTORE_NAME = "user_preferences"
 
 private object PreferencesScheme {
     val THEME_TYPE = stringPreferencesKey("THEME_TYPE")

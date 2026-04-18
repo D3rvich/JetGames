@@ -7,14 +7,14 @@ import dagger.hilt.android.components.ViewModelComponent
 import ru.d3rvich.core.domain.repositories.GamesRepository
 import ru.d3rvich.core.domain.repositories.GenresRepository
 import ru.d3rvich.core.domain.repositories.PlatformsRepository
-import ru.d3rvich.core.domain.repositories.SettingsRepository
+import ru.d3rvich.core.domain.repositories.UserPreferencesRepository
 import ru.d3rvich.data.model.SyncField
 import ru.d3rvich.data.model.SyncTimeManagerImpl
 import ru.d3rvich.data.paging.GamesPagingSource
 import ru.d3rvich.data.repositoties.GamesRepositoryImpl
 import ru.d3rvich.data.repositoties.GenresRepositoryImpl
 import ru.d3rvich.data.repositoties.PlatformsRepositoryImpl
-import ru.d3rvich.data.repositoties.SettingsRepositoryImpl
+import ru.d3rvich.data.repositoties.UserPreferencesRepositoryImpl
 import ru.d3rvich.database.JetGamesDatabase
 import ru.d3rvich.datastore.JetGamesPreferencesDataStore
 import ru.d3rvich.remote.JetGamesNetworkDataSource
@@ -60,6 +60,6 @@ internal object DataModule {
     )
 
     @Provides
-    fun provideSettingsRepository(dataStore: JetGamesPreferencesDataStore): SettingsRepository =
-        SettingsRepositoryImpl(dataStore = dataStore)
+    fun provideSettingsRepository(dataStore: JetGamesPreferencesDataStore): UserPreferencesRepository =
+        UserPreferencesRepositoryImpl(dataStore = dataStore)
 }

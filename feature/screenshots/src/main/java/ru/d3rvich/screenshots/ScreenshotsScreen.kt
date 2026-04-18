@@ -45,6 +45,11 @@ import androidx.compose.ui.util.lerp
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import ru.d3rvich.core.domain.model.ColorModeType
+import ru.d3rvich.core.domain.model.ThemeType
+import ru.d3rvich.core.domain.model.UserPreferences
+import ru.d3rvich.core.ui.model.asUiState
+import ru.d3rvich.core.ui.settings.LocalUserPreferences
 import ru.d3rvich.core.ui.theme.JetGamesTheme
 import ru.d3rvich.core.ui.utils.findActivity
 import ru.d3rvich.screenshots.model.draggableScreenshot
@@ -72,7 +77,8 @@ fun ScreenshotsScreen(
         onBackPressed()
     }
     SystemBarsController(showSystemBars = showWidgets)
-    JetGamesTheme(dynamicColor = false, darkTheme = true) {
+    val darkPreferences = UserPreferences(ThemeType.Dark, ColorModeType.Default).asUiState()
+    JetGamesTheme(darkPreferences) {
         CompositionLocalProvider(LocalOverscrollFactory provides null) {
             BoxWithConstraints {
                 val heightToDismiss = with(LocalDensity.current) {
@@ -200,7 +206,12 @@ private fun SystemBarsController(showSystemBars: Boolean) {
     val window = remember(context) { context.findActivity().window }
     val insetsController =
         remember(window) { WindowCompat.getInsetsController(window, window.decorView) }
-    val darkTheme = isSystemInDarkTheme()
+    val userPreferences = LocalUserPreferences.current
+    val darkTheme = when (userPreferences.userPreferences.theme) {
+        ThemeType.Light -> false
+        ThemeType.Dark -> true
+        ThemeType.System -> isSystemInDarkTheme()
+    }
     LaunchedEffect(showSystemBars) {
         insetsController.apply {
             if (!showSystemBars) {
