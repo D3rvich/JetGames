@@ -32,16 +32,15 @@ import ru.d3rvich.core.ui.theme.JetGamesTheme
 
 @Composable
 fun GameGridItemView(
-    modifier: Modifier = Modifier,
     game: GameUiModel?,
+    modifier: Modifier = Modifier,
     isLoading: Boolean = false,
-    onItemClick: ((gameId: Int) -> Unit)? = null,
+    onItemClick: (gameId: Int) -> Unit = { },
 ) {
     if (isLoading) {
         GameGridItemLoadingView(modifier = modifier)
     } else {
         requireNotNull(game)
-        requireNotNull(onItemClick)
         GameGridItemView(
             modifier = modifier,
             game = game,
@@ -53,7 +52,9 @@ fun GameGridItemView(
 @Composable
 private fun GameGridItemLoadingView(modifier: Modifier = Modifier) {
     Card(
-        modifier = modifier.padding(0.dp).widthIn(max = 200.dp),
+        modifier = modifier
+            .padding(0.dp)
+            .widthIn(max = 200.dp),
     ) {
         Box(
             modifier = Modifier
@@ -91,8 +92,8 @@ private fun GameGridItemLoadingView(modifier: Modifier = Modifier) {
 
 @Composable
 private fun GameGridItemView(
-    modifier: Modifier = Modifier,
     game: GameUiModel,
+    modifier: Modifier = Modifier,
     onItemClick: (gameId: Int) -> Unit,
 ) {
     Column(

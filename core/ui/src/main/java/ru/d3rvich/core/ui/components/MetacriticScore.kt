@@ -2,7 +2,6 @@ package ru.d3rvich.core.ui.components
 
 import android.content.res.Configuration
 import androidx.compose.foundation.border
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
@@ -10,9 +9,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -25,6 +24,8 @@ import androidx.compose.ui.unit.dp
 import ru.d3rvich.core.domain.model.ThemeType
 import ru.d3rvich.core.domain.model.UserPreferences
 import ru.d3rvich.core.ui.model.asUiState
+import ru.d3rvich.core.ui.model.isDarkTheme
+import ru.d3rvich.core.ui.settings.LocalUserPreferences
 import ru.d3rvich.core.ui.theme.JetGamesTheme
 
 /**
@@ -35,14 +36,23 @@ fun MetacriticScore(
     modifier: Modifier = Modifier,
     metacriticScore: Int,
     fontSize: TextUnit = TextUnit.Unspecified,
-    textColor: Color = if (isSystemInDarkTheme()) Color.White else Color.Black,
+    textColor: Color? = null,
     fillBackground: Boolean = false,
 ) {
-    val color = when (metacriticScore) {
-        in 0..49 -> Color.Red
-        in 50..74 -> Color.Yellow
-        in 75..100 -> Color.Green
-        else -> error("A metacritic score must be in range [0..100]")
+    val userPreferences = LocalUserPreferences.current.userPreferences
+    val isDark = userPreferences.isDarkTheme()
+    val textColor = textColor ?: if (isDark) {
+        Color.White
+    } else {
+        Color.Black
+    }
+    val color = remember(metacriticScore) {
+        when (metacriticScore) {
+            in 0..49 -> Color.Red
+            in 50..74 -> Color.Yellow
+            in 75..100 -> Color.Green
+            else -> error("A metacritic score must be in range [0..100]")
+        }
     }
     Text(
         modifier = modifier
@@ -87,20 +97,18 @@ private fun MetacriticPreview_Light() {
     backgroundColor = 0xFF000000
 )
 @Composable
-private fun MetacriticScorePreview_Dark() {
+private fun MetacriticPreview_Dark() {
     JetGamesTheme(UserPreferences(theme = ThemeType.Dark).asUiState()) {
-        Surface(color = MaterialTheme.colorScheme.background) {
-            Row(
-                modifier = Modifier
-                    .height(100.dp)
-                    .width(200.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                MetacriticScore(metacriticScore = 30)
-                MetacriticScore(metacriticScore = 74)
-                MetacriticScore(metacriticScore = 81)
-            }
+        Row(
+            modifier = Modifier
+                .height(100.dp)
+                .width(200.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            MetacriticScore(metacriticScore = 30)
+            MetacriticScore(metacriticScore = 74)
+            MetacriticScore(metacriticScore = 81)
         }
     }
 }

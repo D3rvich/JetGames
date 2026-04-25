@@ -11,13 +11,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dagger.hilt.android.AndroidEntryPoint
-import ru.d3rvich.core.ui.settings.LocalUserPreferences
 import ru.d3rvich.core.ui.theme.JetGamesTheme
 import ru.d3rvich.jetgames.navigation.SetupNavGraph
 
@@ -39,17 +37,15 @@ class MainActivity : ComponentActivity() {
         setContent {
             val windowSizeClass = calculateWindowSizeClass(this)
             val userPreferences by viewModel.userPreferences.collectAsStateWithLifecycle()
-            CompositionLocalProvider(LocalUserPreferences provides userPreferences) {
-                JetGamesTheme(userPreferencesUiState = userPreferences) {
-                    // A surface container using the 'background' color from the theme
-                    Surface(
-                        modifier = Modifier.fillMaxSize(),
-                        color = MaterialTheme.colorScheme.background
-                    ) {
-                        SetupNavGraph(
-                            windowSizeClass = windowSizeClass,
-                        )
-                    }
+            JetGamesTheme(userPreferencesUiState = userPreferences) {
+                // A surface container using the 'background' color from the theme
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    SetupNavGraph(
+                        windowSizeClass = windowSizeClass,
+                    )
                 }
             }
         }

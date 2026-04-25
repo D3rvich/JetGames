@@ -8,6 +8,7 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
@@ -19,6 +20,7 @@ import ru.d3rvich.core.domain.model.ThemeType
 import ru.d3rvich.core.domain.model.UserPreferences
 import ru.d3rvich.core.ui.model.UserPreferencesUiState
 import ru.d3rvich.core.ui.model.asUiState
+import ru.d3rvich.core.ui.settings.LocalUserPreferences
 import ru.d3rvich.core.ui.utils.findActivity
 
 private val DarkColorScheme = darkColorScheme(
@@ -83,9 +85,11 @@ fun JetGamesTheme(
         }
     }
 
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography,
-        content = content,
-    )
+    CompositionLocalProvider(LocalUserPreferences provides userPreferencesUiState) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            typography = Typography,
+            content = content,
+        )
+    }
 }

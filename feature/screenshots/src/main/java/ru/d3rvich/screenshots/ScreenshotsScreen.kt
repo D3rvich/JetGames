@@ -9,7 +9,6 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.LocalOverscrollFactory
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.WindowInsets
@@ -49,6 +48,7 @@ import ru.d3rvich.core.domain.model.ColorModeType
 import ru.d3rvich.core.domain.model.ThemeType
 import ru.d3rvich.core.domain.model.UserPreferences
 import ru.d3rvich.core.ui.model.asUiState
+import ru.d3rvich.core.ui.model.isDarkTheme
 import ru.d3rvich.core.ui.settings.LocalUserPreferences
 import ru.d3rvich.core.ui.theme.JetGamesTheme
 import ru.d3rvich.core.ui.utils.findActivity
@@ -206,12 +206,8 @@ private fun SystemBarsController(showSystemBars: Boolean) {
     val window = remember(context) { context.findActivity().window }
     val insetsController =
         remember(window) { WindowCompat.getInsetsController(window, window.decorView) }
-    val userPreferences = LocalUserPreferences.current
-    val darkTheme = when (userPreferences.userPreferences.theme) {
-        ThemeType.Light -> false
-        ThemeType.Dark -> true
-        ThemeType.System -> isSystemInDarkTheme()
-    }
+    val userPreferences = LocalUserPreferences.current.userPreferences
+    val darkTheme = userPreferences.isDarkTheme()
     LaunchedEffect(showSystemBars) {
         insetsController.apply {
             if (!showSystemBars) {
