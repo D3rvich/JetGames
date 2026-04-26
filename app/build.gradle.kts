@@ -25,17 +25,17 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:domain"))
-    implementation(project(":core:ui"))
-    implementation(project(":core:data"))
-    implementation(project(":common"))
-    implementation(project(":feature:home"))
-    implementation(project(":feature:browse"))
-    implementation(project(":feature:favorites"))
-    implementation(project(":feature:filter"))
-    implementation(project(":feature:detail"))
-    implementation(project(":feature:screenshots"))
-    implementation(project(":feature:settings"))
+    implementation(projects.core.domain)
+    implementation(projects.core.ui)
+    implementation(projects.core.data)
+    implementation(projects.common)
+    implementation(projects.feature.home)
+    implementation(projects.feature.browse)
+    implementation(projects.feature.favorites)
+    implementation(projects.feature.filter)
+    implementation(projects.feature.detail)
+    implementation(projects.feature.screenshots)
+    implementation(projects.feature.settings)
 
     implementation(libs.androidx.lifecycle.runtime)
     implementation(libs.androidx.activity.compose)

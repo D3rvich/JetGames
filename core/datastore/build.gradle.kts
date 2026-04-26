@@ -7,7 +7,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:domain"))
+    implementation(projects.core.domain)
     implementation(libs.androidx.datastore)
     testImplementation(libs.junit)
 }

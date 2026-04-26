@@ -7,8 +7,8 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:domain"))
-    implementation(project(":common"))
+    implementation(projects.core.domain)
+    implementation(projects.common)
 
     implementation(libs.kotlinx.collections.immutable)
     implementation(libs.kotlinx.datetime)
