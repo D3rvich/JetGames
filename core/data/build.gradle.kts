@@ -9,9 +9,9 @@ android {
 
 dependencies {
     implementation(project(":core:domain"))
-    implementation(project(":datastore"))
-    implementation(project(":database"))
-    implementation(project(":remote"))
+    implementation(project(":core:datastore"))
+    implementation(project(":core:database"))
+    implementation(project(":core:remote"))
 
     implementation(libs.kotlinx.datetime)
 
