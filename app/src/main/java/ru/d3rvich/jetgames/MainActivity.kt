@@ -2,7 +2,6 @@ package ru.d3rvich.jetgames
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -11,11 +10,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.core.view.WindowCompat
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dagger.hilt.android.AndroidEntryPoint
+import ru.d3rvich.core.domain.model.UserPreferences
+import ru.d3rvich.core.ui.model.asUiState
 import ru.d3rvich.core.ui.theme.JetGamesTheme
 import ru.d3rvich.jetgames.navigation.SetupNavGraph
 
@@ -26,18 +26,18 @@ class MainActivity : ComponentActivity() {
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-        enableEdgeToEdge(
-            navigationBarStyle = SystemBarStyle.light(
-                scrim = android.graphics.Color.TRANSPARENT,
-                darkScrim = android.graphics.Color.TRANSPARENT
-            )
-        )
+        val splashScreen = installSplashScreen()
+        splashScreen.setKeepOnScreenCondition {
+            viewModel.uiState.value.shouldKeepSplash()
+        }
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         setContent {
             val windowSizeClass = calculateWindowSizeClass(this)
-            val userPreferences by viewModel.userPreferences.collectAsStateWithLifecycle()
-            JetGamesTheme(userPreferencesUiState = userPreferences) {
+            val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
+            val userPreferences =
+                (uiState as? MainActivityUiState.Success)?.userPreferences ?: UserPreferences()
+            JetGamesTheme(userPreferencesUiState = userPreferences.asUiState()) {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),

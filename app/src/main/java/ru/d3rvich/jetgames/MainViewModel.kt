@@ -9,18 +9,25 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import ru.d3rvich.core.domain.model.UserPreferences
 import ru.d3rvich.core.domain.repositories.UserPreferencesRepository
-import ru.d3rvich.core.ui.model.UserPreferencesUiState
-import ru.d3rvich.core.ui.model.asUiState
 import javax.inject.Inject
 
 @HiltViewModel
 internal class MainViewModel @Inject constructor(userPreferencesRepository: UserPreferencesRepository) :
     ViewModel() {
-    val userPreferences: StateFlow<UserPreferencesUiState> =
-        userPreferencesRepository.getUserPreferences().map { it.asUiState() }.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(),
-            initialValue = UserPreferences().asUiState()
-        )
 
+    val uiState: StateFlow<MainActivityUiState> =
+        userPreferencesRepository.getUserPreferences().map {
+            MainActivityUiState.Success(it)
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue = MainActivityUiState.Loading
+        )
+}
+
+sealed interface MainActivityUiState {
+    data object Loading : MainActivityUiState
+    data class Success(val userPreferences: UserPreferences) : MainActivityUiState
+
+    fun shouldKeepSplash() = this is Loading
 }

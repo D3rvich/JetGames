@@ -37,6 +37,7 @@ dependencies {
     implementation(projects.feature.screenshots)
     implementation(projects.feature.settings)
 
+    implementation(libs.splashscreen)
     implementation(libs.androidx.lifecycle.runtime)
     implementation(libs.androidx.activity.compose)
 
@@ -52,7 +53,6 @@ dependencies {
 
     // Coroutines
     implementation(libs.kotlinx.coroutines)
-
     implementation(libs.kotlinx.serializationJson)
 
     androidTestImplementation(libs.androidx.test.ext.junit)
