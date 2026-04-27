@@ -1,6 +1,7 @@
 package ru.d3rvich.common.navigation
 
 import androidx.navigation.NavController
+import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
@@ -10,25 +11,25 @@ import java.nio.charset.StandardCharsets
  */
 object Screens {
     @Serializable
-    data object Home
+    data object Home: NavKey
 
     @Serializable
-    data object Browse
+    data object Browse: NavKey
 
     @Serializable
-    data object Favorites
+    data object Favorites: NavKey
 
     @Serializable
-    data class GameDetail(val gameId: Int)
+    data class GameDetail(val gameId: Int): NavKey
 
     @Serializable
-    data object Filter
+    data object Filter: NavKey
 
     @Serializable
-    data class Screenshots(val selectedScreenshot: Int, val screenshots: List<String>)
+    data class Screenshots(val selectedScreenshot: Int, val screenshots: List<String>): NavKey
 
     @Serializable
-    data object Settings
+    data object Settings: NavKey
 }
 
 fun NavController.navigateToGameDetailScreen(gameId: Int) {

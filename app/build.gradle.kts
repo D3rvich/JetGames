@@ -43,6 +43,8 @@ dependencies {
 
     // Navigation
     implementation(libs.androidx.compose.navigation)
+    implementation(libs.androidx.navigation3.runtime)
+    implementation(libs.androidx.navigation3.ui)
 
     // Coil
     implementation(libs.coil.network)

@@ -14,6 +14,7 @@ dependencies {
     implementation(libs.coil.compose)
 
     implementation(libs.androidx.compose.navigation)
+    implementation(libs.androidx.navigation3.runtime)
 
     implementation(libs.kotlinx.serializationJson)
 
