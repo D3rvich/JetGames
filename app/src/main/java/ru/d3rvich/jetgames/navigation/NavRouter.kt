@@ -1,31 +1,17 @@
 package ru.d3rvich.jetgames.navigation
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.navigation.NavController
-import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.compose.runtime.Stable
+import androidx.navigation3.runtime.NavBackStack
+import androidx.navigation3.runtime.NavKey
 
-@Composable
-fun rememberNavRouter(navController: NavController): NavRouter = remember(navController) {
-    NavRouter(navController)
-}
-
-class NavRouter(private val navController: NavController) {
-
+@Stable
+class NavRouter(private val backStack: NavBackStack<NavKey>) {
     val topLevelDestinations: List<TopLevelDestination> = TopLevelDestination.entries
 
-    val currentRoute: String?
-        @Composable get() = navController.currentBackStackEntryAsState().value?.destination?.route
+    val currentEntry: NavKey
+        get() = backStack.last()
 
     fun navigateToDestination(topLevelDestination: TopLevelDestination) {
-        navController.navigate(topLevelDestination.route) {
-            launchSingleTop = true
-
-            popUpTo(navController.graph.startDestinationId) {
-                saveState = true
-            }
-
-            restoreState = true
-        }
+        backStack.add(topLevelDestination.route)
     }
 }

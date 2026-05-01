@@ -1,5 +1,6 @@
 package ru.d3rvich.jetgames.navigation
 
+import androidx.navigation3.runtime.NavKey
 import ru.d3rvich.common.navigation.Screens
 import ru.d3rvich.home.R
 import ru.d3rvich.common.R as commonR
@@ -8,7 +9,7 @@ import ru.d3rvich.common.R as commonR
  * Created by Ilya Deryabin at 11.05.2024
  */
 enum class TopLevelDestination(
-    val route: Any,
+    val route: NavKey,
     val labelResId: Int,
     val unselectedIconResId: Int,
     val selectedIconResId: Int = unselectedIconResId,
