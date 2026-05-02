@@ -42,7 +42,6 @@ dependencies {
     implementation(libs.androidx.activity.compose)
 
     // Navigation
-    implementation(libs.androidx.compose.navigation)
     implementation(libs.androidx.navigation3.runtime)
     implementation(libs.androidx.navigation3.ui)
     implementation(libs.androidx.lifecycle.viewmodel.navigation3)
@@ -50,9 +49,6 @@ dependencies {
     // Coil
     implementation(libs.coil.network)
     implementation(libs.coil.compose)
-
-    // Hilt additional
-    implementation(libs.androidx.hilt.navigation.compose)
 
     // Coroutines
     implementation(libs.kotlinx.coroutines)
