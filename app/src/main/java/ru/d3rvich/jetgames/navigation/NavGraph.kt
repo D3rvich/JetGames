@@ -3,6 +3,8 @@ package ru.d3rvich.jetgames.navigation
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
@@ -34,10 +36,15 @@ fun SetupNavGraph(
         rememberSaveableStateHolderNavEntryDecorator(),
         rememberViewModelStoreNavEntryDecorator()
     )
+    val overlaySceneStrategy = rememberOverlaySceneStrategy<NavKey>()
     NavDisplay(
         modifier = modifier,
         backStack = backStack,
         entryDecorators = commonEntryDecorators,
+        sceneStrategies = listOf(overlaySceneStrategy),
+        transitionSpec = { fadeIn() togetherWith ExitTransition.KeepUntilTransitionsFinished },
+        popTransitionSpec = { EnterTransition.None togetherWith fadeOut() },
+        predictivePopTransitionSpec = { EnterTransition.None togetherWith fadeOut() },
         entryProvider = entryProvider {
             addMainScreen(
                 backStack = backStack,
@@ -71,7 +78,9 @@ private fun EntryProviderScope<NavKey>.addGameDetailScreen(
     navigateToScreenshots: (Screens.Screenshots) -> Unit,
     navigateBack: () -> Unit
 ) {
-    entry<Screens.GameDetail> { gameDetail ->
+    entry<Screens.GameDetail>(
+        metadata = OverlayScene.hostKey()
+    ) { gameDetail ->
         GameDetailScreen(
             gameId = gameDetail.gameId,
             navigateToScreenshotScreen = { selected: Int, list: List<ScreenshotEntity> ->
@@ -84,7 +93,9 @@ private fun EntryProviderScope<NavKey>.addGameDetailScreen(
 }
 
 private fun EntryProviderScope<NavKey>.addScreenshotsScreen(navigateBack: () -> Unit) {
-    entry<Screens.Screenshots> {
+    entry<Screens.Screenshots>(
+        metadata = OverlayScene.overlayKey()
+    ) {
         ScreenshotsScreen(
             screenshots = it.screenshots,
             selectedItem = it.selectedScreenshot,
