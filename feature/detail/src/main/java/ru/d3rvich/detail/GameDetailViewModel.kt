@@ -2,20 +2,20 @@ package ru.d3rvich.detail
 
 import android.content.Context
 import androidx.core.net.toUri
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.toRoute
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import ru.d3rvich.common.navigation.Screens
 import ru.d3rvich.core.domain.entities.GameDetailEntity
 import ru.d3rvich.core.domain.entities.StoreEntity
 import ru.d3rvich.core.domain.entities.StoreLinkEntity
-import ru.d3rvich.core.domain.model.Result
 import ru.d3rvich.core.domain.model.LoadingResult
+import ru.d3rvich.core.domain.model.Result
 import ru.d3rvich.core.domain.usecases.AddToFavoritesUseCase
 import ru.d3rvich.core.domain.usecases.GetGameDetailUseCase
 import ru.d3rvich.core.domain.usecases.GetScreenshotsUseCase
@@ -27,15 +27,14 @@ import ru.d3rvich.detail.model.GameDetailUiAction
 import ru.d3rvich.detail.model.GameDetailUiEvent
 import ru.d3rvich.detail.model.GameDetailUiState
 import ru.d3rvich.detail.model.ScreenshotsUiState
-import javax.inject.Inject
 import javax.inject.Provider
 
 /**
  * Created by Ilya Deryabin at 24.02.2024
  */
-@HiltViewModel
-internal class GameDetailViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
+@HiltViewModel(assistedFactory = GameDetailViewModel.Factory::class)
+internal class GameDetailViewModel @AssistedInject constructor(
+    @param:Assisted private val gameId: Int,
     @param:ApplicationContext private val context: Context,
     private val getGameDetailUseCase: Provider<GetGameDetailUseCase>,
     private val getScreenshotsUseCase: Provider<GetScreenshotsUseCase>,
@@ -59,13 +58,13 @@ internal class GameDetailViewModel @Inject constructor(
         }
     }
 
+    init {
+        loadGameDetail(gameId = gameId)
+    }
+
     private val browserManager = BrowserManager(context)
 
     private var gameStoreLinks: List<StoreLinkEntity> = emptyList()
-
-    private val gameId: Int = savedStateHandle.toRoute<Screens.GameDetail>().gameId.also { id ->
-        loadGameDetail(gameId = id)
-    }
 
     private fun loadGameDetail(gameId: Int) {
         viewModelScope.launch {
@@ -109,7 +108,7 @@ internal class GameDetailViewModel @Inject constructor(
     }
 
     private fun loadLinks(gameId: Int) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.Default) {
             when (val result = getStoreLinksUseCase.get().invoke(gameId = gameId)) {
                 is Result.Success -> {
                     gameStoreLinks = result.value
@@ -197,15 +196,17 @@ internal class GameDetailViewModel @Inject constructor(
             else -> unexpectedEventError(event, state)
         }
     }
+
+    @AssistedFactory
+    internal interface Factory {
+        fun create(gameId: Int): GameDetailViewModel
+    }
 }
 
 private fun uniteStoresWithLinks(
     stores: List<StoreEntity>,
     links: List<StoreLinkEntity>
 ): List<StoreEntity> {
-    val result = mutableListOf<StoreEntity>()
-    links.forEach { link ->
-        stores.find { store -> store.id == link.storeId }!!.let { result.add(it) }
-    }
-    return result
+    val storesMap = stores.associateBy { it.id }
+    return links.mapNotNull { link -> storesMap[link.storeId] }
 }

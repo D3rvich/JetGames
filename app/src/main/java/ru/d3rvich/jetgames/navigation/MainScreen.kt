@@ -26,17 +26,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
-import androidx.navigation.NavController
+import androidx.navigation3.runtime.NavBackStack
+import androidx.navigation3.runtime.NavEntryDecorator
+import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
-import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import ru.d3rvich.browse.BrowseScreen
 import ru.d3rvich.common.navigation.Screens
-import ru.d3rvich.common.navigation.navigateToFilterScreen
-import ru.d3rvich.common.navigation.navigateToGameDetailScreen
-import ru.d3rvich.common.navigation.navigateToSettingsScreen
 import ru.d3rvich.favorites.FavoritesScreen
 import ru.d3rvich.home.HomeScreen
 
@@ -45,9 +42,10 @@ import ru.d3rvich.home.HomeScreen
  */
 @Composable
 fun MainScreen(
-    modifier: Modifier = Modifier,
-    externalNavController: NavController,
+    externalBackStack: NavBackStack<NavKey>,
     windowSizeClass: WindowSizeClass,
+    modifier: Modifier = Modifier,
+    entryDecorators: List<NavEntryDecorator<NavKey>> = emptyList()
 ) {
     val showNavRail = windowSizeClass.widthSizeClass != WindowWidthSizeClass.Compact
     val showBottomBar = !showNavRail
@@ -70,37 +68,37 @@ fun MainScreen(
                 .fillMaxSize()
                 .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
         ) {
-            val disabledAnimationTransitionSpec =
-                NavDisplay.transitionSpec { EnterTransition.None togetherWith ExitTransition.None } +
-                        NavDisplay.popTransitionSpec { EnterTransition.None togetherWith ExitTransition.None } +
-                        NavDisplay.predictivePopTransitionSpec { EnterTransition.None togetherWith ExitTransition.None }
             if (showNavRail) {
                 NavRail(navRouter)
             }
             NavDisplay(
                 modifier = Modifier.weight(1f),
                 backStack = backStack,
-                entryDecorators = listOf(
-                    rememberSaveableStateHolderNavEntryDecorator(),
-                    rememberViewModelStoreNavEntryDecorator()
-                ),
+                entryDecorators = entryDecorators,
+                transitionSpec = { EnterTransition.None togetherWith ExitTransition.None },
+                popTransitionSpec = { EnterTransition.None togetherWith ExitTransition.None },
+                predictivePopTransitionSpec = { EnterTransition.None togetherWith ExitTransition.None },
                 entryProvider = entryProvider {
-                    entry<Screens.Home>(metadata = disabledAnimationTransitionSpec) {
+                    entry<Screens.Home> {
                         HomeScreen(
                             contentPadding = paddingValues,
-                            navigateToFilterScreen = externalNavController::navigateToFilterScreen,
-                            navigateToDetailScreen = externalNavController::navigateToGameDetailScreen,
-                            navigateToSettingsScreen = externalNavController::navigateToSettingsScreen
+                            navigateToFilterScreen = { externalBackStack.add(Screens.Filter) },
+                            navigateToDetailScreen = { gameId ->
+                                externalBackStack.add(Screens.GameDetail(gameId))
+                            },
+                            navigateToSettingsScreen = { externalBackStack.add(Screens.Settings) }
                         )
                     }
-                    entry<Screens.Browse>(metadata = disabledAnimationTransitionSpec) {
+                    entry<Screens.Browse> {
                         BrowseScreen(contentPadding = paddingValues)
                     }
-                    entry<Screens.Favorites>(metadata = disabledAnimationTransitionSpec) {
+                    entry<Screens.Favorites> {
                         FavoritesScreen(
                             contentPadding = paddingValues,
-                            navigateToGameDetail = externalNavController::navigateToGameDetailScreen,
-                            navigateToSettingsScreen = externalNavController::navigateToSettingsScreen
+                            navigateToGameDetail = { gameId ->
+                                externalBackStack.add(Screens.GameDetail(gameId))
+                            },
+                            navigateToSettingsScreen = { externalBackStack.add(Screens.Settings) }
                         )
                     }
                 })

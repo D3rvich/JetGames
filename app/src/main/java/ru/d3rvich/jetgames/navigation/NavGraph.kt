@@ -1,146 +1,128 @@
 package ru.d3rvich.jetgames.navigation
 
 import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.togetherWith
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavController
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import androidx.navigation.toRoute
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
+import androidx.navigation3.runtime.EntryProviderScope
+import androidx.navigation3.runtime.NavBackStack
+import androidx.navigation3.runtime.NavEntryDecorator
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
+import androidx.navigation3.ui.NavDisplay
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
 import ru.d3rvich.common.navigation.Screens
+import ru.d3rvich.core.domain.entities.ScreenshotEntity
 import ru.d3rvich.detail.GameDetailScreen
 import ru.d3rvich.filter.FilterScreen
 import ru.d3rvich.screenshots.ScreenshotsScreen
 import ru.d3rvich.settings.SettingsScreen
-import java.net.URLDecoder
-import java.nio.charset.StandardCharsets
 
 @Composable
 fun SetupNavGraph(
+    windowSizeClass: WindowSizeClass,
     modifier: Modifier = Modifier,
-    windowSizeClass: WindowSizeClass,
 ) {
-    val navController = rememberNavController()
-    NavHost(
+    val backStack = rememberNavBackStack(MainScreen)
+    val commonEntryDecorators: List<NavEntryDecorator<NavKey>> = listOf(
+        rememberSaveableStateHolderNavEntryDecorator(),
+        rememberViewModelStoreNavEntryDecorator()
+    )
+    NavDisplay(
         modifier = modifier,
-        navController = navController,
-        startDestination = MainScreen
-    ) {
-        addMainScreen(
-            navController = navController,
-            windowSizeClass = windowSizeClass
-        )
-        addGameDetailScreen(
-            navController = navController,
-        )
-        addFilterScreen(navController = navController)
-        addScreenshotsScreen(
-            navController = navController,
-        )
-        addSettingsScreen(
-            navController = navController,
-        )
-    }
+        backStack = backStack,
+        entryDecorators = commonEntryDecorators,
+        entryProvider = entryProvider {
+            addMainScreen(
+                backStack = backStack,
+                windowSizeClass = windowSizeClass,
+                entryDecorators = commonEntryDecorators
+            )
+            addGameDetailScreen(navigateToScreenshots = {
+                backStack.add(it)
+            }, navigateBack = { backStack.removeLastOrNull() })
+            addScreenshotsScreen { backStack.removeLastOrNull() }
+            addFilterScreen { backStack.removeLastOrNull() }
+            addSettingsScreen { backStack.removeLastOrNull() }
+        })
 }
 
-private fun NavGraphBuilder.addMainScreen(
-    navController: NavController,
+private fun EntryProviderScope<NavKey>.addMainScreen(
+    backStack: NavBackStack<NavKey>,
     windowSizeClass: WindowSizeClass,
+    entryDecorators: List<NavEntryDecorator<NavKey>> = emptyList()
 ) {
-    composable<MainScreen>(popEnterTransition = { EnterTransition.None }) {
+    entry<MainScreen> {
         MainScreen(
-            externalNavController = navController,
-            windowSizeClass = windowSizeClass
+            externalBackStack = backStack,
+            windowSizeClass = windowSizeClass,
+            entryDecorators = entryDecorators
         )
     }
 }
 
-private fun NavGraphBuilder.addGameDetailScreen(
-    navController: NavController,
+private fun EntryProviderScope<NavKey>.addGameDetailScreen(
+    navigateToScreenshots: (Screens.Screenshots) -> Unit,
+    navigateBack: () -> Unit
 ) {
-    composable<Screens.GameDetail> { backStackEntry ->
-        var showScreenshots by rememberSaveable {
-            mutableStateOf(false)
-        }
+    entry<Screens.GameDetail> { gameDetail ->
         GameDetailScreen(
-            navigateToScreenshotScreen = { selectedItem, screenshots ->
-                val json = Json.encodeToString(
-                    Screens.Screenshots(
-                        selectedItem,
-                        screenshots.map { it.imageUrl })
-                )
-                backStackEntry.savedStateHandle["Screenshot"] = json
-                showScreenshots = true
+            gameId = gameDetail.gameId,
+            navigateToScreenshotScreen = { selected: Int, list: List<ScreenshotEntity> ->
+                val screen = Screens.Screenshots(selected, list.map { it.imageUrl })
+                navigateToScreenshots(screen)
             },
-            navigateBack = { navController.popBackStack() },
+            navigateBack = navigateBack
         )
-        AnimatedVisibility(visible = showScreenshots) {
-            val args = backStackEntry.savedStateHandle.get<String>("Screenshot")
-                ?.let { argsJson ->
-                    Json.decodeFromString<Screens.Screenshots>(argsJson)
-                }
-            ScreenshotsScreen(
-                screenshots = args?.screenshots ?: emptyList(),
-                selectedItem = args?.selectedScreenshot ?: 0,
-            ) {
-                showScreenshots = false
-            }
-        }
     }
 }
 
-private fun NavGraphBuilder.addFilterScreen(navController: NavController) {
-    composable<Screens.Filter>(
-        enterTransition = {
-            slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left)
-        },
-        exitTransition = {
-            slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right)
-        }) {
-        FilterScreen(navController = navController)
-    }
-}
-
-private fun NavGraphBuilder.addScreenshotsScreen(
-    navController: NavController,
-) {
-    composable<Screens.Screenshots> { backStackEntry ->
-        val args: Screens.Screenshots = backStackEntry.toRoute()
+private fun EntryProviderScope<NavKey>.addScreenshotsScreen(navigateBack: () -> Unit) {
+    entry<Screens.Screenshots> {
         ScreenshotsScreen(
-            screenshots = args.screenshots.map {
-                URLDecoder.decode(it, StandardCharsets.UTF_8.name())
-            },
-            selectedItem = args.selectedScreenshot,
-        ) {
-            navController.popBackStack()
-        }
+            screenshots = it.screenshots,
+            selectedItem = it.selectedScreenshot,
+            onBackPressed = navigateBack
+        )
     }
 }
 
-private fun NavGraphBuilder.addSettingsScreen(navController: NavController) {
-    composable<Screens.Settings>(
-        enterTransition = {
-            slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left)
-        },
-        exitTransition = {
-            slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right)
-        }) {
-        SettingsScreen {
-            navController.popBackStack()
-        }
+private fun EntryProviderScope<NavKey>.addFilterScreen(navigateBack: () -> Unit) {
+    entry<Screens.Filter>(metadata = NavDisplay.transitionSpec {
+        slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left) togetherWith
+                ExitTransition.KeepUntilTransitionsFinished
+    } + NavDisplay.popTransitionSpec {
+        EnterTransition.None togetherWith
+                slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right)
+    } + NavDisplay.predictivePopTransitionSpec {
+        EnterTransition.None togetherWith
+                slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right)
+    }) {
+        FilterScreen(navigateBack = navigateBack)
+    }
+}
+
+private fun EntryProviderScope<NavKey>.addSettingsScreen(navigateBack: () -> Unit) {
+    entry<Screens.Settings>(metadata = NavDisplay.transitionSpec {
+        slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left) togetherWith
+                ExitTransition.KeepUntilTransitionsFinished
+    } + NavDisplay.popTransitionSpec {
+        EnterTransition.None togetherWith
+                slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right)
+    } + NavDisplay.predictivePopTransitionSpec {
+        EnterTransition.None togetherWith
+                slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right)
+    }
+    ) {
+        SettingsScreen(navigateBack = navigateBack)
     }
 }
 
 @Serializable
-private data object MainScreen
+private data object MainScreen : NavKey
