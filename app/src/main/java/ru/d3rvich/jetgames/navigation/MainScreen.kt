@@ -26,11 +26,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.navigation3.runtime.NavBackStack
-import androidx.navigation3.runtime.NavEntryDecorator
-import androidx.navigation3.runtime.NavKey
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import ru.d3rvich.browse.BrowseScreen
 import ru.d3rvich.common.navigation.Screens
@@ -42,10 +41,11 @@ import ru.d3rvich.home.HomeScreen
  */
 @Composable
 fun MainScreen(
-    externalBackStack: NavBackStack<NavKey>,
     windowSizeClass: WindowSizeClass,
+    navigateToDetailScreen: (Int) -> Unit,
+    navigateToFilterScreen: () -> Unit,
+    navigateToSettingsScreen: () -> Unit,
     modifier: Modifier = Modifier,
-    entryDecorators: List<NavEntryDecorator<NavKey>> = emptyList()
 ) {
     val showNavRail = windowSizeClass.widthSizeClass != WindowWidthSizeClass.Compact
     val showBottomBar = !showNavRail
@@ -74,7 +74,10 @@ fun MainScreen(
             NavDisplay(
                 modifier = Modifier.weight(1f),
                 backStack = backStack,
-                entryDecorators = entryDecorators,
+                entryDecorators = listOf(
+                    rememberSaveableStateHolderNavEntryDecorator(),
+                    rememberViewModelStoreNavEntryDecorator()
+                ),
                 transitionSpec = { EnterTransition.None togetherWith ExitTransition.None },
                 popTransitionSpec = { EnterTransition.None togetherWith ExitTransition.None },
                 predictivePopTransitionSpec = { EnterTransition.None togetherWith ExitTransition.None },
@@ -82,11 +85,9 @@ fun MainScreen(
                     entry<Screens.Home> {
                         HomeScreen(
                             contentPadding = paddingValues,
-                            navigateToFilterScreen = { externalBackStack.add(Screens.Filter) },
-                            navigateToDetailScreen = { gameId ->
-                                externalBackStack.add(Screens.GameDetail(gameId))
-                            },
-                            navigateToSettingsScreen = { externalBackStack.add(Screens.Settings) }
+                            navigateToFilterScreen = navigateToFilterScreen,
+                            navigateToDetailScreen = navigateToDetailScreen,
+                            navigateToSettingsScreen = navigateToSettingsScreen
                         )
                     }
                     entry<Screens.Browse> {
@@ -95,10 +96,8 @@ fun MainScreen(
                     entry<Screens.Favorites> {
                         FavoritesScreen(
                             contentPadding = paddingValues,
-                            navigateToGameDetail = { gameId ->
-                                externalBackStack.add(Screens.GameDetail(gameId))
-                            },
-                            navigateToSettingsScreen = { externalBackStack.add(Screens.Settings) }
+                            navigateToGameDetail = navigateToDetailScreen,
+                            navigateToSettingsScreen = navigateToSettingsScreen
                         )
                     }
                 })

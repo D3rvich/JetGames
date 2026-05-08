@@ -11,8 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.EntryProviderScope
-import androidx.navigation3.runtime.NavBackStack
-import androidx.navigation3.runtime.NavEntryDecorator
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
@@ -32,24 +30,24 @@ fun SetupNavGraph(
     modifier: Modifier = Modifier,
 ) {
     val backStack = rememberNavBackStack(MainScreen)
-    val commonEntryDecorators: List<NavEntryDecorator<NavKey>> = listOf(
-        rememberSaveableStateHolderNavEntryDecorator(),
-        rememberViewModelStoreNavEntryDecorator()
-    )
     val overlaySceneStrategy = rememberOverlaySceneStrategy<NavKey>()
     NavDisplay(
         modifier = modifier,
         backStack = backStack,
-        entryDecorators = commonEntryDecorators,
+        entryDecorators = listOf(
+            rememberSaveableStateHolderNavEntryDecorator(),
+            rememberViewModelStoreNavEntryDecorator()
+        ),
         sceneStrategies = listOf(overlaySceneStrategy),
         transitionSpec = { fadeIn() togetherWith ExitTransition.KeepUntilTransitionsFinished },
         popTransitionSpec = { EnterTransition.None togetherWith fadeOut() },
         predictivePopTransitionSpec = { EnterTransition.None togetherWith fadeOut() },
         entryProvider = entryProvider {
             addMainScreen(
-                backStack = backStack,
                 windowSizeClass = windowSizeClass,
-                entryDecorators = commonEntryDecorators
+                navigateToDetailScreen = { backStack.add(Screens.GameDetail(it)) },
+                navigateToFilterScreen = { backStack.add(Screens.Filter) },
+                navigateToSettingsScreen = { backStack.add(Screens.Settings) }
             )
             addGameDetailScreen(navigateToScreenshots = {
                 backStack.add(it)
@@ -61,15 +59,17 @@ fun SetupNavGraph(
 }
 
 private fun EntryProviderScope<NavKey>.addMainScreen(
-    backStack: NavBackStack<NavKey>,
     windowSizeClass: WindowSizeClass,
-    entryDecorators: List<NavEntryDecorator<NavKey>> = emptyList()
+    navigateToDetailScreen: (Int) -> Unit,
+    navigateToFilterScreen: () -> Unit,
+    navigateToSettingsScreen: () -> Unit
 ) {
     entry<MainScreen> {
         MainScreen(
-            externalBackStack = backStack,
             windowSizeClass = windowSizeClass,
-            entryDecorators = entryDecorators
+            navigateToFilterScreen = navigateToFilterScreen,
+            navigateToDetailScreen = navigateToDetailScreen,
+            navigateToSettingsScreen = navigateToSettingsScreen
         )
     }
 }
