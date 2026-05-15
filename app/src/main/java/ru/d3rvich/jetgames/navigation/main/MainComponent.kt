@@ -13,7 +13,9 @@ interface MainComponent {
 
     fun onGameClick(gameId: Int)
 
-    fun inSettingsClick()
+    fun onSettingsClick()
+
+    fun onFilterClick()
 
     sealed interface Child {
         class Home(val component: HomeComponent) : Child

@@ -10,8 +10,11 @@ import com.arkivanov.decompose.value.Value
 import kotlinx.serialization.Serializable
 import ru.d3rvich.jetgames.navigation.detail.DefaultGameDetailComponent
 import ru.d3rvich.jetgames.navigation.detail.GameDetailComponent
+import ru.d3rvich.jetgames.navigation.filter.DefaultFilterComponent
+import ru.d3rvich.jetgames.navigation.filter.FilterComponent
 import ru.d3rvich.jetgames.navigation.main.DefaultMainComponent
 import ru.d3rvich.jetgames.navigation.main.MainComponent
+import ru.d3rvich.jetgames.navigation.root.RootComponent.Child.*
 import ru.d3rvich.jetgames.navigation.settings.DefaultSettingsComponent
 import ru.d3rvich.jetgames.navigation.settings.SettingsComponent
 
@@ -32,19 +35,21 @@ class DefaultRootComponent(componentContext: ComponentContext) : RootComponent,
         config: Config,
         childComponentContext: ComponentContext
     ): RootComponent.Child = when (config) {
-        is Config.GameDetail -> RootComponent.Child.GameDetail(
+        is Config.GameDetail -> GameDetail(
             gameDetailComponent(childComponentContext)
         )
 
-        Config.Main -> RootComponent.Child.Main(mainComponent(childComponentContext))
-        Config.Settings -> RootComponent.Child.Settings(settingsComponent(childComponentContext))
+        Config.Main -> Main(mainComponent(childComponentContext))
+        Config.Settings -> Settings(settingsComponent(childComponentContext))
+        Config.Filter -> Filter(filterComponent(childComponentContext))
     }
 
     private fun mainComponent(componentContext: ComponentContext): MainComponent =
         DefaultMainComponent(
             componentContext = componentContext,
             onShowGameDetail = { navigation.pushNew(Config.GameDetail(it)) },
-            onShowSettings = { navigation.pushNew(Config.Settings) })
+            onShowSettings = { navigation.pushNew(Config.Settings) },
+            onShowFilter = { navigation.pushNew(Config.Filter) })
 
     private fun gameDetailComponent(componentContext: ComponentContext): GameDetailComponent =
         DefaultGameDetailComponent(
@@ -52,10 +57,13 @@ class DefaultRootComponent(componentContext: ComponentContext) : RootComponent,
             gameId = 0,
             onClose = { navigation.pop() })
 
-    private fun settingsComponent(componentComponent: ComponentContext): SettingsComponent =
+    private fun settingsComponent(componentContext: ComponentContext): SettingsComponent =
         DefaultSettingsComponent(
-            componentContext = componentComponent,
+            componentContext = componentContext,
             onCLose = { navigation.pop() })
+
+    private fun filterComponent(componentContext: ComponentContext): FilterComponent =
+        DefaultFilterComponent(componentContext, onClose = { navigation.pop() })
 
     override fun onBackClicked() {
         navigation.pop()
@@ -71,5 +79,8 @@ class DefaultRootComponent(componentContext: ComponentContext) : RootComponent,
 
         @Serializable
         data object Settings : Config
+
+        @Serializable
+        data object Filter : Config
     }
 }

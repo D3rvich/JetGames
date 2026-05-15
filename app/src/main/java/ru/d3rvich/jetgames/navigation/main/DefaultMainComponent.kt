@@ -17,9 +17,9 @@ import ru.d3rvich.jetgames.navigation.main.home.HomeComponent
 class DefaultMainComponent(
     componentContext: ComponentContext,
     private val onShowGameDetail: (gameId: Int) -> Unit,
-    private val onShowSettings: () -> Unit
+    private val onShowSettings: () -> Unit,
+    private val onShowFilter: () -> Unit,
 ) : MainComponent, ComponentContext by componentContext {
-
     private val navigation = StackNavigation<Config>()
 
     override val stack: Value<ChildStack<*, MainComponent.Child>>
@@ -70,8 +70,12 @@ class DefaultMainComponent(
         onShowGameDetail(gameId)
     }
 
-    override fun inSettingsClick() {
+    override fun onSettingsClick() {
         onShowSettings()
+    }
+
+    override fun onFilterClick() {
+        onShowFilter()
     }
 
     @Serializable
