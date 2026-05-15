@@ -9,7 +9,11 @@ import ru.d3rvich.jetgames.navigation.main.home.HomeComponent
 interface MainComponent {
     val stack: Value<ChildStack<*, Child>>
 
-    fun onTabClick(tab: Child)
+    fun onHomeClick()
+
+    fun onBrowseClick()
+
+    fun onFavoritesCLick()
 
     fun onGameClick(gameId: Int)
 

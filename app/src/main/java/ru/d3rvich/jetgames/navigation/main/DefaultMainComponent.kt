@@ -22,22 +22,26 @@ class DefaultMainComponent(
 ) : MainComponent, ComponentContext by componentContext {
     private val navigation = StackNavigation<Config>()
 
-    override val stack: Value<ChildStack<*, MainComponent.Child>>
-        get() = childStack(
+    override val stack: Value<ChildStack<*, MainComponent.Child>> =
+        childStack(
             source = navigation,
             serializer = Config.serializer(),
             initialConfiguration = Config.Favorites,
             handleBackButton = true,
+            key = "DefaultMainComponent",
             childFactory = ::child
         )
 
-    override fun onTabClick(tab: MainComponent.Child) {
-        val config = when (tab) {
-            is MainComponent.Child.Browse -> Config.Browse
-            is MainComponent.Child.Favorites -> Config.Favorites
-            is MainComponent.Child.Home -> Config.Home
-        }
-        navigation.bringToFront(config)
+    override fun onHomeClick() {
+        navigation.bringToFront(Config.Home)
+    }
+
+    override fun onBrowseClick() {
+        navigation.bringToFront(Config.Browse)
+    }
+
+    override fun onFavoritesCLick() {
+        navigation.bringToFront(Config.Favorites)
     }
 
     private fun child(

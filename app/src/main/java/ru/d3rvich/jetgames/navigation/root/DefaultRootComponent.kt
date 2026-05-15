@@ -22,12 +22,13 @@ class DefaultRootComponent(componentContext: ComponentContext) : RootComponent,
     ComponentContext by componentContext {
     private val navigation = StackNavigation<Config>()
 
-    override val stack: Value<ChildStack<*, RootComponent.Child>>
-        get() = childStack(
+    override val stack: Value<ChildStack<*, RootComponent.Child>> =
+        childStack(
             source = navigation,
             serializer = Config.serializer(),
             initialConfiguration = Config.Main,
             handleBackButton = true,
+            key = "DefaultRootComponent",
             childFactory = ::child
         )
 
@@ -36,7 +37,7 @@ class DefaultRootComponent(componentContext: ComponentContext) : RootComponent,
         childComponentContext: ComponentContext
     ): RootComponent.Child = when (config) {
         is Config.GameDetail -> GameDetail(
-            gameDetailComponent(childComponentContext)
+            gameDetailComponent(childComponentContext, config.gameId)
         )
 
         Config.Main -> Main(mainComponent(childComponentContext))
@@ -51,10 +52,13 @@ class DefaultRootComponent(componentContext: ComponentContext) : RootComponent,
             onShowSettings = { navigation.pushNew(Config.Settings) },
             onShowFilter = { navigation.pushNew(Config.Filter) })
 
-    private fun gameDetailComponent(componentContext: ComponentContext): GameDetailComponent =
+    private fun gameDetailComponent(
+        componentContext: ComponentContext,
+        gameId: Int
+    ): GameDetailComponent =
         DefaultGameDetailComponent(
             componentContext = componentContext,
-            gameId = 0,
+            gameId = gameId,
             onClose = { navigation.pop() })
 
     private fun settingsComponent(componentContext: ComponentContext): SettingsComponent =
