@@ -43,6 +43,9 @@ dependencies {
 
     // Navigation
     implementation(libs.androidx.compose.navigation)
+    implementation(libs.decompose.core)
+    implementation(libs.decompose.jetpackComponentContext)
+    implementation(libs.decompose.extentionsCompose)
 
     // Coil
     implementation(libs.coil.network)

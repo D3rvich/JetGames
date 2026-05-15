@@ -19,6 +19,7 @@ androidxBrowser = "1.10.0"
 splash = "1.2.0"
 timber = "5.0.1"
 coil = "3.4.0"
+decompose = "3.5.0"
 kotlinxCoroutines = "1.10.2"
 kotlinxSerializationJson = "1.11.0"
 kotlinxDatetime = "0.7.1"
@@ -61,6 +62,9 @@ coil-network = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", versi
 coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
 kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
+decompose-core = { group = "com.arkivanov.decompose", name = "decompose", version.ref = "decompose" }
+decompose-jetpackComponentContext = { group = "com.arkivanov.decompose", name = "jetpack-component-context", version.ref = "decompose" }
+decompose-extentionsCompose = { group = "com.arkivanov.decompose", name = "extensions-compose", version.ref = "decompose" }
 ktor-client-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
 ktor-client-android = { group = "io.ktor", name = "ktor-client-android", version.ref = "ktor" }
 ktor-client-resources = { group = "io.ktor", name = "ktor-client-resources", version.ref = "ktor" }
