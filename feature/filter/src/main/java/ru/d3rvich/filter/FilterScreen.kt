@@ -42,7 +42,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import ru.d3rvich.core.domain.entities.GenreFullEntity
 import ru.d3rvich.core.domain.entities.PlatformEntity
 import ru.d3rvich.core.domain.entities.SortingEntity
@@ -65,7 +64,7 @@ import ru.d3rvich.common.R as uiR
  * Created by Ilya Deryabin at 29.02.2024
  */
 @Composable
-fun FilterScreen(navController: NavController, modifier: Modifier = Modifier) {
+fun FilterScreen(modifier: Modifier = Modifier, onNavigateBack: () -> Unit) {
     val viewModel: FilterViewModel = hiltViewModel()
     val state = viewModel.uiState.collectAsStateWithLifecycle().value
     FilterScreen(
@@ -73,7 +72,7 @@ fun FilterScreen(navController: NavController, modifier: Modifier = Modifier) {
         state = state,
         onApply = { viewModel.obtainEvent(FilterUiEvent.OnApplyClicked) },
         onReset = { viewModel.obtainEvent(FilterUiEvent.OnResetClicked) },
-        onNavigateBack = { navController.popBackStack() },
+        onNavigateBack = onNavigateBack,
         onSelectedGenresChange = { listAction ->
             viewModel.obtainEvent(FilterUiEvent.OnSelectedGenresChange(listAction))
         },
@@ -93,7 +92,7 @@ fun FilterScreen(navController: NavController, modifier: Modifier = Modifier) {
     LaunchedEffect(viewModel) {
         viewModel.uiAction.collect { action ->
             when (action) {
-                FilterUiAction.NavigateBack -> navController.popBackStack()
+                FilterUiAction.NavigateBack -> onNavigateBack()
             }
         }
     }

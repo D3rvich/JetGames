@@ -20,7 +20,6 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import ru.d3rvich.common.navigation.Screens
 import ru.d3rvich.detail.GameDetailScreen
-import ru.d3rvich.filter.FilterScreen
 import ru.d3rvich.screenshots.ScreenshotsScreen
 import ru.d3rvich.settings.SettingsScreen
 import java.net.URLDecoder
@@ -74,6 +73,7 @@ private fun NavGraphBuilder.addGameDetailScreen(
             mutableStateOf(false)
         }
         GameDetailScreen(
+            gameId = backStackEntry.toRoute<Screens.GameDetail>().gameId,
             navigateToScreenshotScreen = { selectedItem, screenshots ->
                 val json = Json.encodeToString(
                     Screens.Screenshots(
@@ -108,7 +108,7 @@ private fun NavGraphBuilder.addFilterScreen(navController: NavController) {
         exitTransition = {
             slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right)
         }) {
-        FilterScreen(navController = navController)
+//        FilterScreen(navController = navController)
     }
 }
 
