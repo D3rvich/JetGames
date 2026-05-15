@@ -28,6 +28,7 @@ dependencies {
     implementation(projects.core.domain)
     implementation(projects.core.ui)
     implementation(projects.core.data)
+    implementation(projects.core.navigation)
     implementation(projects.common)
     implementation(projects.feature.home)
     implementation(projects.feature.browse)
