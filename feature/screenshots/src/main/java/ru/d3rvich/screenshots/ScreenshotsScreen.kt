@@ -65,8 +65,8 @@ import ru.d3rvich.common.R as uiR
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScreenshotsScreen(
-    modifier: Modifier = Modifier,
     screenshots: List<String>,
+    modifier: Modifier = Modifier,
     selectedItem: Int = 0,
     onBackPressed: () -> Unit,
 ) {
