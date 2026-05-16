@@ -33,7 +33,9 @@ fun GameDetailScreen(
     navigateBack: () -> Unit,
 ) {
     val viewModel: GameDetailViewModel =
-        hiltViewModel<GameDetailViewModel, GameDetailViewModel.Factory> { it.create(gameId) }
+        hiltViewModel<GameDetailViewModel, GameDetailViewModel.Factory>(key = gameId.toString()) { factory ->
+            factory.create(gameId)
+        }
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     Scaffold(

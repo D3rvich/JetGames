@@ -79,7 +79,7 @@ class DefaultRootComponent(componentContext: ComponentContext) : RootComponent,
         data object Main : Config
 
         @Serializable
-        class GameDetail(val gameId: Int) : Config
+        data class GameDetail(val gameId: Int) : Config
 
         @Serializable
         data object Settings : Config
