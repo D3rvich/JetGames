@@ -41,8 +41,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime)
     implementation(libs.androidx.activity.compose)
 
-    // Navigation
-    implementation(libs.androidx.compose.navigation)
+    // Decompose
     implementation(libs.decompose.core)
     implementation(libs.decompose.jetpackComponentContext)
     implementation(libs.decompose.extentionsCompose)

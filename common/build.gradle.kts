@@ -13,8 +13,6 @@ dependencies {
     implementation(libs.coil.network)
     implementation(libs.coil.compose)
 
-    implementation(libs.androidx.compose.navigation)
-
     implementation(libs.kotlinx.serializationJson)
 
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
