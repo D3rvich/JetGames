@@ -7,6 +7,7 @@ import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.value.Value
+import com.arkivanov.essenty.backhandler.BackHandlerOwner
 import kotlinx.serialization.Serializable
 import ru.d3rvich.jetgames.navigation.detail.DefaultGameDetailComponent
 import ru.d3rvich.jetgames.navigation.detail.GameDetailComponent
@@ -19,7 +20,7 @@ import ru.d3rvich.jetgames.navigation.settings.DefaultSettingsComponent
 import ru.d3rvich.jetgames.navigation.settings.SettingsComponent
 
 class DefaultRootComponent(componentContext: ComponentContext) : RootComponent,
-    ComponentContext by componentContext {
+    ComponentContext by componentContext, BackHandlerOwner {
     private val navigation = StackNavigation<Config>()
 
     override val stack: Value<ChildStack<*, RootComponent.Child>> =
