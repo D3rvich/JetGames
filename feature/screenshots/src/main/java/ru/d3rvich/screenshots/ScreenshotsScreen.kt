@@ -11,11 +11,13 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -26,7 +28,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,32 +38,26 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.util.lerp
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.WindowInsetsControllerCompat
 import ru.d3rvich.core.domain.model.ColorModeType
 import ru.d3rvich.core.domain.model.ThemeType
 import ru.d3rvich.core.domain.model.UserPreferences
 import ru.d3rvich.core.ui.model.asUiState
-import ru.d3rvich.core.ui.model.isDarkTheme
-import ru.d3rvich.core.ui.settings.LocalUserPreferences
 import ru.d3rvich.core.ui.theme.JetGamesTheme
-import ru.d3rvich.core.ui.utils.findActivity
-import ru.d3rvich.screenshots.model.draggableScreenshot
-import ru.d3rvich.screenshots.model.rememberDragToDismissState
+import ru.d3rvich.screenshots.util.DragToDismissState
+import ru.d3rvich.screenshots.util.draggableScreenshot
+import ru.d3rvich.screenshots.util.rememberDragToDismissState
+import ru.d3rvich.screenshots.util.SystemBarsController
 import ru.d3rvich.screenshots.views.PageIndicator
 import ru.d3rvich.screenshots.views.ScreenshotView
-import kotlin.math.absoluteValue
+import kotlin.math.abs
 import ru.d3rvich.common.R as uiR
 
 /**
  * Created by Ilya Deryabin at 12.04.2024
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScreenshotsScreen(
     screenshots: List<String>,
@@ -78,96 +73,147 @@ fun ScreenshotsScreen(
         onBackPressed()
     }
     SystemBarsController(showSystemBars = showWidgets)
+    ScreenWrapper {
+        val maxHeight = maxHeight
+        val heightToDismiss = with(LocalDensity.current) {
+            maxHeight.toPx() / 6
+        }
+        val dragState = rememberDragToDismissState(heightToDismiss = heightToDismiss)
+        val backgroundColor = MaterialTheme.colorScheme.background
+        Surface(
+            modifier = modifier
+                .fillMaxSize()
+                .drawBehind {
+                    val alpha = lerp(1f, 0.5f, dragState.fraction)
+                    drawRect(color = backgroundColor.copy(alpha = alpha))
+                },
+            color = Color.Transparent
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .draggableScreenshot(
+                        dragToDismissState = dragState,
+                        onHeightOffsetChange = { showWidgets = false },
+                        onDismissRequest = onBackPressed
+                    )
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null
+                    ) {
+                        showWidgets = !showWidgets
+                    }
+            ) {
+                val pagerState = rememberPagerState(
+                    initialPage = selectedItem,
+                    pageCount = { screenshots.size })
+                PhotoPager(
+                    pagerState = pagerState,
+                    dragState = dragState,
+                    item = screenshots::get,
+                    onPageChange = onPageChange
+                )
+                TopBarWidget(
+                    showWidget = showWidgets,
+                    onBackPressed = onBackPressed,
+                    modifier = Modifier.align(Alignment.TopCenter)
+                )
+                PageIndicatorWidget(
+                    showWidget = showWidgets,
+                    currentPage = pagerState.currentPage,
+                    pageCount = pagerState.pageCount,
+                    modifier = Modifier.align(Alignment.BottomCenter)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun ScreenWrapper(
+    modifier: Modifier = Modifier,
+    content: @Composable BoxWithConstraintsScope.() -> Unit
+) {
     val darkPreferences = UserPreferences(ThemeType.Dark, ColorModeType.Default).asUiState()
     JetGamesTheme(darkPreferences) {
         CompositionLocalProvider(LocalOverscrollFactory provides null) {
-            BoxWithConstraints {
-                val heightToDismiss = with(LocalDensity.current) {
-                    this@BoxWithConstraints.maxHeight.toPx() / 6
-                }
-                val dragState = rememberDragToDismissState(heightToDismiss = heightToDismiss)
-                val backgroundColor = MaterialTheme.colorScheme.background
-                Surface(
-                    modifier = modifier
-                        .fillMaxSize()
-                        .drawBehind {
-                            val alpha = lerp(1f, 0.5f, dragState.fraction)
-                            drawRect(color = backgroundColor.copy(alpha = alpha))
-                        },
-                    color = Color.Transparent
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .draggableScreenshot(
-                                dragToDismissState = dragState,
-                                onHeightOffsetChange = {
-                                    showWidgets = false
-                                },
-                                onDismissRequest = onBackPressed
-                            )
-                            .clickable(
-                                interactionSource = remember { MutableInteractionSource() },
-                                indication = null
-                            ) {
-                                showWidgets = !showWidgets
-                            }
-                    ) {
-                        val pagerState = rememberPagerState(
-                            initialPage = selectedItem,
-                            pageCount = { screenshots.size })
-                        LaunchedEffect(pagerState.currentPage) {
-                            onPageChange(pagerState.currentPage)
-                        }
-                        HorizontalPager(
-                            modifier = Modifier.fillMaxSize(),
-                            state = pagerState
-                        ) { page ->
-                            val screenshot = screenshots[page]
-                            ScreenshotView(
-                                screenshot = screenshot,
-                                pageOffset = {
-                                    ((pagerState.currentPage - page) +
-                                            pagerState.currentPageOffsetFraction).absoluteValue
-                                },
-                                dragToDismissState = dragState
-                            )
-                        }
-                        AnimateWidgetVisibility(
-                            visible = showWidgets,
-                            direction = AnimationDirection.Up,
-                            modifier = Modifier.align(Alignment.TopCenter),
-                        ) {
-                            TopAppBar(
-                                colors = TopAppBarDefaults.topAppBarColors()
-                                    .copy(containerColor = Color.Transparent),
-                                title = { },
-                                navigationIcon = {
-                                    IconButton(onClick = onBackPressed) {
-                                        Icon(
-                                            painter = painterResource(uiR.drawable.arrow_back_24px),
-                                            contentDescription = "Navigate back"
-                                        )
-                                    }
-                                }
-                            )
-                        }
-                        AnimateWidgetVisibility(
-                            visible = showWidgets,
-                            direction = AnimationDirection.Down,
-                            modifier = Modifier
-                                .align(Alignment.BottomCenter)
-                                .windowInsetsPadding(WindowInsets.navigationBars)
-                        ) {
-                            PageIndicator(
-                                pageCount = pagerState.pageCount,
-                                currentPageIndex = pagerState.currentPage
-                            )
-                        }
-                    }
-                }
+            BoxWithConstraints(modifier = modifier) {
+                content()
             }
         }
+    }
+}
+
+@Composable
+private fun PhotoPager(
+    pagerState: PagerState,
+    dragState: DragToDismissState,
+    item: (page: Int) -> String,
+    onPageChange: (Int) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    LaunchedEffect(pagerState.currentPage) {
+        onPageChange(pagerState.currentPage)
+    }
+    HorizontalPager(
+        modifier = modifier.fillMaxSize(),
+        state = pagerState
+    ) { page ->
+        ScreenshotView(
+            screenshot = item(page),
+            pageOffset = {
+                abs(pagerState.currentPage - page + pagerState.currentPageOffsetFraction)
+            },
+            dragToDismissState = dragState
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun TopBarWidget(
+    showWidget: Boolean,
+    modifier: Modifier = Modifier,
+    onBackPressed: () -> Unit
+) {
+    AnimateWidgetVisibility(
+        visible = showWidget,
+        direction = AnimationDirection.Up,
+        modifier = modifier,
+    ) {
+        TopAppBar(
+            colors = TopAppBarDefaults.topAppBarColors()
+                .copy(containerColor = Color.Transparent),
+            title = { },
+            navigationIcon = {
+                IconButton(onClick = onBackPressed) {
+                    Icon(
+                        painter = painterResource(uiR.drawable.arrow_back_24px),
+                        contentDescription = "Navigate back"
+                    )
+                }
+            }
+        )
+    }
+}
+
+@Composable
+private fun PageIndicatorWidget(
+    showWidget: Boolean,
+    currentPage: Int,
+    pageCount: Int,
+    modifier: Modifier = Modifier
+) {
+    AnimateWidgetVisibility(
+        visible = showWidget,
+        direction = AnimationDirection.Down,
+        modifier = modifier
+            .windowInsetsPadding(WindowInsets.navigationBars)
+    ) {
+        PageIndicator(
+            pageCount = pageCount,
+            currentPageIndex = currentPage
+        )
     }
 }
 
@@ -201,36 +247,4 @@ private fun AnimateWidgetVisibility(
 private enum class AnimationDirection {
     Up,
     Down
-}
-
-@Composable
-private fun SystemBarsController(showSystemBars: Boolean) {
-    val context = LocalContext.current
-    val window = remember(context) { context.findActivity().window }
-    val insetsController =
-        remember(window) { WindowCompat.getInsetsController(window, window.decorView) }
-    val userPreferences = LocalUserPreferences.current.userPreferences
-    val darkTheme = userPreferences.isDarkTheme()
-    LaunchedEffect(showSystemBars) {
-        insetsController.apply {
-            if (!showSystemBars) {
-                hide(WindowInsetsCompat.Type.systemBars())
-                systemBarsBehavior =
-                    WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-            } else {
-                show(WindowInsetsCompat.Type.systemBars())
-                systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
-            }
-        }
-    }
-    DisposableEffect(Unit) {
-        onDispose {
-            insetsController.apply {
-                show(WindowInsetsCompat.Type.systemBars())
-                systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
-                isAppearanceLightStatusBars = !darkTheme
-                isAppearanceLightNavigationBars = !darkTheme
-            }
-        }
-    }
 }
