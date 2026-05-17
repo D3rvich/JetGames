@@ -6,4 +6,6 @@ interface ScreenshotsComponent {
     val screenshots: List<String>
 
     fun onBackClick()
+
+    fun onPageChange(index: Int)
 }

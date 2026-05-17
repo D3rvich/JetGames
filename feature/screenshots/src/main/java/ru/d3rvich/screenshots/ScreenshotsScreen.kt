@@ -68,6 +68,7 @@ fun ScreenshotsScreen(
     screenshots: List<String>,
     modifier: Modifier = Modifier,
     selectedItem: Int = 0,
+    onPageChange: (Int) -> Unit,
     onBackPressed: () -> Unit,
 ) {
     var showWidgets: Boolean by rememberSaveable {
@@ -112,10 +113,12 @@ fun ScreenshotsScreen(
                                 showWidgets = !showWidgets
                             }
                     ) {
-                        val pagerState =
-                            rememberPagerState(
-                                initialPage = selectedItem,
-                                pageCount = { screenshots.size })
+                        val pagerState = rememberPagerState(
+                            initialPage = selectedItem,
+                            pageCount = { screenshots.size })
+                        LaunchedEffect(pagerState.currentPage) {
+                            onPageChange(pagerState.currentPage)
+                        }
                         HorizontalPager(
                             modifier = Modifier.fillMaxSize(),
                             state = pagerState

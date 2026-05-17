@@ -39,6 +39,7 @@ fun GameDetailContent(component: GameDetailComponent, modifier: Modifier = Modif
                         ScreenshotsScreen(
                             screenshots = screenshots,
                             selectedItem = selectedScreenshot,
+                            onPageChange = ::onPageChange,
                             onBackPressed = ::onBackClick
                         )
                     }

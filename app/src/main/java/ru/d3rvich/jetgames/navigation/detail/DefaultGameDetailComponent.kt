@@ -41,7 +41,7 @@ class DefaultGameDetailComponent(
     ): ScreenshotsComponent =
         DefaultScreenshotsComponent(
             componentContext = childComponent,
-            selectedScreenshot = config.selectedItem,
+            initialScreenshot = config.selectedItem,
             screenshots = config.screenshots,
             onClose = { screenshotsNavigation.dismiss() })
 
