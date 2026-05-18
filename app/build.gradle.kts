@@ -43,7 +43,6 @@ dependencies {
 
     // Decompose
     implementation(libs.decompose.core)
-    implementation(libs.decompose.jetpackComponentContext)
     implementation(libs.decompose.extentionsCompose)
 
     // Coil
