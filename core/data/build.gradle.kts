@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.jetgames.android.library)
     alias(libs.plugins.jetgames.android.hilt)
+    alias(libs.plugins.koin.compiler)
 }
 
 android {
@@ -15,6 +16,8 @@ dependencies {
 
     implementation(platform(libs.koin))
     implementation(libs.koin.core)
+    implementation(libs.koin.annotations)
+
     implementation(libs.kotlinx.datetime)
 
     implementation(libs.androidx.paging.runtime.ktx)
