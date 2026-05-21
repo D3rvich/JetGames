@@ -27,11 +27,15 @@ import ru.d3rvich.detail.views.LoadingView
  */
 @Composable
 fun GameDetailScreen(
+    gameId: Int,
     modifier: Modifier = Modifier,
     navigateToScreenshotScreen: (selectedItem: Int, screenshots: List<ScreenshotEntity>) -> Unit,
     navigateBack: () -> Unit,
 ) {
-    val viewModel: GameDetailViewModel = hiltViewModel()
+    val viewModel: GameDetailViewModel =
+        hiltViewModel<GameDetailViewModel, GameDetailViewModel.Factory>(key = gameId.toString()) { factory ->
+            factory.create(gameId)
+        }
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     Scaffold(

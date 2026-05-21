@@ -5,15 +5,17 @@ JetGames
 
 [Kotlin 2.0](https://kotlinlang.org/docs/whatsnew20.html)
 
-[KotlinX Coroutines](https://github.com/Kotlin/kotlinx.coroutines)
+[Jetpack Compose](https://developer.android.com/compose) + [Material3](https://m3.material.io/)
+
+[Decompose](https://github.com/arkivanov/Decompose)
 
 [KotlinX Serialization](https://github.com/Kotlin/kotlinx.serialization)
+
+[KotlinX Coroutines](https://github.com/Kotlin/kotlinx.coroutines)
 
 [KotlinX Datetime](https://github.com/Kotlin/kotlinx-datetime)
 
 [KSP](https://github.com/google/ksp)
-
-[Jetpack Compose](https://developer.android.com/compose) + [Material3](https://m3.material.io/)
 
 [Dagger](https://dagger.dev/dev-guide/) + [Hilt](https://dagger.dev/hilt/)
 

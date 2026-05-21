@@ -1,4 +1,4 @@
-package ru.d3rvich.screenshots.model
+package ru.d3rvich.screenshots.util
 
 import androidx.compose.animation.core.AnimationState
 import androidx.compose.animation.core.Spring

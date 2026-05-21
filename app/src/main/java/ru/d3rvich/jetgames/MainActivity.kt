@@ -13,11 +13,13 @@ import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.arkivanov.decompose.defaultComponentContext
 import dagger.hilt.android.AndroidEntryPoint
 import ru.d3rvich.core.domain.model.UserPreferences
 import ru.d3rvich.core.ui.model.asUiState
 import ru.d3rvich.core.ui.theme.JetGamesTheme
-import ru.d3rvich.jetgames.navigation.SetupNavGraph
+import ru.d3rvich.jetgames.navigation.RootContent
+import ru.d3rvich.jetgames.navigation.root.DefaultRootComponent
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -32,6 +34,7 @@ class MainActivity : ComponentActivity() {
         }
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        val root = DefaultRootComponent(componentContext = defaultComponentContext())
         setContent {
             val windowSizeClass = calculateWindowSizeClass(this)
             val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
@@ -43,9 +46,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    SetupNavGraph(
-                        windowSizeClass = windowSizeClass,
-                    )
+                    RootContent(root, windowSizeClass)
                 }
             }
         }

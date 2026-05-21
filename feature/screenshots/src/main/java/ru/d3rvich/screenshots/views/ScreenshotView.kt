@@ -7,7 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.util.lerp
 import coil3.compose.AsyncImage
-import ru.d3rvich.screenshots.model.DragToDismissState
+import ru.d3rvich.screenshots.util.DragToDismissState
 
 /**
  * Created by Ilya Deryabin at 27.05.2024
