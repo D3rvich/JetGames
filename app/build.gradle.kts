@@ -45,6 +45,10 @@ dependencies {
     implementation(libs.decompose.core)
     implementation(libs.decompose.extentionsCompose)
 
+    // Koin
+    implementation(platform(libs.koin))
+    implementation(libs.koin.android)
+
     // Coil
     implementation(libs.coil.network)
     implementation(libs.coil.compose)

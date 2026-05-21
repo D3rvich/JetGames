@@ -13,6 +13,8 @@ dependencies {
     implementation(projects.core.database)
     implementation(projects.core.remote)
 
+    implementation(platform(libs.koin))
+    implementation(libs.koin.core)
     implementation(libs.kotlinx.datetime)
 
     implementation(libs.androidx.paging.runtime.ktx)

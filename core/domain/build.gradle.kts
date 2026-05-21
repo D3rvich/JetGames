@@ -9,4 +9,7 @@ dependencies {
     implementation(libs.kotlinx.collections.immutable)
     implementation(libs.kotlinx.datetime)
     implementation(libs.androidx.paging.common)
+
+    implementation(platform(libs.koin))
+    implementation(libs.koin.core)
 }

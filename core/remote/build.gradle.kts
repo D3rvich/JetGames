@@ -33,5 +33,8 @@ dependencies {
     implementation(libs.ktor.client.logging)
     implementation(libs.ktor.client.logging.slf4j)
 
+    implementation(platform(libs.koin))
+    implementation(libs.koin.core)
+
     testImplementation(libs.junit)
 }

@@ -24,6 +24,10 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
                 "implementation"(project(":core:ui"))
                 "implementation"(project(":common"))
 
+                "implementation"(platform(libs.findLibrary("koin").get()))
+                "implementation"(libs.findLibrary("koin-android").get())
+                "implementation"(libs.findLibrary("koin-compose").get())
+                "implementation"(libs.findLibrary("koin-compose-viewmodel").get())
                 "implementation"(libs.findLibrary("androidx-hilt-navigation-compose").get())
                 "implementation"(libs.findLibrary("androidx-lifecycle-runtime-compose").get())
                 "implementation"(libs.findLibrary("androidx-lifecycle-viewmodel-compose").get())
