@@ -6,6 +6,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import org.koin.core.annotation.Single
 import ru.d3rvich.database.JetGamesDatabase
 import javax.inject.Singleton
 
@@ -21,4 +22,11 @@ internal object DatabaseModule {
     fun provideDatabase(@ApplicationContext context: Context): JetGamesDatabase {
         return JetGamesDatabase(context)
     }
+}
+
+@org.koin.core.annotation.Module
+class KoinDatabaseModule {
+
+    @Single
+    fun database(context: Context): JetGamesDatabase = JetGamesDatabase(context)
 }
