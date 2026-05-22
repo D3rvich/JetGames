@@ -6,6 +6,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import org.koin.core.annotation.Single
 import ru.d3rvich.datastore.JetGamesPreferencesDataStore
 import javax.inject.Singleton
 
@@ -18,4 +19,11 @@ object DataStoreModule {
     fun providePreferencesDatastore(@ApplicationContext context: Context): JetGamesPreferencesDataStore {
         return JetGamesPreferencesDataStore(context = context)
     }
+}
+
+@org.koin.core.annotation.Module
+object KoinDataStoreModule {
+
+    @Single
+    fun dataStore(context: Context) = JetGamesPreferencesDataStore(context = context)
 }

@@ -1,6 +1,9 @@
 package ru.d3rvich.data.repositoties
 
 import kotlinx.coroutines.flow.Flow
+import org.koin.core.annotation.Factory
+import org.koin.core.annotation.Named
+import org.koin.core.annotation.Qualifier
 import ru.d3rvich.core.domain.entities.GenreFullEntity
 import ru.d3rvich.core.domain.model.LoadingResult
 import ru.d3rvich.core.domain.model.map
@@ -18,10 +21,11 @@ import ru.d3rvich.remote.util.getAllGenres
 /**
  * Created by Ilya Deryabin at 04.04.2024
  */
+@Factory
 internal class GenresRepositoryImpl(
     private val apiService: JetGamesNetworkDataSource,
     private val database: JetGamesDatabase,
-    private val syncTimeManager: SyncTimeManager,
+    @Named("Genres") private val syncTimeManager: SyncTimeManager,
 ) : GenresRepository {
 
     override fun getGenres(): Flow<LoadingResult<List<GenreFullEntity>>> {
@@ -36,5 +40,4 @@ internal class GenresRepositoryImpl(
             }
         )
     }
-
 }

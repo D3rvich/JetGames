@@ -6,6 +6,7 @@ import androidx.paging.PagingData
 import androidx.paging.map
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import org.koin.core.annotation.Factory
 import ru.d3rvich.core.domain.entities.GameDetailEntity
 import ru.d3rvich.core.domain.entities.GameEntity
 import ru.d3rvich.core.domain.entities.ScreenshotEntity
@@ -28,10 +29,11 @@ import ru.d3rvich.remote.model.details.GameDetails
 /**
  * Created by Ilya Deryabin at 01.02.2024
  */
+@Factory
 internal class GamesRepositoryImpl(
-    private val gamesPagingSourceFactory: GamesPagingSource.GamesPagingSourceFactory,
     private val apiService: JetGamesNetworkDataSource,
     private val database: JetGamesDatabase,
+    private val gamesPagingSourceFactory: (String, FilterPreferencesBody) -> GamesPagingSource,
 ) : GamesRepository {
 
     private companion object {
@@ -48,7 +50,7 @@ internal class GamesRepositoryImpl(
                 enablePlaceholders = false
             ),
             pagingSourceFactory = {
-                gamesPagingSourceFactory.create(search, filterPreferencesBody)
+                gamesPagingSourceFactory(search, filterPreferencesBody)
             }).flow
 
     override suspend fun getGameDetail(gameId: Int): Result<GameDetailEntity> =

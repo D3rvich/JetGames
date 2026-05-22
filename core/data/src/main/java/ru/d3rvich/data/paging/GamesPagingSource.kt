@@ -2,9 +2,8 @@ package ru.d3rvich.data.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
+import org.koin.core.annotation.Factory
+import org.koin.core.annotation.InjectedParam
 import ru.d3rvich.core.domain.entities.GameEntity
 import ru.d3rvich.core.domain.entities.SortingEntity
 import ru.d3rvich.core.domain.entities.getReversed
@@ -19,10 +18,11 @@ import kotlin.math.roundToInt
 /**
  * Created by Ilya Deryabin at 12.02.2024
  */
-internal class GamesPagingSource @AssistedInject constructor(
+@Factory
+class GamesPagingSource(
     private val apiService: JetGamesNetworkDataSource,
-    @Assisted private val search: String = "",
-    @Assisted private val filterPreferencesBody: FilterPreferencesBody,
+    @InjectedParam private val search: String,
+    @InjectedParam private val filterPreferencesBody: FilterPreferencesBody,
 ) : PagingSource<Int, GameEntity>() {
     override fun getRefreshKey(state: PagingState<Int, GameEntity>): Int? {
         return state.anchorPosition?.let { position ->
@@ -84,13 +84,5 @@ internal class GamesPagingSource @AssistedInject constructor(
     private companion object {
         const val INITIAL_PAGE_NUMBER = 1
         const val MAX_PAGE_SIZE = 20
-    }
-
-    @AssistedFactory
-    internal interface GamesPagingSourceFactory {
-        fun create(
-            search: String = "",
-            filterPreferencesBody: FilterPreferencesBody,
-        ): GamesPagingSource
     }
 }

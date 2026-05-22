@@ -25,7 +25,7 @@ internal object DatabaseModule {
 }
 
 @org.koin.core.annotation.Module
-class KoinDatabaseModule {
+object KoinDatabaseModule {
 
     @Single
     fun database(context: Context): JetGamesDatabase = JetGamesDatabase(context)
