@@ -17,7 +17,7 @@ JetGames
 
 [KSP](https://github.com/google/ksp)
 
-[Dagger](https://dagger.dev/dev-guide/) + [Hilt](https://dagger.dev/hilt/)
+[Koin Annotations](https://insert-koin.io/)
 
 [Coil](https://coil-kt.github.io/coil/)
 
