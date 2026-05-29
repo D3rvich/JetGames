@@ -1,4 +1,4 @@
-package ru.d3rvich.data.repositoties
+package ru.d3rvich.data.repositories
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -6,6 +6,7 @@ import androidx.paging.PagingData
 import androidx.paging.map
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Factory
 import ru.d3rvich.core.domain.entities.GameDetailEntity
 import ru.d3rvich.core.domain.entities.GameEntity
@@ -21,7 +22,7 @@ import ru.d3rvich.data.mapper.toGameDetailEntity
 import ru.d3rvich.data.mapper.toGameEntity
 import ru.d3rvich.data.mapper.toGameStoreEntity
 import ru.d3rvich.data.mapper.toScreenshotEntityList
-import ru.d3rvich.data.paging.GamesPagingSource
+import ru.d3rvich.data.paging.GamesPagingSourceFactory
 import ru.d3rvich.database.JetGamesDatabase
 import ru.d3rvich.remote.JetGamesNetworkDataSource
 import ru.d3rvich.remote.model.details.GameDetails
@@ -29,11 +30,12 @@ import ru.d3rvich.remote.model.details.GameDetails
 /**
  * Created by Ilya Deryabin at 01.02.2024
  */
-@Factory
+@Factory(binds = [GamesRepository::class])
+@ComponentScan("ru.d3rvich.data.paging")
 internal class GamesRepositoryImpl(
     private val apiService: JetGamesNetworkDataSource,
     private val database: JetGamesDatabase,
-    private val gamesPagingSourceFactory: (String, FilterPreferencesBody) -> GamesPagingSource,
+    private val gamesPagingSourceFactory: GamesPagingSourceFactory,
 ) : GamesRepository {
 
     private companion object {
@@ -50,7 +52,7 @@ internal class GamesRepositoryImpl(
                 enablePlaceholders = false
             ),
             pagingSourceFactory = {
-                gamesPagingSourceFactory(search, filterPreferencesBody)
+                gamesPagingSourceFactory.create(search, filterPreferencesBody)
             }).flow
 
     override suspend fun getGameDetail(gameId: Int): Result<GameDetailEntity> =

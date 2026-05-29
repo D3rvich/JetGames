@@ -1,9 +1,5 @@
 package ru.d3rvich.remote.di
 
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
 import io.ktor.client.plugins.HttpRequestRetry
@@ -22,19 +18,17 @@ import io.ktor.http.path
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.json.Json
+import org.koin.core.annotation.Module
 import org.koin.core.annotation.Single
 import ru.d3rvich.network.BuildConfig
 import ru.d3rvich.remote.JetGamesNetworkDataSource
 import ru.d3rvich.remote.ktor.JetGamesNetworkClient
-import javax.inject.Singleton
 
-@Module
-@InstallIn(SingletonComponent::class)
-internal object NetworkModule {
+@Module(createdAtStart = true)
+object NetworkModule {
 
-    @Singleton
-    @Provides
-    fun provideHttpClient(): HttpClient = HttpClient(Android) {
+    @Single(createdAtStart = true)
+    fun httpClient(): HttpClient = HttpClient(Android) {
         expectSuccess = true
         install(HttpTimeout) {
             requestTimeoutMillis = 10_000
@@ -69,52 +63,7 @@ internal object NetworkModule {
     }
 
     @OptIn(InternalSerializationApi::class)
-    @Singleton
-    @Provides
-    fun provideNetworkDataSource(client: HttpClient): JetGamesNetworkDataSource =
-        JetGamesNetworkClient(client = client)
-}
-
-@org.koin.core.annotation.Module
-object KoinNetworkModule {
-
-    @Single
-    fun httpClient() = HttpClient(Android) {
-        expectSuccess = true
-        install(HttpTimeout) {
-            requestTimeoutMillis = 10_000
-            connectTimeoutMillis = 15_000
-            socketTimeoutMillis = 30_000
-        }
-        install(Logging) {
-            logger = Logger.ANDROID
-            level = LogLevel.BODY
-        }
-        install(Resources)
-        install(ContentNegotiation) {
-            json(Json {
-                ignoreUnknownKeys = true
-                isLenient = true
-            })
-        }
-        install(HttpRequestRetry) {
-            maxRetries = 2
-
-            delayMillis { retry -> retry * 1000L }
-        }
-        defaultRequest {
-            url {
-                protocol = URLProtocol.HTTPS
-                host = "api.rawg.io"
-                path("api/")
-                parameters.append("key", BuildConfig.API_KEY)
-            }
-            contentType(ContentType.Application.Json)
-        }
-    }
-
-    @OptIn(InternalSerializationApi::class)
-    @Single
+    @Single(binds = [JetGamesNetworkDataSource::class], createdAtStart = true)
     fun networkDataSource(httpClient: HttpClient): JetGamesNetworkDataSource =
         JetGamesNetworkClient(httpClient)
 }

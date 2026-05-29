@@ -4,6 +4,9 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import org.koin.core.annotation.Factory
 import org.koin.core.annotation.InjectedParam
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
+import org.koin.core.parameter.parametersOf
 import ru.d3rvich.core.domain.entities.GameEntity
 import ru.d3rvich.core.domain.entities.SortingEntity
 import ru.d3rvich.core.domain.entities.getReversed
@@ -18,7 +21,7 @@ import kotlin.math.roundToInt
 /**
  * Created by Ilya Deryabin at 12.02.2024
  */
-@Factory
+@Factory(binds = [GamesPagingSource::class])
 class GamesPagingSource(
     private val apiService: JetGamesNetworkDataSource,
     @InjectedParam private val search: String,
@@ -85,4 +88,10 @@ class GamesPagingSource(
         const val INITIAL_PAGE_NUMBER = 1
         const val MAX_PAGE_SIZE = 20
     }
+}
+
+@Factory
+class GamesPagingSourceFactory : KoinComponent {
+    fun create(search: String, filterPreferencesBody: FilterPreferencesBody): GamesPagingSource =
+        get<GamesPagingSource> { parametersOf(search, filterPreferencesBody) }
 }
