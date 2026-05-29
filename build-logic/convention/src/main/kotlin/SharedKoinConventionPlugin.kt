@@ -4,7 +4,7 @@ import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.dependencies
 import ru.d3rvich.jetgames.libs
 
-class KoinConventionPlugin: Plugin<Project> {
+class SharedKoinConventionPlugin: Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
             apply(plugin = "io.insert-koin.compiler.plugin")

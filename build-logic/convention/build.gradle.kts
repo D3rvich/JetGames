@@ -53,12 +53,12 @@ gradlePlugin {
             id = "jetgames.jvm.library"
             implementationClass = "JvmLibraryConventionPlugin"
         }
-        register("koin") {
-            id = "jetgames.koin"
-            implementationClass = "KoinConventionPlugin"
+        register("sharedKoin") {
+            id = "jetgames.shared.koin"
+            implementationClass = "SharedKoinConventionPlugin"
         }
-        register("koinAndroid") {
-            id = "jetgames.koin.android"
+        register("androidKoin") {
+            id = "jetgames.android.koin"
             implementationClass = "AndroidKoinConventionPlugin"
         }
     }

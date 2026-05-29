@@ -13,7 +13,7 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
             apply(plugin = "jetgames.android.library")
-            apply(plugin = "jetgames.koin.android")
+            apply(plugin = "jetgames.android.koin")
             extensions.configure<LibraryExtension> {
                 defaultConfig {
                     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

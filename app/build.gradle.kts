@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.jetgames.android.application.compose)
     alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.jetgames.koin.android)
+    alias(libs.plugins.jetgames.android.koin)
 }
 
 android {

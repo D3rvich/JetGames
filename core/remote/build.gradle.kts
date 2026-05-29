@@ -3,7 +3,7 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.jetgames.android.library)
     alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.jetgames.koin)
+    alias(libs.plugins.jetgames.shared.koin)
 }
 
 android {

@@ -7,7 +7,7 @@ import ru.d3rvich.jetgames.libs
 class AndroidKoinConventionPlugin: Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
-            apply(plugin = "jetgames.koin")
+            apply(plugin = "jetgames.shared.koin")
 
             dependencies {
                 "implementation"(libs.findLibrary("koin-android").get())
