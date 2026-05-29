@@ -13,8 +13,7 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
             apply(plugin = "jetgames.android.library")
-            apply(plugin = "jetgames.android.hilt")
-            apply(plugin = "io.insert-koin.compiler.plugin")
+            apply(plugin = "jetgames.koin.android")
             extensions.configure<LibraryExtension> {
                 defaultConfig {
                     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -25,12 +24,6 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
                 "implementation"(project(":core:ui"))
                 "implementation"(project(":common"))
 
-                "implementation"(platform(libs.findLibrary("koin").get()))
-                "implementation"(libs.findLibrary("koin-android").get())
-                "implementation"(libs.findLibrary("koin-compose").get())
-                "implementation"(libs.findLibrary("koin-compose-viewmodel").get())
-                "implementation"(libs.findLibrary("koin-annotations").get())
-                "implementation"(libs.findLibrary("androidx-hilt-navigation-compose").get())
                 "implementation"(libs.findLibrary("androidx-lifecycle-runtime-compose").get())
                 "implementation"(libs.findLibrary("androidx-lifecycle-viewmodel-compose").get())
                 "implementation"(libs.findLibrary("androidx-lifecycle-viewmodel-ktx").get())

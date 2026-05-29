@@ -4,7 +4,7 @@ plugins {
     alias(libs.plugins.jetgames.android.library)
     alias(libs.plugins.jetgames.android.hilt)
     alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.koin.compiler)
+    alias(libs.plugins.jetgames.koin)
 }
 
 android {
@@ -33,10 +33,6 @@ dependencies {
     implementation(libs.ktor.client.serialization.json)
     implementation(libs.ktor.client.logging)
     implementation(libs.ktor.client.logging.slf4j)
-
-    implementation(platform(libs.koin))
-    implementation(libs.koin.core)
-    implementation(libs.koin.annotations)
 
     testImplementation(libs.junit)
 }

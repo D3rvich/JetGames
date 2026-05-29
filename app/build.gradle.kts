@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.jetgames.android.application.compose)
     alias(libs.plugins.jetgames.android.hilt)
     alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.koin.compiler)
+    alias(libs.plugins.jetgames.koin.android)
 }
 
 android {
@@ -46,11 +46,6 @@ dependencies {
     // Decompose
     implementation(libs.decompose.core)
     implementation(libs.decompose.extentionsCompose)
-
-    // Koin
-    implementation(platform(libs.koin))
-    implementation(libs.koin.android)
-    implementation(libs.koin.annotations)
 
     // Coil
     implementation(libs.coil.network)

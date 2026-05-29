@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.jetgames.android.library)
     alias(libs.plugins.jetgames.android.hilt)
-    alias(libs.plugins.koin.compiler)
+    alias(libs.plugins.jetgames.koin)
 }
 
 android {
@@ -13,10 +13,6 @@ dependencies {
     implementation(projects.core.datastore)
     implementation(projects.core.database)
     implementation(projects.core.remote)
-
-    implementation(platform(libs.koin))
-    implementation(libs.koin.core)
-    implementation(libs.koin.annotations)
 
     implementation(libs.kotlinx.datetime)
 

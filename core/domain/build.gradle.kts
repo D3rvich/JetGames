@@ -1,7 +1,6 @@
 plugins {
     alias(libs.plugins.jetgames.jvm.library)
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.koin.compiler)
+    alias(libs.plugins.jetgames.koin)
 }
 
 dependencies {
@@ -10,8 +9,4 @@ dependencies {
     implementation(libs.kotlinx.collections.immutable)
     implementation(libs.kotlinx.datetime)
     implementation(libs.androidx.paging.common)
-
-    implementation(platform(libs.koin))
-    implementation(libs.koin.core)
-    implementation(libs.koin.annotations)
 }

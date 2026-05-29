@@ -107,9 +107,11 @@ room = { id = "androidx.room", version.ref = "androidxRoom" }
 koin-compiler = { id = "io.insert-koin.compiler.plugin", version.ref = "koin-compiler" }
 
 # build-logic convention plugins
-jetgames-android-application-compose = { id = "jetgames.android.application.compose", version = "unspecified" }
-jetgames-android-library = { id = "jetgames.android.library", version = "unspecified" }
-jetgames-android-library-compose = { id = "jetgames.android.library.compose", version = "unspecified" }
-jetgames-android-feature = { id = "jetgames.android.feature", version = "unspecified" }
-jetgames-android-hilt = { id = "jetgames.android.hilt", version = "unspecified" }
-jetgames-jvm-library = { id = "jetgames.jvm.library", version = "unspecified" }
+jetgames-android-application-compose = { id = "jetgames.android.application.compose" }
+jetgames-android-library = { id = "jetgames.android.library" }
+jetgames-android-library-compose = { id = "jetgames.android.library.compose" }
+jetgames-android-feature = { id = "jetgames.android.feature" }
+jetgames-android-hilt = { id = "jetgames.android.hilt" }
+jetgames-jvm-library = { id = "jetgames.jvm.library" }
+jetgames-koin = { id = "jetgames.koin" }
+jetgames-koin-android = { id = "jetgames.koin.android" }
