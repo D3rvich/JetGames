@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.jetgames.jvm.library)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.koin.compiler)
 }
 
 dependencies {
@@ -12,4 +13,5 @@ dependencies {
 
     implementation(platform(libs.koin))
     implementation(libs.koin.core)
+    implementation(libs.koin.annotations)
 }
