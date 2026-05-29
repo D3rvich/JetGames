@@ -26,9 +26,6 @@ interface GamesDao {
     @Query("SELECT * FROM games WHERE id LIKE :gameId")
     suspend fun gameDetail(gameId: Int): GameDBO?
 
-    @Query("SELECT EXISTS(SELECT * FROM games WHERE id LIKE :gameId)")
-    suspend fun isGameExist(gameId: Int): Boolean
-
     @Delete
     suspend fun delete(game: GameDBO)
 }

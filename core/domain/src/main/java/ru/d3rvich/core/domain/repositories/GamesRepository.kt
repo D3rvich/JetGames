@@ -23,8 +23,6 @@ interface GamesRepository {
 
     fun getFavoriteGames(search: String): Flow<PagingData<GameEntity>>
 
-    suspend fun isGameFavorite(gameId: Int): Boolean
-
     suspend fun saveGameDetail(gameDetail: GameDetailEntity): Result<Unit>
 
     suspend fun deleteGameDetail(gameDetail: GameDetailEntity): Result<Unit>

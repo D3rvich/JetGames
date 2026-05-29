@@ -88,9 +88,6 @@ internal class GamesRepositoryImpl(
             }
         ).flow.map { pagingData -> pagingData.map { gameDBO -> gameDBO.toGameEntity() } }
 
-    override suspend fun isGameFavorite(gameId: Int): Boolean =
-        database.gamesDao.isGameExist(gameId = gameId)
-
     override suspend fun saveGameDetail(gameDetail: GameDetailEntity): Result<Unit> =
         try {
             database.gamesDao.insert(game = gameDetail.toGameDBO())
