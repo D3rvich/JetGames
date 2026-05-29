@@ -30,6 +30,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
+import org.koin.compose.viewmodel.koinViewModel
 import ru.d3rvich.common.components.DefaultErrorView
 import ru.d3rvich.core.ui.components.GameListItemView
 import ru.d3rvich.core.ui.mapper.toGameUiModel
@@ -46,7 +47,7 @@ fun FavoritesScreen(
     navigateToGameDetail: (gameId: Int) -> Unit,
     navigateToSettingsScreen: () -> Unit,
 ) {
-    val viewModel: FavoritesViewModel = hiltViewModel()
+    val viewModel: FavoritesViewModel = koinViewModel()
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     FavoritesScreen(
         modifier = modifier,

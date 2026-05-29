@@ -1,49 +1,47 @@
 package ru.d3rvich.filter
 
 import androidx.lifecycle.viewModelScope
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import ru.d3rvich.core.ui.base.BaseViewModel
-import ru.d3rvich.core.domain.model.MetacriticRange
+import org.koin.core.annotation.KoinViewModel
+import ru.d3rvich.core.domain.entities.GenreFullEntity
+import ru.d3rvich.core.domain.entities.PlatformEntity
+import ru.d3rvich.core.domain.entities.SortingEntity
 import ru.d3rvich.core.domain.model.LoadingResult
+import ru.d3rvich.core.domain.model.MetacriticRange
 import ru.d3rvich.core.domain.preferences.FilterPreferences
 import ru.d3rvich.core.domain.preferences.FilterPreferencesBody
 import ru.d3rvich.core.domain.usecases.GetGenresUseCase
 import ru.d3rvich.core.domain.usecases.GetPlatformsUseCase
-import ru.d3rvich.core.domain.entities.GenreFullEntity
-import ru.d3rvich.core.domain.entities.PlatformEntity
-import ru.d3rvich.core.domain.entities.SortingEntity
+import ru.d3rvich.core.ui.base.BaseViewModel
 import ru.d3rvich.filter.model.FilterUiAction
 import ru.d3rvich.filter.model.FilterUiEvent
 import ru.d3rvich.filter.model.FilterUiState
 import ru.d3rvich.filter.model.ListAction
 import ru.d3rvich.filter.model.update
-import javax.inject.Inject
-import javax.inject.Provider
 
 /**
  * Created by Ilya Deryabin at 29.02.2024
  */
-@HiltViewModel
-internal class FilterViewModel @Inject constructor(
+@KoinViewModel
+internal class FilterViewModel(
     private val filterPreferences: FilterPreferences,
-    private val getPlatformsUseCase: Provider<GetPlatformsUseCase>,
-    private val getGenresUseCase: Provider<GetGenresUseCase>,
+    private val getPlatformsUseCase: GetPlatformsUseCase,
+    private val getGenresUseCase: GetGenresUseCase,
 ) : BaseViewModel<FilterUiState, FilterUiEvent, FilterUiAction>() {
 
     init {
         setState(currentState.copy(filterPreferencesBody = filterPreferences.filterPreferencesFlow.value))
         viewModelScope.launch(Dispatchers.IO) {
             launch {
-                getPlatformsUseCase.get().invoke().collect { status ->
+                getPlatformsUseCase.invoke().collect { status ->
                     if (status is LoadingResult.Success) {
                         setState(currentState.copy(platforms = status.value))
                     }
                 }
             }
             launch {
-                getGenresUseCase.get().invoke().collect { status ->
+                getGenresUseCase.invoke().collect { status ->
                     if (status is LoadingResult.Success) {
                         setState(currentState.copy(genres = status.value))
                     }

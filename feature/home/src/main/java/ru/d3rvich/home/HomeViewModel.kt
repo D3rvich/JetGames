@@ -2,7 +2,6 @@ package ru.d3rvich.home
 
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.debounce
@@ -10,6 +9,7 @@ import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.KoinViewModel
 import ru.d3rvich.core.domain.preferences.FilterPreferences
 import ru.d3rvich.core.domain.preferences.FilterPreferencesBody
 import ru.d3rvich.core.domain.preferences.isDefault
@@ -18,16 +18,14 @@ import ru.d3rvich.core.ui.base.BaseViewModel
 import ru.d3rvich.core.ui.base.UiAction
 import ru.d3rvich.home.model.HomeUiEvent
 import ru.d3rvich.home.model.HomeUiState
-import javax.inject.Inject
-import javax.inject.Provider
 
 /**
  * Created by Ilya Deryabin at 31.01.2024
  */
 @OptIn(FlowPreview::class)
-@HiltViewModel
-internal class HomeViewModel @Inject constructor(
-    private val getGamesUseCase: Provider<GetGamesUseCase>,
+@KoinViewModel
+internal class HomeViewModel(
+    private val getGamesUseCase: GetGamesUseCase,
     filterPreferences: FilterPreferences,
 ) : BaseViewModel<HomeUiState, HomeUiEvent, UiAction>() {
 
@@ -77,7 +75,7 @@ internal class HomeViewModel @Inject constructor(
     ) {
         setState(
             HomeUiState(
-                games = getGamesUseCase.get()
+                games = getGamesUseCase
                     .invoke(search = search, filterPrefBody = filerPrefBody)
                     .cachedIn(viewModelScope),
                 search = search,

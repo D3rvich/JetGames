@@ -2,8 +2,8 @@ package ru.d3rvich.settings
 
 import android.os.Build
 import androidx.lifecycle.viewModelScope
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import org.koin.core.annotation.KoinViewModel
 import ru.d3rvich.core.domain.model.ColorModeType
 import ru.d3rvich.core.domain.model.ThemeType
 import ru.d3rvich.core.domain.repositories.UserPreferencesRepository
@@ -11,12 +11,10 @@ import ru.d3rvich.core.ui.base.BaseViewModel
 import ru.d3rvich.core.ui.base.UiAction
 import ru.d3rvich.core.ui.base.UiEvent
 import ru.d3rvich.core.ui.base.UiState
-import javax.inject.Inject
 
-@HiltViewModel
-internal class SettingsViewModel @Inject constructor(
-    private val userPreferencesRepository: UserPreferencesRepository
-) : BaseViewModel<SettingsUiState, SettingsUiEvent, UiAction>() {
+@KoinViewModel
+internal class SettingsViewModel(private val userPreferencesRepository: UserPreferencesRepository) :
+    BaseViewModel<SettingsUiState, SettingsUiEvent, UiAction>() {
 
     override fun createInitialState(): SettingsUiState = SettingsUiState.Loading
 
@@ -53,7 +51,7 @@ internal class SettingsViewModel @Inject constructor(
     }
 }
 
-sealed interface SettingsUiState : UiState {
+internal sealed interface SettingsUiState : UiState {
     data object Loading : SettingsUiState
     class Settings(
         val themeType: ThemeType,
@@ -62,7 +60,7 @@ sealed interface SettingsUiState : UiState {
     ) : SettingsUiState
 }
 
-sealed interface SettingsUiEvent : UiEvent {
+internal sealed interface SettingsUiEvent : UiEvent {
     class UpdateThemeType(val themeType: ThemeType) : SettingsUiEvent
 
     class UpdateColorMode(val colorModeType: ColorModeType) : SettingsUiEvent

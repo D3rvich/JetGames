@@ -18,11 +18,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import kotlinx.coroutines.launch
+import org.koin.compose.viewmodel.koinViewModel
 import ru.d3rvich.common.components.ScrollToTopButton
 import ru.d3rvich.home.model.HomeUiEvent
 import ru.d3rvich.home.model.HomeUiState
@@ -40,7 +40,7 @@ fun HomeScreen(
     navigateToFilterScreen: () -> Unit,
     navigateToSettingsScreen: () -> Unit
 ) {
-    val homeViewModel: HomeViewModel = hiltViewModel()
+    val homeViewModel: HomeViewModel = koinViewModel()
     val state by homeViewModel.uiState.collectAsStateWithLifecycle()
     HomeScreen(
         modifier = modifier,

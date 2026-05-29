@@ -31,8 +31,8 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import org.koin.compose.viewmodel.koinViewModel
 import ru.d3rvich.core.domain.model.ColorModeType
 import ru.d3rvich.core.domain.model.ThemeType
 import ru.d3rvich.core.ui.theme.JetGamesTheme
@@ -43,7 +43,7 @@ import ru.d3rvich.common.R as uiR
  */
 @Composable
 fun SettingsScreen(modifier: Modifier = Modifier, navigateBack: () -> Unit = {}) {
-    val viewModel: SettingsViewModel = hiltViewModel()
+    val viewModel: SettingsViewModel = koinViewModel()
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     SettingsScreen(
         modifier = modifier,

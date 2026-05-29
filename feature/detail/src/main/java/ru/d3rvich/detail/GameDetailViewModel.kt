@@ -3,14 +3,11 @@ package ru.d3rvich.detail
 import android.content.Context
 import androidx.core.net.toUri
 import androidx.lifecycle.viewModelScope
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
-import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.koin.core.annotation.InjectedParam
+import org.koin.core.annotation.KoinViewModel
 import ru.d3rvich.core.domain.entities.GameDetailEntity
 import ru.d3rvich.core.domain.entities.StoreEntity
 import ru.d3rvich.core.domain.entities.StoreLinkEntity
@@ -27,20 +24,19 @@ import ru.d3rvich.detail.model.GameDetailUiAction
 import ru.d3rvich.detail.model.GameDetailUiEvent
 import ru.d3rvich.detail.model.GameDetailUiState
 import ru.d3rvich.detail.model.ScreenshotsUiState
-import javax.inject.Provider
 
 /**
  * Created by Ilya Deryabin at 24.02.2024
  */
-@HiltViewModel(assistedFactory = GameDetailViewModel.Factory::class)
-internal class GameDetailViewModel @AssistedInject constructor(
-    @Assisted private val gameId: Int,
-    @param:ApplicationContext private val context: Context,
-    private val getGameDetailUseCase: Provider<GetGameDetailUseCase>,
-    private val getScreenshotsUseCase: Provider<GetScreenshotsUseCase>,
-    private val addToFavoritesUseCase: Provider<AddToFavoritesUseCase>,
-    private val removeFromFavoritesUseCase: Provider<RemoveFromFavoritesUseCase>,
-    private val getStoreLinksUseCase: Provider<GetStoreLinksByGameIdUseCase>
+@KoinViewModel
+internal class GameDetailViewModel(
+    context: Context,
+    @InjectedParam private val gameId: Int,
+    private val getGameDetailUseCase: GetGameDetailUseCase,
+    private val getScreenshotsUseCase: GetScreenshotsUseCase,
+    private val addToFavoritesUseCase: AddToFavoritesUseCase,
+    private val removeFromFavoritesUseCase: RemoveFromFavoritesUseCase,
+    private val getStoreLinksUseCase: GetStoreLinksByGameIdUseCase
 ) : BaseViewModel<GameDetailUiState, GameDetailUiEvent, GameDetailUiAction>() {
     override fun createInitialState(): GameDetailUiState = GameDetailUiState.Loading
 
@@ -68,7 +64,7 @@ internal class GameDetailViewModel @AssistedInject constructor(
 
     private fun loadGameDetail(gameId: Int) {
         viewModelScope.launch {
-            getGameDetailUseCase.get().invoke(gameId).collect { status ->
+            getGameDetailUseCase.invoke(gameId).collect { status ->
                 when (status) {
                     LoadingResult.Loading -> setState(GameDetailUiState.Loading)
                     is LoadingResult.Success -> {
@@ -76,7 +72,7 @@ internal class GameDetailViewModel @AssistedInject constructor(
                         if (stores.isNotEmpty()) {
                             loadLinks(gameId)
                             if (status.value.isFavorite && gameStoreLinks.isNotEmpty()) {
-                                addToFavoritesUseCase.get().invoke(
+                                addToFavoritesUseCase.invoke(
                                     status.value.copy(
                                         stores = uniteStoresWithLinks(
                                             stores = stores,
@@ -109,7 +105,7 @@ internal class GameDetailViewModel @AssistedInject constructor(
 
     private fun loadLinks(gameId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            when (val result = getStoreLinksUseCase.get().invoke(gameId = gameId)) {
+            when (val result = getStoreLinksUseCase.invoke(gameId = gameId)) {
                 is Result.Success -> {
                     gameStoreLinks = result.value
                 }
@@ -130,7 +126,7 @@ internal class GameDetailViewModel @AssistedInject constructor(
                     } else {
                         setState(state.copy(screenshots = ScreenshotsUiState.Loading))
                         when (val result =
-                            getScreenshotsUseCase.get().invoke(gameId = gameDetail.id)) {
+                            getScreenshotsUseCase.invoke(gameId = gameDetail.id)) {
                             is Result.Success -> {
                                 setState(
                                     state.copy(
@@ -168,9 +164,9 @@ internal class GameDetailViewModel @AssistedInject constructor(
                         } else {
                             state.gameDetail
                         }
-                        addToFavoritesUseCase.get().invoke(gameDetail)
+                        addToFavoritesUseCase.invoke(gameDetail)
                     } else {
-                        removeFromFavoritesUseCase.get().invoke(state.gameDetail)
+                        removeFromFavoritesUseCase.invoke(state.gameDetail)
                     }
                     setState(state.copy(gameDetail = state.gameDetail.copy(isFavorite = event.isFavorite)))
                 }
@@ -195,11 +191,6 @@ internal class GameDetailViewModel @AssistedInject constructor(
 
             else -> unexpectedEventError(event, state)
         }
-    }
-
-    @AssistedFactory
-    interface Factory {
-        fun create(gameId: Int): GameDetailViewModel
     }
 }
 

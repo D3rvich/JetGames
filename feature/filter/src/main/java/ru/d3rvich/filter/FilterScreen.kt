@@ -40,8 +40,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import org.koin.compose.viewmodel.koinViewModel
 import ru.d3rvich.core.domain.entities.GenreFullEntity
 import ru.d3rvich.core.domain.entities.PlatformEntity
 import ru.d3rvich.core.domain.entities.SortingEntity
@@ -65,7 +65,7 @@ import ru.d3rvich.common.R as uiR
  */
 @Composable
 fun FilterScreen(modifier: Modifier = Modifier, onNavigateBack: () -> Unit) {
-    val viewModel: FilterViewModel = hiltViewModel()
+    val viewModel: FilterViewModel = koinViewModel()
     val state = viewModel.uiState.collectAsStateWithLifecycle().value
     FilterScreen(
         modifier = modifier,

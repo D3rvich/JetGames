@@ -1,8 +1,6 @@
 package ru.d3rvich.data.repositories
 
 import kotlinx.coroutines.flow.Flow
-import org.koin.android.annotation.ActivityRetainedScope
-import org.koin.core.annotation.Configuration
 import org.koin.core.annotation.Factory
 import ru.d3rvich.core.domain.model.ColorModeType
 import ru.d3rvich.core.domain.model.ThemeType

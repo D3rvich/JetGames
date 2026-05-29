@@ -10,8 +10,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 import ru.d3rvich.common.components.DefaultErrorView
 import ru.d3rvich.core.domain.entities.ScreenshotEntity
 import ru.d3rvich.detail.model.GameDetailUiAction
@@ -32,10 +33,7 @@ fun GameDetailScreen(
     navigateToScreenshotScreen: (selectedItem: Int, screenshots: List<ScreenshotEntity>) -> Unit,
     navigateBack: () -> Unit,
 ) {
-    val viewModel: GameDetailViewModel =
-        hiltViewModel<GameDetailViewModel, GameDetailViewModel.Factory>(key = gameId.toString()) { factory ->
-            factory.create(gameId)
-        }
+    val viewModel: GameDetailViewModel = koinViewModel(key = gameId.toString()) { parametersOf(gameId) }
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     Scaffold(
