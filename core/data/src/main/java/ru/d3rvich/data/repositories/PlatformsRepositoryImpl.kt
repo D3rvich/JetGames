@@ -1,8 +1,8 @@
-package ru.d3rvich.data.repositoties
+package ru.d3rvich.data.repositories
 
 import kotlinx.coroutines.flow.Flow
+import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Factory
-import org.koin.core.annotation.Named
 import ru.d3rvich.core.domain.entities.PlatformEntity
 import ru.d3rvich.core.domain.model.LoadingResult
 import ru.d3rvich.core.domain.model.map
@@ -10,6 +10,7 @@ import ru.d3rvich.core.domain.repositories.PlatformsRepository
 import ru.d3rvich.data.mapper.asResult
 import ru.d3rvich.data.mapper.toPlatformDBO
 import ru.d3rvich.data.mapper.toPlatformEntity
+import ru.d3rvich.data.model.PlatformsSync
 import ru.d3rvich.data.model.SyncTimeManager
 import ru.d3rvich.data.model.localDataSource
 import ru.d3rvich.data.util.cashedRemoteRequest
@@ -20,11 +21,12 @@ import ru.d3rvich.remote.util.getAllPlatforms
 /**
  * Created by Ilya Deryabin at 02.04.2024
  */
-@Factory
+@Factory(binds = [PlatformsRepository::class])
+@ComponentScan("ru.d3rvich.data.model")
 internal class PlatformsRepositoryImpl(
     private val apiService: JetGamesNetworkDataSource,
     private val database: JetGamesDatabase,
-    @Named("Platforms") private val syncTimeManager: SyncTimeManager,
+    @param:PlatformsSync private val syncTimeManager: SyncTimeManager,
 ) : PlatformsRepository {
 
     override fun getPlatforms(): Flow<LoadingResult<List<PlatformEntity>>> {

@@ -1,6 +1,8 @@
-package ru.d3rvich.data.repositoties
+package ru.d3rvich.data.repositories
 
 import kotlinx.coroutines.flow.Flow
+import org.koin.android.annotation.ActivityRetainedScope
+import org.koin.core.annotation.Configuration
 import org.koin.core.annotation.Factory
 import ru.d3rvich.core.domain.model.ColorModeType
 import ru.d3rvich.core.domain.model.ThemeType
@@ -8,7 +10,7 @@ import ru.d3rvich.core.domain.model.UserPreferences
 import ru.d3rvich.core.domain.repositories.UserPreferencesRepository
 import ru.d3rvich.datastore.JetGamesPreferencesDataStore
 
-@Factory
+@Factory(binds = [UserPreferencesRepository::class])
 internal class UserPreferencesRepositoryImpl(
     private val dataStore: JetGamesPreferencesDataStore
 ) : UserPreferencesRepository {
