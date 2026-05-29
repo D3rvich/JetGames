@@ -45,10 +45,6 @@ gradlePlugin {
             id = "jetgames.android.library"
             implementationClass = "AndroidLibraryConventionPlugin"
         }
-        register("androidHilt") {
-            id = "jetgames.android.hilt"
-            implementationClass = "AndroidHiltConventionPlugin"
-        }
         register("androidFeature") {
             id = "jetgames.android.feature"
             implementationClass = "AndroidFeatureConventionPlugin"

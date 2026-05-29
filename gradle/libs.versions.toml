@@ -3,10 +3,8 @@ androidGradlePlugin = "9.2.1"
 androidTools = "32.2.1"
 androidxCore = "1.18.0"
 kotlin = "2.3.21"
-hilt = "2.59.2"
 koin-bom = "4.2.1"
 koin-compiler = "1.0.0"
-hiltNavigationCompose = "1.3.0"
 ksp = "2.3.6"
 androidxLifecycle = "2.10.0"
 androidxActivity = "1.13.0"
@@ -41,7 +39,6 @@ androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-toolin
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "androidxComposeMaterial3" }
 androidx-compose-material3-windowSizeClass = { group = "androidx.compose.material3", name = "material3-window-size-class", version.ref = "androidxComposeMaterial3" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "androidxComposeBom" }
-androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "androidxLifecycle" }
 androidx-lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "androidxLifecycle" }
 androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidxLifecycle" }
@@ -53,9 +50,6 @@ androidx-room-compiler = { group = "androidx.room", name = "room-compiler", vers
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "androidxRoom" }
 androidx-room-paging = { group = "androidx.room", name = "room-paging", version.ref = "androidxRoom" }
 splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splash" }
-hilt-core = { group = "com.google.dagger", name = "hilt-core", version.ref = "hilt" }
-hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
-hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
 koin = { module = "io.insert-koin:koin-bom", version.ref = "koin-bom" }
 koin-core = { module = "io.insert-koin:koin-core" }
 koin-android = { module = "io.insert-koin:koin-android" }
@@ -100,7 +94,6 @@ android-library = { id = "com.android.library", version.ref = "androidGradlePlug
 kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 org-jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 room = { id = "androidx.room", version.ref = "androidxRoom" }
@@ -111,7 +104,6 @@ jetgames-android-application-compose = { id = "jetgames.android.application.comp
 jetgames-android-library = { id = "jetgames.android.library" }
 jetgames-android-library-compose = { id = "jetgames.android.library.compose" }
 jetgames-android-feature = { id = "jetgames.android.feature" }
-jetgames-android-hilt = { id = "jetgames.android.hilt" }
 jetgames-jvm-library = { id = "jetgames.jvm.library" }
 jetgames-koin = { id = "jetgames.koin" }
 jetgames-koin-android = { id = "jetgames.koin.android" }
