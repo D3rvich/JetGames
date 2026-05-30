@@ -5,7 +5,7 @@ import org.koin.core.annotation.Module
 
 @Module(includes = [DomainModule::class])
 @ComponentScan(
-    "ru.d3rvich.browse",
+    "ru.d3rvich.feature.browse",
     "ru.d3rvich.detail",
     "ru.d3rvich.favorites",
     "ru.d3rvich.filter",

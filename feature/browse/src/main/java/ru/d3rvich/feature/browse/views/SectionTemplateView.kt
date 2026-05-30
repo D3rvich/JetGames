@@ -1,4 +1,4 @@
-package ru.d3rvich.browse.views
+package ru.d3rvich.feature.browse.views
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column

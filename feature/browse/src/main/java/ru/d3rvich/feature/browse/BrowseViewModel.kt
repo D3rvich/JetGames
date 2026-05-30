@@ -1,10 +1,10 @@
-package ru.d3rvich.browse
+package ru.d3rvich.feature.browse
 
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
-import ru.d3rvich.browse.model.BrowseUiState
+import ru.d3rvich.feature.browse.model.BrowseUiState
 import ru.d3rvich.core.domain.usecases.GetGenresUseCase
 import ru.d3rvich.core.domain.usecases.GetPlatformsUseCase
 import ru.d3rvich.core.ui.base.BaseViewModel

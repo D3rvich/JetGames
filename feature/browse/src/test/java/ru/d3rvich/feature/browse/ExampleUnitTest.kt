@@ -1,4 +1,4 @@
-package ru.d3rvich.browse
+package ru.d3rvich.feature.browse
 
 import org.junit.Test
 

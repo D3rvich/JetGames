@@ -1,4 +1,4 @@
-package ru.d3rvich.browse
+package ru.d3rvich.feature.browse
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

@@ -1,4 +1,4 @@
-package ru.d3rvich.browse.model
+package ru.d3rvich.feature.browse.model
 
 import androidx.compose.runtime.Immutable
 import ru.d3rvich.core.domain.entities.GenreFullEntity
