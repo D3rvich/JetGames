@@ -1,4 +1,4 @@
-package ru.d3rvich.home.model
+package ru.d3rvich.feature.home.model
 
 import android.content.Context
 import androidx.compose.runtime.Composable

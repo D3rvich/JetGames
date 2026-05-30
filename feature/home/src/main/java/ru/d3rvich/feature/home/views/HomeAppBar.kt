@@ -1,4 +1,4 @@
-package ru.d3rvich.home.views
+package ru.d3rvich.feature.home.views
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
@@ -42,7 +42,7 @@ import androidx.compose.ui.util.lerp
 import ru.d3rvich.common.components.SearchField
 import ru.d3rvich.core.ui.theme.JetGamesTheme
 import ru.d3rvich.home.R
-import ru.d3rvich.home.model.ListViewMode
+import ru.d3rvich.feature.home.model.ListViewMode
 import ru.d3rvich.common.R as CommonR
 import ru.d3rvich.home.R as HomeR
 

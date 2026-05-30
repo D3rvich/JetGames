@@ -1,4 +1,4 @@
-package ru.d3rvich.home.model
+package ru.d3rvich.feature.home.model
 
 import androidx.compose.runtime.Immutable
 import ru.d3rvich.core.ui.base.UiEvent

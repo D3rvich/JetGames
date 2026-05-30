@@ -1,4 +1,4 @@
-package ru.d3rvich.home
+package ru.d3rvich.feature.favorites
 
 import org.junit.Test
 

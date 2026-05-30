@@ -1,4 +1,4 @@
-package ru.d3rvich.favorites.model
+package ru.d3rvich.feature.favorites.model
 
 import androidx.compose.runtime.Stable
 import androidx.paging.PagingData

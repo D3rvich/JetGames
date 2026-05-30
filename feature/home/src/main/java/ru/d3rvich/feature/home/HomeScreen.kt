@@ -1,4 +1,4 @@
-package ru.d3rvich.home
+package ru.d3rvich.feature.home
 
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.PaddingValues
@@ -24,12 +24,12 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 import ru.d3rvich.common.components.ScrollToTopButton
-import ru.d3rvich.home.model.HomeUiEvent
-import ru.d3rvich.home.model.HomeUiState
-import ru.d3rvich.home.model.ListViewMode
-import ru.d3rvich.home.model.rememberListViewModeProvider
-import ru.d3rvich.home.views.GamesView
-import ru.d3rvich.home.views.HomeAppBar
+import ru.d3rvich.feature.home.model.HomeUiEvent
+import ru.d3rvich.feature.home.model.HomeUiState
+import ru.d3rvich.feature.home.model.ListViewMode
+import ru.d3rvich.feature.home.model.rememberListViewModeProvider
+import ru.d3rvich.feature.home.views.GamesView
+import ru.d3rvich.feature.home.views.HomeAppBar
 import kotlin.math.roundToInt
 
 @Composable

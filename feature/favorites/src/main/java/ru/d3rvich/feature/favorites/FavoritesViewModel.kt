@@ -1,4 +1,4 @@
-package ru.d3rvich.favorites
+package ru.d3rvich.feature.favorites
 
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
@@ -8,7 +8,7 @@ import ru.d3rvich.core.domain.usecases.GetFavoriteGamesUseCase
 import ru.d3rvich.core.ui.base.BaseViewModel
 import ru.d3rvich.core.ui.base.UiAction
 import ru.d3rvich.core.ui.base.UiEvent
-import ru.d3rvich.favorites.model.FavoritesUiState
+import ru.d3rvich.feature.favorites.model.FavoritesUiState
 
 /**
  * Created by Ilya Deryabin at 26.04.2024

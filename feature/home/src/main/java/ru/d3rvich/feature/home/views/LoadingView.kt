@@ -1,4 +1,4 @@
-package ru.d3rvich.home.views
+package ru.d3rvich.feature.home.views
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize

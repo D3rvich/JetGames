@@ -1,4 +1,4 @@
-package ru.d3rvich.home.views
+package ru.d3rvich.feature.home.views
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -40,7 +40,7 @@ import ru.d3rvich.core.ui.components.GameListItemView
 import ru.d3rvich.core.ui.mapper.toGameUiModel
 import ru.d3rvich.core.ui.theme.JetGamesTheme
 import ru.d3rvich.home.R
-import ru.d3rvich.home.model.ListViewMode
+import ru.d3rvich.feature.home.model.ListViewMode
 
 /**
  * Created by Ilya Deryabin at 27.02.2024

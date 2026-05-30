@@ -1,4 +1,4 @@
-package ru.d3rvich.home
+package ru.d3rvich.feature.home
 
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
@@ -16,8 +16,8 @@ import ru.d3rvich.core.domain.preferences.isDefault
 import ru.d3rvich.core.domain.usecases.GetGamesUseCase
 import ru.d3rvich.core.ui.base.BaseViewModel
 import ru.d3rvich.core.ui.base.UiAction
-import ru.d3rvich.home.model.HomeUiEvent
-import ru.d3rvich.home.model.HomeUiState
+import ru.d3rvich.feature.home.model.HomeUiEvent
+import ru.d3rvich.feature.home.model.HomeUiState
 
 /**
  * Created by Ilya Deryabin at 31.01.2024
