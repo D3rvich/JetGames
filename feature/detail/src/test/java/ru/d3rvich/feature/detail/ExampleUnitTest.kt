@@ -1,4 +1,4 @@
-package ru.d3rvich.detail
+package ru.d3rvich.feature.detail
 
 import org.junit.Test
 

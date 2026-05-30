@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
-import ru.d3rvich.detail.GameDetailScreen
+import ru.d3rvich.feature.detail.GameDetailScreen
 import ru.d3rvich.jetgames.navigation.detail.GameDetailComponent
 import ru.d3rvich.feature.screenshots.ScreenshotsScreen
 

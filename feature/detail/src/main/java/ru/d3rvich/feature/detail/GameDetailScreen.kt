@@ -1,4 +1,4 @@
-package ru.d3rvich.detail
+package ru.d3rvich.feature.detail
 
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
@@ -15,13 +15,13 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import ru.d3rvich.common.components.DefaultErrorView
 import ru.d3rvich.core.domain.entities.ScreenshotEntity
-import ru.d3rvich.detail.model.GameDetailUiAction
-import ru.d3rvich.detail.model.GameDetailUiEvent
-import ru.d3rvich.detail.model.GameDetailUiState
-import ru.d3rvich.detail.model.ScreenshotsUiState
-import ru.d3rvich.detail.model.toGameDetailUiModel
-import ru.d3rvich.detail.views.GameDetailView
-import ru.d3rvich.detail.views.LoadingView
+import ru.d3rvich.feature.detail.model.GameDetailUiAction
+import ru.d3rvich.feature.detail.model.GameDetailUiEvent
+import ru.d3rvich.feature.detail.model.GameDetailUiState
+import ru.d3rvich.feature.detail.model.ScreenshotsUiState
+import ru.d3rvich.feature.detail.model.toGameDetailUiModel
+import ru.d3rvich.feature.detail.views.GameDetailView
+import ru.d3rvich.feature.detail.views.LoadingView
 
 /**
  * Created by Ilya Deryabin at 24.02.2024

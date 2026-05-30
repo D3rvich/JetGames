@@ -1,4 +1,4 @@
-package ru.d3rvich.detail.views
+package ru.d3rvich.feature.detail.views
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -22,7 +22,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import ru.d3rvich.detail.R
-import ru.d3rvich.detail.model.ScreenshotsUiState
+import ru.d3rvich.feature.detail.model.ScreenshotsUiState
 
 /**
  * Created by Ilya Deryabin at 16.03.2024

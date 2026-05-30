@@ -1,4 +1,4 @@
-package ru.d3rvich.detail.model
+package ru.d3rvich.feature.detail.model
 
 import androidx.compose.runtime.Immutable
 import ru.d3rvich.core.ui.base.UiState

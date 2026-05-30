@@ -4,8 +4,5 @@ import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module
 
 @Module(includes = [DomainModule::class])
-@ComponentScan(
-    "ru.d3rvich.feature",
-    "ru.d3rvich.detail",
-)
+@ComponentScan("ru.d3rvich.feature")
 object FeatureModule

@@ -1,4 +1,4 @@
-package ru.d3rvich.detail.browser
+package ru.d3rvich.feature.detail.browser
 
 import android.content.Context
 import android.content.Intent

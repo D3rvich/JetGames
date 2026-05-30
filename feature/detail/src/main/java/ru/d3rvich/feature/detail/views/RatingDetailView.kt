@@ -1,4 +1,4 @@
-package ru.d3rvich.detail.views
+package ru.d3rvich.feature.detail.views
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme

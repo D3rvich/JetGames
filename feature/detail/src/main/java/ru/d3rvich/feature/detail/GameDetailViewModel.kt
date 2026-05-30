@@ -1,4 +1,4 @@
-package ru.d3rvich.detail
+package ru.d3rvich.feature.detail
 
 import android.content.Context
 import androidx.core.net.toUri
@@ -19,11 +19,11 @@ import ru.d3rvich.core.domain.usecases.GetScreenshotsUseCase
 import ru.d3rvich.core.domain.usecases.GetStoreLinksByGameIdUseCase
 import ru.d3rvich.core.domain.usecases.RemoveFromFavoritesUseCase
 import ru.d3rvich.core.ui.base.BaseViewModel
-import ru.d3rvich.detail.browser.BrowserManager
-import ru.d3rvich.detail.model.GameDetailUiAction
-import ru.d3rvich.detail.model.GameDetailUiEvent
-import ru.d3rvich.detail.model.GameDetailUiState
-import ru.d3rvich.detail.model.ScreenshotsUiState
+import ru.d3rvich.feature.detail.browser.BrowserManager
+import ru.d3rvich.feature.detail.model.GameDetailUiAction
+import ru.d3rvich.feature.detail.model.GameDetailUiEvent
+import ru.d3rvich.feature.detail.model.GameDetailUiState
+import ru.d3rvich.feature.detail.model.ScreenshotsUiState
 
 /**
  * Created by Ilya Deryabin at 24.02.2024
