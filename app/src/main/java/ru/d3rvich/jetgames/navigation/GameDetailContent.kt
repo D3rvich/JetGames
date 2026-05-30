@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import ru.d3rvich.detail.GameDetailScreen
 import ru.d3rvich.jetgames.navigation.detail.GameDetailComponent
-import ru.d3rvich.screenshots.ScreenshotsScreen
+import ru.d3rvich.feature.screenshots.ScreenshotsScreen
 
 @Composable
 fun GameDetailContent(component: GameDetailComponent, modifier: Modifier = Modifier) {
