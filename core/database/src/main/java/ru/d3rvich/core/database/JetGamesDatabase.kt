@@ -35,7 +35,7 @@ internal abstract class JetGamesRoomDatabase : RoomDatabase() {
     abstract fun genresDao(): GenresDao
 }
 
-fun JetGamesDatabase(applicationContext: Context): JetGamesDatabase {
+internal fun JetGamesDatabase(applicationContext: Context): JetGamesDatabase {
     val database = Room.databaseBuilder(
         context = checkNotNull(applicationContext.applicationContext),
         klass = JetGamesRoomDatabase::class.java,

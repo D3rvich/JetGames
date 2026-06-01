@@ -22,7 +22,6 @@ import ru.d3rvich.core.remote.util.getAllGenres
  * Created by Ilya Deryabin at 04.04.2024
  */
 @Single(binds = [GenresRepository::class])
-@ComponentScan("ru.d3rvich.data.model")
 internal class GenresRepositoryImpl(
     private val apiService: JetGamesNetworkDataSource,
     private val database: JetGamesDatabase,

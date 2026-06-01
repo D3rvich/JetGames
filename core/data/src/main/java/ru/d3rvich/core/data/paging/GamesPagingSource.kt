@@ -90,7 +90,7 @@ class GamesPagingSource(
     }
 }
 
-@Factory
+@Factory(binds = [GamesPagingSourceFactory::class])
 class GamesPagingSourceFactory : KoinComponent {
     fun create(search: String, filterPreferencesBody: FilterPreferencesBody): GamesPagingSource =
         get<GamesPagingSource> { parametersOf(search, filterPreferencesBody) }

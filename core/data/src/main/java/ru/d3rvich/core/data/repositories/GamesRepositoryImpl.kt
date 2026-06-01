@@ -31,7 +31,6 @@ import ru.d3rvich.core.remote.model.details.GameDetails
  * Created by Ilya Deryabin at 01.02.2024
  */
 @Single(binds = [GamesRepository::class])
-@ComponentScan("ru.d3rvich.core.data.paging")
 internal class GamesRepositoryImpl(
     private val apiService: JetGamesNetworkDataSource,
     private val database: JetGamesDatabase,

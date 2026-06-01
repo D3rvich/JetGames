@@ -6,11 +6,9 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import org.koin.core.annotation.KoinViewModel
 import ru.d3rvich.core.domain.model.UserPreferences
 import ru.d3rvich.core.domain.repositories.UserPreferencesRepository
 
-@KoinViewModel
 class MainViewModel(userPreferencesRepository: UserPreferencesRepository) : ViewModel() {
 
     val uiState: StateFlow<MainActivityUiState> =

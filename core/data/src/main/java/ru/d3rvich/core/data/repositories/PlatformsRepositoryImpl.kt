@@ -22,7 +22,6 @@ import ru.d3rvich.core.remote.util.getAllPlatforms
  * Created by Ilya Deryabin at 02.04.2024
  */
 @Single(binds = [PlatformsRepository::class])
-@ComponentScan("ru.d3rvich.data.model")
 internal class PlatformsRepositoryImpl(
     private val apiService: JetGamesNetworkDataSource,
     private val database: JetGamesDatabase,
