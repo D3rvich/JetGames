@@ -1,7 +1,6 @@
 package ru.d3rvich.core.database.converters
 
 import androidx.room.TypeConverter
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 internal class ScreenshotsConverter {

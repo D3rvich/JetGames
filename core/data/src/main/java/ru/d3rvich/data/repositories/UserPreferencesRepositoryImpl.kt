@@ -6,7 +6,7 @@ import ru.d3rvich.core.domain.model.ColorModeType
 import ru.d3rvich.core.domain.model.ThemeType
 import ru.d3rvich.core.domain.model.UserPreferences
 import ru.d3rvich.core.domain.repositories.UserPreferencesRepository
-import ru.d3rvich.datastore.JetGamesPreferencesDataStore
+import ru.d3rvich.core.datastore.JetGamesPreferencesDataStore
 
 @Single(binds = [UserPreferencesRepository::class])
 internal class UserPreferencesRepositoryImpl(

@@ -3,7 +3,7 @@ package ru.d3rvich.data.model
 import kotlinx.coroutines.flow.firstOrNull
 import org.koin.core.annotation.Factory
 import org.koin.core.annotation.Qualifier
-import ru.d3rvich.datastore.JetGamesPreferencesDataStore
+import ru.d3rvich.core.datastore.JetGamesPreferencesDataStore
 
 interface SyncTimeManager {
 

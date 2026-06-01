@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "ru.d3rvich.feature.database"
+    namespace = "ru.d3rvich.core.database"
     room {
         schemaDirectory("$projectDir/schemas")
     }
