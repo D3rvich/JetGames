@@ -1,4 +1,4 @@
-package ru.d3rvich.remote
+package ru.d3rvich.core.database
 
 import org.junit.Assert.assertEquals
 import org.junit.Test

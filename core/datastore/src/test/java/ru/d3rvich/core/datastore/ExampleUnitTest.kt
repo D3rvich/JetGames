@@ -1,4 +1,4 @@
-package ru.d3rvich.datastore
+package ru.d3rvich.core.datastore
 
 import org.junit.Test
 
