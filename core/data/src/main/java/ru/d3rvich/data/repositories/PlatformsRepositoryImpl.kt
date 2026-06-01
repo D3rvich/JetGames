@@ -2,7 +2,6 @@ package ru.d3rvich.data.repositories
 
 import kotlinx.coroutines.flow.Flow
 import org.koin.core.annotation.ComponentScan
-import org.koin.core.annotation.Factory
 import org.koin.core.annotation.Single
 import ru.d3rvich.core.domain.entities.PlatformEntity
 import ru.d3rvich.core.domain.model.LoadingResult
@@ -15,7 +14,7 @@ import ru.d3rvich.data.model.PlatformsSync
 import ru.d3rvich.data.model.SyncTimeManager
 import ru.d3rvich.data.model.localDataSource
 import ru.d3rvich.data.util.cashedRemoteRequest
-import ru.d3rvich.database.JetGamesDatabase
+import ru.d3rvich.core.database.JetGamesDatabase
 import ru.d3rvich.remote.JetGamesNetworkDataSource
 import ru.d3rvich.remote.util.getAllPlatforms
 

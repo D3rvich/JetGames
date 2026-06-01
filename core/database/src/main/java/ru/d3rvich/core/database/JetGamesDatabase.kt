@@ -1,15 +1,15 @@
-package ru.d3rvich.database
+package ru.d3rvich.core.database
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import ru.d3rvich.database.dao.GamesDao
-import ru.d3rvich.database.dao.GenresDao
-import ru.d3rvich.database.dao.PlatformsDao
-import ru.d3rvich.database.model.GameDBO
-import ru.d3rvich.database.model.GenreDBO
-import ru.d3rvich.database.model.PlatformDBO
+import ru.d3rvich.core.database.dao.GamesDao
+import ru.d3rvich.core.database.dao.GenresDao
+import ru.d3rvich.core.database.dao.PlatformsDao
+import ru.d3rvich.core.database.model.GameDBO
+import ru.d3rvich.core.database.model.GenreDBO
+import ru.d3rvich.core.database.model.PlatformDBO
 
 /**
  * Created by Ilya Deryabin at 25.03.2024

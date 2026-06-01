@@ -1,9 +1,9 @@
-package ru.d3rvich.database.converters
+package ru.d3rvich.core.database.converters
 
 import androidx.room.TypeConverter
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import ru.d3rvich.database.model.GenreDBO
+import ru.d3rvich.core.database.model.GenreDBO
 
 /**
  * Created by Ilya Deryabin at 26.03.2024

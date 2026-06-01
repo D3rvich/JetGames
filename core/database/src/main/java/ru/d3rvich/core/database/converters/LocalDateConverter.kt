@@ -1,4 +1,4 @@
-package ru.d3rvich.database.converters
+package ru.d3rvich.core.database.converters
 
 import androidx.room.TypeConverter
 import kotlinx.datetime.LocalDate

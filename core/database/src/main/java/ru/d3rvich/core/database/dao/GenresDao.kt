@@ -1,11 +1,11 @@
-package ru.d3rvich.database.dao
+package ru.d3rvich.core.database.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import ru.d3rvich.database.model.GenreDBO
+import ru.d3rvich.core.database.model.GenreDBO
 
 /**
  * Created by Ilya Deryabin at 26.03.2024

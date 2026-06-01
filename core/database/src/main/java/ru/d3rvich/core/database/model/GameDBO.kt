@@ -1,16 +1,16 @@
-package ru.d3rvich.database.model
+package ru.d3rvich.core.database.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
 import kotlinx.datetime.LocalDate
-import ru.d3rvich.database.converters.LocalDateConverter
-import ru.d3rvich.database.converters.GenresConverter
-import ru.d3rvich.database.converters.ParentPlatformsConverter
-import ru.d3rvich.database.converters.RatingsConverter
-import ru.d3rvich.database.converters.ScreenshotsConverter
-import ru.d3rvich.database.converters.StoresConverter
+import ru.d3rvich.core.database.converters.LocalDateConverter
+import ru.d3rvich.core.database.converters.GenresConverter
+import ru.d3rvich.core.database.converters.ParentPlatformsConverter
+import ru.d3rvich.core.database.converters.RatingsConverter
+import ru.d3rvich.core.database.converters.ScreenshotsConverter
+import ru.d3rvich.core.database.converters.StoresConverter
 
 /**
  * Created by Ilya Deryabin at 26.03.2024

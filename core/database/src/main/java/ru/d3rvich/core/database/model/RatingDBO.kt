@@ -1,4 +1,4 @@
-package ru.d3rvich.database.model
+package ru.d3rvich.core.database.model
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
