@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = "ru.d3rvich.network"
+    namespace = "ru.d3rvich.core.remote"
 
     defaultConfig {
         buildFeatures.buildConfig = true

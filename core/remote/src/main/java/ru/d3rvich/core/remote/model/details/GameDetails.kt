@@ -1,12 +1,12 @@
-package ru.d3rvich.remote.model.details
+package ru.d3rvich.core.remote.model.details
 
 import kotlinx.datetime.LocalDate
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import ru.d3rvich.remote.model.metadata.GenreFull
-import ru.d3rvich.remote.model.metadata.ParentPlatformWrapper
-import ru.d3rvich.remote.model.metadata.Rating
+import ru.d3rvich.core.remote.model.metadata.GenreFull
+import ru.d3rvich.core.remote.model.metadata.ParentPlatformWrapper
+import ru.d3rvich.core.remote.model.metadata.Rating
 
 @Serializable
 @OptIn(InternalSerializationApi::class)

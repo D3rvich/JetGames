@@ -1,4 +1,4 @@
-package ru.d3rvich.remote.di
+package ru.d3rvich.core.remote.di
 
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
@@ -16,15 +16,14 @@ import io.ktor.http.URLProtocol
 import io.ktor.http.contentType
 import io.ktor.http.path
 import io.ktor.serialization.kotlinx.json.json
-import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.json.Json
+import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Single
-import ru.d3rvich.network.BuildConfig
-import ru.d3rvich.remote.JetGamesNetworkDataSource
-import ru.d3rvich.remote.ktor.JetGamesNetworkClient
+import ru.d3rvich.core.remote.BuildConfig
 
 @Module(createdAtStart = true)
+@ComponentScan("ru.d3rvich.core.remote.ktor")
 object NetworkModule {
 
     @Single(createdAtStart = true)
@@ -61,9 +60,4 @@ object NetworkModule {
             contentType(ContentType.Application.Json)
         }
     }
-
-    @OptIn(InternalSerializationApi::class)
-    @Single(binds = [JetGamesNetworkDataSource::class], createdAtStart = true)
-    fun networkDataSource(httpClient: HttpClient): JetGamesNetworkDataSource =
-        JetGamesNetworkClient(httpClient)
 }

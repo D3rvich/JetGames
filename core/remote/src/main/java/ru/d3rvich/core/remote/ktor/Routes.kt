@@ -1,4 +1,4 @@
-package ru.d3rvich.remote.ktor
+package ru.d3rvich.core.remote.ktor
 
 import io.ktor.resources.Resource
 import kotlinx.serialization.InternalSerializationApi

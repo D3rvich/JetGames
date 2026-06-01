@@ -1,13 +1,13 @@
-package ru.d3rvich.remote
+package ru.d3rvich.core.remote
 
-import ru.d3rvich.remote.model.common.ApiPagingResult
-import ru.d3rvich.remote.model.metadata.GenreFull
-import ru.d3rvich.remote.model.metadata.Platform
-import ru.d3rvich.remote.model.details.Screenshot
-import ru.d3rvich.remote.model.details.StoreLink
-import ru.d3rvich.remote.model.game.Game
-import ru.d3rvich.remote.model.details.GameDetails
-import ru.d3rvich.remote.result.NetworkResult
+import ru.d3rvich.core.remote.model.common.ApiPagingResult
+import ru.d3rvich.core.remote.model.metadata.GenreFull
+import ru.d3rvich.core.remote.model.metadata.Platform
+import ru.d3rvich.core.remote.model.details.Screenshot
+import ru.d3rvich.core.remote.model.details.StoreLink
+import ru.d3rvich.core.remote.model.game.Game
+import ru.d3rvich.core.remote.model.details.GameDetails
+import ru.d3rvich.core.remote.result.NetworkResult
 
 interface JetGamesNetworkDataSource {
     suspend fun getGames(

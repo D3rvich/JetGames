@@ -1,4 +1,4 @@
-package ru.d3rvich.remote.model.common
+package ru.d3rvich.core.remote.model.common
 
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.SerialName

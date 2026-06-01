@@ -15,7 +15,7 @@ import ru.d3rvich.core.domain.model.Result
 import ru.d3rvich.core.domain.preferences.FilterPreferencesBody
 import ru.d3rvich.data.mapper.asResult
 import ru.d3rvich.data.mapper.toGameEntity
-import ru.d3rvich.remote.JetGamesNetworkDataSource
+import ru.d3rvich.core.remote.JetGamesNetworkDataSource
 import kotlin.math.roundToInt
 
 /**

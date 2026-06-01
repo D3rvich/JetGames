@@ -15,8 +15,8 @@ import ru.d3rvich.data.model.SyncTimeManager
 import ru.d3rvich.data.model.localDataSource
 import ru.d3rvich.data.util.cashedRemoteRequest
 import ru.d3rvich.core.database.JetGamesDatabase
-import ru.d3rvich.remote.JetGamesNetworkDataSource
-import ru.d3rvich.remote.util.getAllGenres
+import ru.d3rvich.core.remote.JetGamesNetworkDataSource
+import ru.d3rvich.core.remote.util.getAllGenres
 
 /**
  * Created by Ilya Deryabin at 04.04.2024

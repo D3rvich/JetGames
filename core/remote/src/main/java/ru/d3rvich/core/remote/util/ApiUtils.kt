@@ -1,10 +1,10 @@
-package ru.d3rvich.remote.util
+package ru.d3rvich.core.remote.util
 
-import ru.d3rvich.remote.JetGamesNetworkDataSource
-import ru.d3rvich.remote.model.common.ApiPagingResult
-import ru.d3rvich.remote.model.metadata.GenreFull
-import ru.d3rvich.remote.model.metadata.Platform
-import ru.d3rvich.remote.result.NetworkResult
+import ru.d3rvich.core.remote.JetGamesNetworkDataSource
+import ru.d3rvich.core.remote.model.common.ApiPagingResult
+import ru.d3rvich.core.remote.model.metadata.GenreFull
+import ru.d3rvich.core.remote.model.metadata.Platform
+import ru.d3rvich.core.remote.result.NetworkResult
 
 suspend fun JetGamesNetworkDataSource.getAllPlatforms(): NetworkResult<List<Platform>> =
     collectAllPagingSource { page, pageSize -> getPlatforms(page, pageSize) }

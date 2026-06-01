@@ -24,8 +24,8 @@ import ru.d3rvich.data.mapper.toGameStoreEntity
 import ru.d3rvich.data.mapper.toScreenshotEntityList
 import ru.d3rvich.data.paging.GamesPagingSourceFactory
 import ru.d3rvich.core.database.JetGamesDatabase
-import ru.d3rvich.remote.JetGamesNetworkDataSource
-import ru.d3rvich.remote.model.details.GameDetails
+import ru.d3rvich.core.remote.JetGamesNetworkDataSource
+import ru.d3rvich.core.remote.model.details.GameDetails
 
 /**
  * Created by Ilya Deryabin at 01.02.2024

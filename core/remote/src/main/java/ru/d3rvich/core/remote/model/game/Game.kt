@@ -1,12 +1,12 @@
-package ru.d3rvich.remote.model.game
+package ru.d3rvich.core.remote.model.game
 
 import kotlinx.datetime.LocalDate
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import ru.d3rvich.remote.model.metadata.Genre
-import ru.d3rvich.remote.model.metadata.ParentPlatformWrapper
-import ru.d3rvich.remote.model.metadata.Rating
+import ru.d3rvich.core.remote.model.metadata.Genre
+import ru.d3rvich.core.remote.model.metadata.ParentPlatformWrapper
+import ru.d3rvich.core.remote.model.metadata.Rating
 
 /**
  * Created by Ilya Deryabin at 05.02.2024

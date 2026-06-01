@@ -1,22 +1,24 @@
-package ru.d3rvich.remote.ktor
+package ru.d3rvich.core.remote.ktor
 
 import io.ktor.client.HttpClient
 import kotlinx.serialization.InternalSerializationApi
-import ru.d3rvich.remote.JetGamesNetworkDataSource
-import ru.d3rvich.remote.model.common.ApiPagingResult
-import ru.d3rvich.remote.model.metadata.GenreFull
-import ru.d3rvich.remote.model.metadata.Platform
-import ru.d3rvich.remote.model.details.Screenshot
-import ru.d3rvich.remote.model.details.StoreLink
-import ru.d3rvich.remote.model.game.Game
-import ru.d3rvich.remote.model.details.GameDetails
-import ru.d3rvich.remote.result.NetworkResult
-import ru.d3rvich.remote.result.safeApiCall
+import org.koin.core.annotation.Single
+import ru.d3rvich.core.remote.JetGamesNetworkDataSource
+import ru.d3rvich.core.remote.model.common.ApiPagingResult
+import ru.d3rvich.core.remote.model.metadata.GenreFull
+import ru.d3rvich.core.remote.model.metadata.Platform
+import ru.d3rvich.core.remote.model.details.Screenshot
+import ru.d3rvich.core.remote.model.details.StoreLink
+import ru.d3rvich.core.remote.model.game.Game
+import ru.d3rvich.core.remote.model.details.GameDetails
+import ru.d3rvich.core.remote.result.NetworkResult
+import ru.d3rvich.core.remote.result.safeApiCall
 
 /**
  * Api documentation [here](https://api.rawg.io/docs/)
  * */
 @InternalSerializationApi
+@Single(binds = [JetGamesNetworkDataSource::class], createdAtStart = true)
 internal class JetGamesNetworkClient(private val client: HttpClient) : JetGamesNetworkDataSource {
 
     override suspend fun getGames(
