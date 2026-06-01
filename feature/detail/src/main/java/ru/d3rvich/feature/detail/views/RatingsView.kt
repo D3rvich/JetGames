@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.sp
 import ru.d3rvich.core.ui.components.MetacriticScore
 import ru.d3rvich.common.components.raitingbar.RatingBar
 import ru.d3rvich.core.ui.theme.JetGamesTheme
-import ru.d3rvich.detail.R
+import ru.d3rvich.feature.detail.R
 
 /**
  * Created by Ilya Deryabin at 15.03.2024

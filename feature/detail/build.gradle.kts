@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "ru.d3rvich.detail"
+    namespace = "ru.d3rvich.feature.detail"
 }
 
 dependencies {

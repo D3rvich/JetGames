@@ -19,7 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import ru.d3rvich.filter.R
+import ru.d3rvich.feature.filter.R
 
 /**
  * Created by Ilya Deryabin at 03.05.2024

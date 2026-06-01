@@ -7,7 +7,7 @@ import androidx.paging.map
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.koin.core.annotation.ComponentScan
-import org.koin.core.annotation.Factory
+import org.koin.core.annotation.Single
 import ru.d3rvich.core.domain.entities.GameDetailEntity
 import ru.d3rvich.core.domain.entities.GameEntity
 import ru.d3rvich.core.domain.entities.ScreenshotEntity
@@ -30,7 +30,7 @@ import ru.d3rvich.remote.model.details.GameDetails
 /**
  * Created by Ilya Deryabin at 01.02.2024
  */
-@Factory(binds = [GamesRepository::class])
+@Single(binds = [GamesRepository::class])
 @ComponentScan("ru.d3rvich.data.paging")
 internal class GamesRepositoryImpl(
     private val apiService: JetGamesNetworkDataSource,

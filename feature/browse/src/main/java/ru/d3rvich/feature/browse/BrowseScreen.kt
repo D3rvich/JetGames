@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.koin.compose.viewmodel.koinViewModel
-import ru.d3rvich.browse.R
 import ru.d3rvich.feature.browse.model.BrowseUiState
 import ru.d3rvich.feature.browse.views.GenresView
 import ru.d3rvich.feature.browse.views.PlatformsView

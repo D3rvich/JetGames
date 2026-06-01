@@ -55,7 +55,7 @@ import ru.d3rvich.core.ui.icon.textIcon
 import ru.d3rvich.core.ui.icon.tryFindIcon
 import ru.d3rvich.core.ui.theme.DarkBlue
 import ru.d3rvich.core.ui.theme.Purple
-import ru.d3rvich.detail.R
+import ru.d3rvich.feature.detail.R
 import ru.d3rvich.feature.detail.model.GameDetailUiModel
 import ru.d3rvich.feature.detail.model.ScreenshotsUiState
 import ru.d3rvich.feature.detail.model.toGameDetailUiModel

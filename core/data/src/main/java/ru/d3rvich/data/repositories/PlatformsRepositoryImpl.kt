@@ -3,6 +3,7 @@ package ru.d3rvich.data.repositories
 import kotlinx.coroutines.flow.Flow
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Factory
+import org.koin.core.annotation.Single
 import ru.d3rvich.core.domain.entities.PlatformEntity
 import ru.d3rvich.core.domain.model.LoadingResult
 import ru.d3rvich.core.domain.model.map
@@ -21,7 +22,7 @@ import ru.d3rvich.remote.util.getAllPlatforms
 /**
  * Created by Ilya Deryabin at 02.04.2024
  */
-@Factory(binds = [PlatformsRepository::class])
+@Single(binds = [PlatformsRepository::class])
 @ComponentScan("ru.d3rvich.data.model")
 internal class PlatformsRepositoryImpl(
     private val apiService: JetGamesNetworkDataSource,

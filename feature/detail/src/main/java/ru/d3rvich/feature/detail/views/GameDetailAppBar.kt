@@ -48,7 +48,7 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import ru.d3rvich.common.components.collapsing_appbar.CollapsingTopAppBar
 import ru.d3rvich.core.ui.theme.JetGamesTheme
-import ru.d3rvich.detail.R
+import ru.d3rvich.feature.detail.R
 import ru.d3rvich.common.R as uiR
 
 /**

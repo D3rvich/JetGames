@@ -39,7 +39,7 @@ import ru.d3rvich.core.ui.components.GameGridItemView
 import ru.d3rvich.core.ui.components.GameListItemView
 import ru.d3rvich.core.ui.mapper.toGameUiModel
 import ru.d3rvich.core.ui.theme.JetGamesTheme
-import ru.d3rvich.home.R
+import ru.d3rvich.feature.home.R
 import ru.d3rvich.feature.home.model.ListViewMode
 
 /**

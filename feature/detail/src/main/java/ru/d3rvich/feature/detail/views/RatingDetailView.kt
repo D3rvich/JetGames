@@ -36,7 +36,7 @@ import ru.d3rvich.core.ui.icon.RatingType
 import ru.d3rvich.core.ui.icon.findWrapper
 import ru.d3rvich.core.ui.icon.textIcon
 import ru.d3rvich.core.ui.theme.JetGamesTheme
-import ru.d3rvich.detail.R
+import ru.d3rvich.feature.detail.R
 
 /**
  * Created by Ilya Deryabin at 28.06.2024

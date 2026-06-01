@@ -36,7 +36,6 @@ import org.koin.compose.viewmodel.koinViewModel
 import ru.d3rvich.core.domain.model.ColorModeType
 import ru.d3rvich.core.domain.model.ThemeType
 import ru.d3rvich.core.ui.theme.JetGamesTheme
-import ru.d3rvich.settings.R
 import ru.d3rvich.common.R as uiR
 
 /**

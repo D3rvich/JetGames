@@ -58,7 +58,6 @@ import ru.d3rvich.feature.filter.views.GenresView
 import ru.d3rvich.feature.filter.views.MetacriticView
 import ru.d3rvich.feature.filter.views.PlatformsView
 import ru.d3rvich.feature.filter.views.SortingView
-import ru.d3rvich.filter.R
 import ru.d3rvich.common.R as uiR
 
 /**

@@ -1,14 +1,14 @@
 package ru.d3rvich.data.repositories
 
 import kotlinx.coroutines.flow.Flow
-import org.koin.core.annotation.Factory
+import org.koin.core.annotation.Single
 import ru.d3rvich.core.domain.model.ColorModeType
 import ru.d3rvich.core.domain.model.ThemeType
 import ru.d3rvich.core.domain.model.UserPreferences
 import ru.d3rvich.core.domain.repositories.UserPreferencesRepository
 import ru.d3rvich.datastore.JetGamesPreferencesDataStore
 
-@Factory(binds = [UserPreferencesRepository::class])
+@Single(binds = [UserPreferencesRepository::class])
 internal class UserPreferencesRepositoryImpl(
     private val dataStore: JetGamesPreferencesDataStore
 ) : UserPreferencesRepository {

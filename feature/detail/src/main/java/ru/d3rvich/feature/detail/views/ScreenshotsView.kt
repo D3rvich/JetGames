@@ -21,7 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import ru.d3rvich.detail.R
+import ru.d3rvich.feature.detail.R
 import ru.d3rvich.feature.detail.model.ScreenshotsUiState
 
 /**

@@ -15,7 +15,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import ru.d3rvich.core.ui.theme.JetGamesTheme
-import ru.d3rvich.filter.R
+import ru.d3rvich.feature.filter.R
 import ru.d3rvich.common.R as uiR
 
 /**

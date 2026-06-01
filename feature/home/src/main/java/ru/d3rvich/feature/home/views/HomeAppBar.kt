@@ -41,10 +41,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import ru.d3rvich.common.components.SearchField
 import ru.d3rvich.core.ui.theme.JetGamesTheme
-import ru.d3rvich.home.R
 import ru.d3rvich.feature.home.model.ListViewMode
 import ru.d3rvich.common.R as CommonR
-import ru.d3rvich.home.R as HomeR
+import ru.d3rvich.feature.home.R as HomeR
 
 /**
  * Created by Ilya Deryabin at 16.06.2024
@@ -144,7 +143,7 @@ internal fun HomeAppBar(
             IconButton(onClick = navigateToSettingsScreen) {
                 Icon(
                     painter = painterResource(CommonR.drawable.settings_24px),
-                    contentDescription = stringResource(R.string.open_settings)
+                    contentDescription = stringResource(HomeR.string.open_settings)
                 )
             }
         })

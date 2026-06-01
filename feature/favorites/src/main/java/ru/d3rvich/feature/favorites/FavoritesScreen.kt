@@ -33,7 +33,6 @@ import org.koin.compose.viewmodel.koinViewModel
 import ru.d3rvich.common.components.DefaultErrorView
 import ru.d3rvich.core.ui.components.GameListItemView
 import ru.d3rvich.core.ui.mapper.toGameUiModel
-import ru.d3rvich.favorites.R
 import ru.d3rvich.feature.favorites.model.FavoritesUiState
 import ru.d3rvich.common.R as uiR
 

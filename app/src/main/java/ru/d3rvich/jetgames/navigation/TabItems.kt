@@ -2,9 +2,9 @@ package ru.d3rvich.jetgames.navigation
 
 import ru.d3rvich.jetgames.navigation.main.MainComponent
 import ru.d3rvich.common.R as commonR
-import ru.d3rvich.home.R as homeR
+import ru.d3rvich.feature.home.R as homeR
 import ru.d3rvich.jetgames.R as appR
-import ru.d3rvich.favorites.R as favoritesR
+import ru.d3rvich.feature.favorites.R as favoritesR
 
 enum class TabItems(
     val labelResId: Int,

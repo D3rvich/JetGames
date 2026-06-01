@@ -36,7 +36,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ru.d3rvich.common.R
 import ru.d3rvich.core.domain.entities.SortingEntity
-import ru.d3rvich.filter.R as FilterR
+import ru.d3rvich.feature.filter.R as FilterR
 
 /**
  * Created by Ilya Deryabin at 29.02.2024

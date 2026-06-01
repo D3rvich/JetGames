@@ -9,7 +9,7 @@ import androidx.core.content.edit
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import ru.d3rvich.home.R
+import ru.d3rvich.feature.home.R
 
 /**
  * Created by Ilya Deryabin at 11.06.2024
