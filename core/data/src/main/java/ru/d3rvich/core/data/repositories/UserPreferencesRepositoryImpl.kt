@@ -1,4 +1,4 @@
-package ru.d3rvich.data.repositories
+package ru.d3rvich.core.data.repositories
 
 import kotlinx.coroutines.flow.Flow
 import org.koin.core.annotation.Single

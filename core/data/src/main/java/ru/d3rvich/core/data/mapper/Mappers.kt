@@ -1,4 +1,4 @@
-package ru.d3rvich.data.mapper
+package ru.d3rvich.core.data.mapper
 
 import ru.d3rvich.core.domain.entities.GameDetailEntity
 import ru.d3rvich.core.domain.entities.GameEntity

@@ -1,4 +1,4 @@
-package ru.d3rvich.data.di
+package ru.d3rvich.core.data.di
 
 import android.content.Context
 import org.koin.core.annotation.Module

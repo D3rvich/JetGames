@@ -1,4 +1,4 @@
-package ru.d3rvich.data.repositories
+package ru.d3rvich.core.data.repositories
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -16,13 +16,13 @@ import ru.d3rvich.core.domain.model.Result
 import ru.d3rvich.core.domain.model.map
 import ru.d3rvich.core.domain.preferences.FilterPreferencesBody
 import ru.d3rvich.core.domain.repositories.GamesRepository
-import ru.d3rvich.data.mapper.asResult
-import ru.d3rvich.data.mapper.toGameDBO
-import ru.d3rvich.data.mapper.toGameDetailEntity
-import ru.d3rvich.data.mapper.toGameEntity
-import ru.d3rvich.data.mapper.toGameStoreEntity
-import ru.d3rvich.data.mapper.toScreenshotEntityList
-import ru.d3rvich.data.paging.GamesPagingSourceFactory
+import ru.d3rvich.core.data.mapper.asResult
+import ru.d3rvich.core.data.mapper.toGameDBO
+import ru.d3rvich.core.data.mapper.toGameDetailEntity
+import ru.d3rvich.core.data.mapper.toGameEntity
+import ru.d3rvich.core.data.mapper.toGameStoreEntity
+import ru.d3rvich.core.data.mapper.toScreenshotEntityList
+import ru.d3rvich.core.data.paging.GamesPagingSourceFactory
 import ru.d3rvich.core.database.JetGamesDatabase
 import ru.d3rvich.core.remote.JetGamesNetworkDataSource
 import ru.d3rvich.core.remote.model.details.GameDetails
@@ -31,7 +31,7 @@ import ru.d3rvich.core.remote.model.details.GameDetails
  * Created by Ilya Deryabin at 01.02.2024
  */
 @Single(binds = [GamesRepository::class])
-@ComponentScan("ru.d3rvich.data.paging")
+@ComponentScan("ru.d3rvich.core.data.paging")
 internal class GamesRepositoryImpl(
     private val apiService: JetGamesNetworkDataSource,
     private val database: JetGamesDatabase,

@@ -1,12 +1,12 @@
-package ru.d3rvich.data.util
+package ru.d3rvich.core.data.util
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import ru.d3rvich.core.domain.model.LoadingResult
 import ru.d3rvich.core.domain.model.Result
 import ru.d3rvich.core.domain.model.asLoadingResult
-import ru.d3rvich.data.model.LocalDataSource
-import ru.d3rvich.data.model.SyncTimeManager
+import ru.d3rvich.core.data.model.LocalDataSource
+import ru.d3rvich.core.data.model.SyncTimeManager
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant

@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "ru.d3rvich.data"
+    namespace = "ru.d3rvich.core.data"
 }
 
 dependencies {

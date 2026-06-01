@@ -1,4 +1,4 @@
-package ru.d3rvich.data.paging
+package ru.d3rvich.core.data.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
@@ -13,8 +13,8 @@ import ru.d3rvich.core.domain.entities.getReversed
 import ru.d3rvich.core.domain.model.MetacriticRange
 import ru.d3rvich.core.domain.model.Result
 import ru.d3rvich.core.domain.preferences.FilterPreferencesBody
-import ru.d3rvich.data.mapper.asResult
-import ru.d3rvich.data.mapper.toGameEntity
+import ru.d3rvich.core.data.mapper.asResult
+import ru.d3rvich.core.data.mapper.toGameEntity
 import ru.d3rvich.core.remote.JetGamesNetworkDataSource
 import kotlin.math.roundToInt
 

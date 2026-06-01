@@ -1,4 +1,4 @@
-package ru.d3rvich.data.model
+package ru.d3rvich.core.data.model
 
 internal interface LocalDataSource<T : Any> {
 
