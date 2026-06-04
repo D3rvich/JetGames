@@ -10,7 +10,7 @@ import ru.d3rvich.core.remote.model.metadata.Platform
 import ru.d3rvich.core.remote.model.details.Screenshot
 import ru.d3rvich.core.remote.model.details.StoreLink
 import ru.d3rvich.core.remote.model.game.Game
-import ru.d3rvich.core.remote.model.details.GameDetails
+import ru.d3rvich.core.remote.model.details.GameDetail
 import ru.d3rvich.core.remote.result.NetworkResult
 import ru.d3rvich.core.remote.result.safeApiCall
 
@@ -45,7 +45,7 @@ internal class JetGamesNetworkClient(private val client: HttpClient) : JetGamesN
         )
     }
 
-    override suspend fun getGameDetail(gameId: Int): NetworkResult<GameDetails> =
+    override suspend fun getGameDetail(gameId: Int): NetworkResult<GameDetail> =
         client.safeApiCall { Routes.Games.Detail(gameId = gameId) }
 
     override suspend fun getScreenshots(

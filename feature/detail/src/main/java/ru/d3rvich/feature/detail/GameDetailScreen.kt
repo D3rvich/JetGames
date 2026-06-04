@@ -19,7 +19,6 @@ import ru.d3rvich.feature.detail.model.GameDetailUiAction
 import ru.d3rvich.feature.detail.model.GameDetailUiEvent
 import ru.d3rvich.feature.detail.model.GameDetailUiState
 import ru.d3rvich.feature.detail.model.ScreenshotsUiState
-import ru.d3rvich.feature.detail.model.toGameDetailUiModel
 import ru.d3rvich.feature.detail.views.GameDetailView
 import ru.d3rvich.feature.detail.views.LoadingView
 
@@ -29,9 +28,9 @@ import ru.d3rvich.feature.detail.views.LoadingView
 @Composable
 fun GameDetailScreen(
     gameId: Int,
-    modifier: Modifier = Modifier,
     navigateToScreenshotScreen: (selectedItem: Int, screenshots: List<ScreenshotEntity>) -> Unit,
     navigateBack: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val viewModel: GameDetailViewModel = koinViewModel(key = gameId.toString()) { parametersOf(gameId) }
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -64,20 +63,21 @@ fun GameDetailScreen(
 
 @Composable
 internal fun GameDetailScreen(
-    modifier: Modifier = Modifier,
     state: GameDetailUiState,
     onFavoriteChange: (isFavorite: Boolean) -> Unit,
     onRefresh: () -> Unit,
     onNavigateBack: () -> Unit,
     navigateToScreenshotScreen: (selectedItem: Int, screenshots: List<ScreenshotEntity>) -> Unit,
-    onGameStoreSelected: (storeId: Int) -> Unit,
+    onGameStoreSelected: (storeUrl: String) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     when (state) {
         is GameDetailUiState.Detail -> {
             GameDetailView(
                 modifier = modifier,
-                detail = state.gameDetail.toGameDetailUiModel(),
+                detail = state.gameDetail,
                 screenshotsState = state.screenshots,
+                storeUiState = state.stores,
                 onFavoriteChange = onFavoriteChange,
                 onBackClicked = onNavigateBack,
                 onScreenshotClicked = { selectedItem ->

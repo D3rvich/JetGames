@@ -6,7 +6,7 @@ import ru.d3rvich.core.remote.model.metadata.Platform
 import ru.d3rvich.core.remote.model.details.Screenshot
 import ru.d3rvich.core.remote.model.details.StoreLink
 import ru.d3rvich.core.remote.model.game.Game
-import ru.d3rvich.core.remote.model.details.GameDetails
+import ru.d3rvich.core.remote.model.details.GameDetail
 import ru.d3rvich.core.remote.result.NetworkResult
 
 interface JetGamesNetworkDataSource {
@@ -22,7 +22,7 @@ interface JetGamesNetworkDataSource {
         metacritic: String? = null,
     ): NetworkResult<ApiPagingResult<Game>>
 
-    suspend fun getGameDetail(gameId: Int): NetworkResult<GameDetails>
+    suspend fun getGameDetail(gameId: Int): NetworkResult<GameDetail>
 
     suspend fun getScreenshots(
         gameId: Int,

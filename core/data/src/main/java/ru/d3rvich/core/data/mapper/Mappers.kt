@@ -26,7 +26,7 @@ import ru.d3rvich.core.remote.model.details.Screenshot
 import ru.d3rvich.core.remote.model.details.Store
 import ru.d3rvich.core.remote.model.details.StoreLink
 import ru.d3rvich.core.remote.model.game.Game
-import ru.d3rvich.core.remote.model.details.GameDetails
+import ru.d3rvich.core.remote.model.details.GameDetail
 import ru.d3rvich.core.remote.result.NetworkResult
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
@@ -44,7 +44,7 @@ internal fun Game.toGameEntity(): GameEntity =
         ratings = ratings?.map { it.toRatingEntity() }
     )
 
-internal fun GameDetails.toGameDetailEntity(): GameDetailEntity =
+internal fun GameDetail.toGameDetailEntity(): GameDetailEntity =
     GameDetailEntity(
         id = id,
         name = name,

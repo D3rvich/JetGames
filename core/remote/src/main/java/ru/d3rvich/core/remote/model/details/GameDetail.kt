@@ -10,7 +10,7 @@ import ru.d3rvich.core.remote.model.metadata.Rating
 
 @Serializable
 @OptIn(InternalSerializationApi::class)
-data class GameDetails(
+data class GameDetail(
     @SerialName("id") val id: Int,
     @SerialName("name") val name: String,
     @SerialName("description_raw") val description: String?,

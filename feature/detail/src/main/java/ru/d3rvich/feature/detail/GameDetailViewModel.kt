@@ -3,6 +3,7 @@ package ru.d3rvich.feature.detail
 import android.content.Context
 import androidx.core.net.toUri
 import androidx.lifecycle.viewModelScope
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -10,7 +11,6 @@ import org.koin.core.annotation.InjectedParam
 import org.koin.core.annotation.KoinViewModel
 import ru.d3rvich.core.domain.entities.GameDetailEntity
 import ru.d3rvich.core.domain.entities.StoreEntity
-import ru.d3rvich.core.domain.entities.StoreLinkEntity
 import ru.d3rvich.core.domain.model.LoadingResult
 import ru.d3rvich.core.domain.model.Result
 import ru.d3rvich.core.domain.usecases.AddToFavoritesUseCase
@@ -24,6 +24,10 @@ import ru.d3rvich.feature.detail.model.GameDetailUiAction
 import ru.d3rvich.feature.detail.model.GameDetailUiEvent
 import ru.d3rvich.feature.detail.model.GameDetailUiState
 import ru.d3rvich.feature.detail.model.ScreenshotsUiState
+import ru.d3rvich.feature.detail.model.StoresUiModel
+import ru.d3rvich.feature.detail.model.StoresUiState
+import ru.d3rvich.feature.detail.model.toGameDetailEntity
+import ru.d3rvich.feature.detail.model.toGameDetailUiModel
 
 /**
  * Created by Ilya Deryabin at 24.02.2024
@@ -58,36 +62,28 @@ internal class GameDetailViewModel(
         }
     }
 
-    private val browserManager = BrowserManager(context)
-
-    private var gameStoreLinks: List<StoreLinkEntity> = emptyList()
+    private val browserManager = BrowserManager(context) // TODO: Получать из di
 
     private fun loadGameDetail(gameId: Int) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             getGameDetailUseCase.invoke(gameId).collect { status ->
                 when (status) {
                     LoadingResult.Loading -> setState(GameDetailUiState.Loading)
                     is LoadingResult.Success -> {
-                        val stores = status.value.stores
-                        if (stores.isNotEmpty()) {
-                            loadLinks(gameId)
-                            if (status.value.isFavorite && gameStoreLinks.isNotEmpty()) {
-                                addToFavoritesUseCase.invoke(
-                                    status.value.copy(
-                                        stores = uniteStoresWithLinks(
-                                            stores = stores,
-                                            links = gameStoreLinks
-                                        )
-                                    )
-                                )
-                            }
-                        }
-                        setState(
-                            GameDetailUiState.Detail(
-                                gameDetail = status.value,
-                                screenshots = ScreenshotsUiState.NoScreenshots,
-                            )
+                        val uiModel = status.value.toGameDetailUiModel()
+                        val detail = GameDetailUiState.Detail(
+                            gameDetail = uiModel,
+                            screenshots = ScreenshotsUiState.Loading,
+                            stores = StoresUiState.Loading
                         )
+                        setState(detail)
+                        when (uiModel.storesUiModel) {
+                            is StoresUiModel.EmptyUrls -> fetchStoreLinks(detail)
+                            StoresUiModel.Empty -> setState(detail.copy(stores = StoresUiState.Empty))
+                            is StoresUiModel.Full -> setState(
+                                detail.copy(stores = StoresUiState.Success(stores = uiModel.storesUiModel.stores))
+                            )
+                        }
                         if (status.value.screenshotCount > 0) {
                             getScreenshots(gameDetail = status.value)
                         }
@@ -103,15 +99,33 @@ internal class GameDetailViewModel(
         }
     }
 
-    private fun loadLinks(gameId: Int) {
-        viewModelScope.launch(Dispatchers.IO) {
-            when (val result = getStoreLinksUseCase.invoke(gameId = gameId)) {
+    private suspend fun fetchStoreLinks(detail: GameDetailUiState.Detail) {
+        if (detail.gameDetail.storesUiModel !is StoresUiModel.EmptyUrls) return
+        setState(detail.copy(stores = StoresUiState.Loading))
+        withContext(Dispatchers.IO) {
+            when (val result = getStoreLinksUseCase.invoke(gameId)) {
+                is Result.Failure -> setState(detail.copy(stores = StoresUiState.Error(result.throwable)))
                 is Result.Success -> {
-                    gameStoreLinks = result.value
-                }
-
-                is Result.Failure -> {
-                    sendAction { GameDetailUiAction.ShowGameStoreDownloadError }
+                    withContext(Dispatchers.Default) {
+                        val updatedStores = mutableListOf<StoreEntity>()
+                        val linkByStoreId = result.value.associateBy { it.storeId }
+                        detail.gameDetail.storesUiModel.stores.forEach { store ->
+                            linkByStoreId[store.id]?.let { storeLink ->
+                                updatedStores.add(store.copy(url = storeLink.url))
+                            }
+                        }
+                        val updatedGameDetail =
+                            detail.gameDetail.copy(storesUiModel = StoresUiModel.Full(updatedStores.toPersistentList()))
+                        setState(
+                            detail.copy(
+                                gameDetail = updatedGameDetail,
+                                stores = StoresUiState.Success(stores = updatedStores)
+                            )
+                        )
+                        if (updatedGameDetail.isFavorite) {
+                            addToFavoritesUseCase(updatedGameDetail.toGameDetailEntity())
+                        }
+                    }
                 }
             }
         }
@@ -125,13 +139,12 @@ internal class GameDetailViewModel(
                         setState(state.copy(screenshots = ScreenshotsUiState.Success(gameDetail.screenshots)))
                     } else {
                         setState(state.copy(screenshots = ScreenshotsUiState.Loading))
-                        when (val result =
-                            getScreenshotsUseCase.invoke(gameId = gameDetail.id)) {
+                        when (val result = getScreenshotsUseCase.invoke(gameId = gameDetail.id)) {
                             is Result.Success -> {
                                 setState(
                                     state.copy(
                                         screenshots = ScreenshotsUiState.Success(result.value),
-                                        gameDetail = state.gameDetail.copy(screenshots = result.value)
+                                        gameDetail = state.gameDetail.copy(screenshots = result.value.toPersistentList())
                                     )
                                 )
                             }
@@ -151,32 +164,18 @@ internal class GameDetailViewModel(
     private fun reduce(state: GameDetailUiState.Detail, event: GameDetailUiEvent) {
         when (event) {
             is GameDetailUiEvent.OnFavoriteChange -> {
-                viewModelScope.launch {
+                viewModelScope.launch(Dispatchers.IO) {
                     if (event.isFavorite) {
-                        val gameDetail: GameDetailEntity = if (gameStoreLinks.isNotEmpty()) {
-                            val storesWithUrls: MutableList<StoreEntity> = mutableListOf()
-                            state.gameDetail.stores.forEach { store ->
-                                gameStoreLinks.find { it.storeId == store.id }?.let {
-                                    storesWithUrls.add(store.copy(url = it.url))
-                                }
-                            }
-                            state.gameDetail.copy(stores = storesWithUrls)
-                        } else {
-                            state.gameDetail
-                        }
-                        addToFavoritesUseCase.invoke(gameDetail)
+                        addToFavoritesUseCase.invoke(state.gameDetail.toGameDetailEntity())
                     } else {
-                        removeFromFavoritesUseCase.invoke(state.gameDetail)
+                        removeFromFavoritesUseCase.invoke(state.gameDetail.toGameDetailEntity())
                     }
                     setState(state.copy(gameDetail = state.gameDetail.copy(isFavorite = event.isFavorite)))
                 }
             }
 
             is GameDetailUiEvent.OnGameStoreSelected -> {
-                if (gameStoreLinks.isNotEmpty()) {
-                    val storeUrl = gameStoreLinks.find { it.storeId == event.storeId }?.url!!
-                    browserManager.launchUrl(storeUrl.toUri())
-                }
+                browserManager.launchUrl(event.url.toUri())
             }
 
             else -> unexpectedEventError(event, state)
@@ -192,15 +191,4 @@ internal class GameDetailViewModel(
             else -> unexpectedEventError(event, state)
         }
     }
-}
-
-private fun uniteStoresWithLinks(
-    stores: List<StoreEntity>,
-    links: List<StoreLinkEntity>
-): List<StoreEntity> {
-    val result = mutableListOf<StoreEntity>()
-    links.forEach { link ->
-        stores.find { store -> store.id == link.storeId }!!.let { result.add(it) }
-    }
-    return result
 }

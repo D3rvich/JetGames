@@ -2,6 +2,7 @@ package ru.d3rvich.feature.detail.model
 
 import androidx.compose.runtime.Immutable
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.datetime.LocalDate
 import ru.d3rvich.core.domain.entities.GameDetailEntity
@@ -28,9 +29,18 @@ internal data class GameDetailUiModel(
     val rating: Float?,
     val ratings: ImmutableList<RatingEntity>?,
     val parentPlatforms: ImmutableList<ParentPlatformEntity>?,
-    val stores: ImmutableList<StoreEntity>?,
+    val storesUiModel: StoresUiModel,
     val isFavorite: Boolean,
 )
+
+internal sealed class StoresUiModel(val stores: ImmutableList<StoreEntity>) {
+
+    data object Empty : StoresUiModel(persistentListOf())
+
+    class EmptyUrls(stores: ImmutableList<StoreEntity>) : StoresUiModel(stores)
+
+    class Full(stores: ImmutableList<StoreEntity>) : StoresUiModel(stores)
+}
 
 internal fun GameDetailEntity.toGameDetailUiModel(): GameDetailUiModel =
     GameDetailUiModel(
@@ -46,6 +56,32 @@ internal fun GameDetailEntity.toGameDetailUiModel(): GameDetailUiModel =
         rating = rating,
         parentPlatforms = parentPlatforms?.toImmutableList(),
         ratings = ratings?.toImmutableList(),
-        stores = stores.toImmutableList(),
+        storesUiModel = stores.consumeStores(),
+        isFavorite = isFavorite
+    )
+
+private fun List<StoreEntity>.consumeStores(): StoresUiModel {
+    return when {
+        isEmpty() -> StoresUiModel.Empty
+        any { it.url == null } -> StoresUiModel.EmptyUrls(this.toImmutableList())
+        else -> StoresUiModel.Full(this.toImmutableList())
+    }
+}
+
+internal fun GameDetailUiModel.toGameDetailEntity(): GameDetailEntity =
+    GameDetailEntity(
+        id = id,
+        name = name,
+        description = description,
+        screenshotCount = screenshotCount,
+        screenshots = screenshots,
+        released = released,
+        metacritic = metacritic,
+        imageUrl = imageUrl,
+        genres = genres,
+        rating = rating,
+        ratings = ratings,
+        parentPlatforms = parentPlatforms,
+        stores = storesUiModel.stores,
         isFavorite = isFavorite
     )

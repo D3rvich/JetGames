@@ -4,7 +4,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
@@ -19,12 +18,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsIgnoringVisibility
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -48,7 +45,6 @@ import ru.d3rvich.common.components.CollapsingText
 import ru.d3rvich.core.domain.entities.GameDetailEntity
 import ru.d3rvich.core.domain.entities.ParentPlatformEntity
 import ru.d3rvich.core.domain.entities.RatingEntity
-import ru.d3rvich.core.domain.entities.StoreEntity
 import ru.d3rvich.core.ui.icon.RatingType
 import ru.d3rvich.core.ui.icon.findWrapper
 import ru.d3rvich.core.ui.icon.textIcon
@@ -58,6 +54,7 @@ import ru.d3rvich.core.ui.theme.Purple
 import ru.d3rvich.feature.detail.R
 import ru.d3rvich.feature.detail.model.GameDetailUiModel
 import ru.d3rvich.feature.detail.model.ScreenshotsUiState
+import ru.d3rvich.feature.detail.model.StoresUiState
 import ru.d3rvich.feature.detail.model.toGameDetailUiModel
 
 /**
@@ -66,13 +63,14 @@ import ru.d3rvich.feature.detail.model.toGameDetailUiModel
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 internal fun GameDetailView(
-    modifier: Modifier = Modifier,
     detail: GameDetailUiModel,
     screenshotsState: ScreenshotsUiState,
+    storeUiState: StoresUiState,
+    modifier: Modifier = Modifier,
     onFavoriteChange: (Boolean) -> Unit,
     onScreenshotClicked: (selectedItem: Int) -> Unit,
     onBackClicked: () -> Unit,
-    onGameStoreSelected: (storeId: Int) -> Unit,
+    onGameStoreSelected: (storeUrl: String) -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     Scaffold(
@@ -184,10 +182,11 @@ internal fun GameDetailView(
                     ReleasedDate(date = detail.released)
                 }
             }
-            if (!detail.stores.isNullOrEmpty()) {
-                item {
-                    Stores(stores = detail.stores, onSelected = onGameStoreSelected)
-                }
+            item {
+                StoresView(
+                    uiState = storeUiState,
+                    onSelected = onGameStoreSelected
+                )
             }
             if (detail.description != null) {
                 item {
@@ -237,67 +236,6 @@ private fun ReleasedDate(modifier: Modifier = Modifier, date: LocalDate) {
     }
 }
 
-@Composable
-private fun Stores(
-    stores: List<StoreEntity>,
-    modifier: Modifier = Modifier,
-    onSelected: (storeId: Int) -> Unit,
-) {
-    GameDetailItem(modifier, stringResource(R.string.view_in_stores)) {
-        FlowRow(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
-            stores.forEach { store ->
-                Card(modifier = modifier, onClick = { onSelected(store.id) }) {
-                    Row(
-                        modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(text = store.name)
-                        store.tryFindIcon()?.let { icon ->
-                            Icon(
-                                painter = icon,
-                                contentDescription = stringResource(
-                                    R.string.store_icon,
-                                    store.name
-                                ),
-                                modifier = modifier.size(24.dp)
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun GameDetailItem(
-    modifier: Modifier = Modifier,
-    title: String,
-    content: @Composable ColumnScope.() -> Unit,
-) {
-    Column(
-        modifier = modifier.fillMaxWidth()
-    ) {
-        Text(
-            modifier = Modifier.padding(horizontal = 8.dp),
-            text = title,
-            style = MaterialTheme.typography.titleLarge
-        )
-        HorizontalDivider(
-            modifier = Modifier
-                .padding(bottom = 12.dp)
-        )
-        content()
-    }
-}
-
 @Preview(showBackground = true)
 @Composable
 private fun GameDetailViewPreview() {
@@ -331,16 +269,10 @@ private fun GameDetailViewPreview() {
     GameDetailView(
         detail = detail.toGameDetailUiModel(),
         screenshotsState = ScreenshotsUiState.NoScreenshots,
+        storeUiState = StoresUiState.Empty,
         onFavoriteChange = {},
         onScreenshotClicked = {},
         onBackClicked = {},
         onGameStoreSelected = {}
     )
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun StoresPreview() {
-    val stores = listOf(StoreEntity(0, "Steam"), StoreEntity(1, "GOG"))
-    Stores(stores = stores) {}
 }

@@ -6,7 +6,6 @@ import androidx.paging.PagingData
 import androidx.paging.map
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Single
 import ru.d3rvich.core.domain.entities.GameDetailEntity
 import ru.d3rvich.core.domain.entities.GameEntity
@@ -25,7 +24,7 @@ import ru.d3rvich.core.data.mapper.toScreenshotEntityList
 import ru.d3rvich.core.data.paging.GamesPagingSourceFactory
 import ru.d3rvich.core.database.JetGamesDatabase
 import ru.d3rvich.core.remote.JetGamesNetworkDataSource
-import ru.d3rvich.core.remote.model.details.GameDetails
+import ru.d3rvich.core.remote.model.details.GameDetail
 
 /**
  * Created by Ilya Deryabin at 01.02.2024
@@ -58,7 +57,7 @@ internal class GamesRepositoryImpl(
         when (val detail = database.gamesDao.gameDetail(gameId)) {
             null -> {
                 apiService.getGameDetail(gameId = gameId).asResult()
-                    .map(GameDetails::toGameDetailEntity)
+                    .map(GameDetail::toGameDetailEntity)
             }
 
             else -> {
