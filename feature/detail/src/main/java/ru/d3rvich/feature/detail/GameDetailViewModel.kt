@@ -1,6 +1,5 @@
 package ru.d3rvich.feature.detail
 
-import android.content.Context
 import androidx.core.net.toUri
 import androidx.lifecycle.viewModelScope
 import kotlinx.collections.immutable.toPersistentList
@@ -35,8 +34,8 @@ import ru.d3rvich.feature.detail.model.toGameDetailUiModel
  */
 @KoinViewModel
 internal class GameDetailViewModel(
-    context: Context,
     @InjectedParam private val gameId: Int,
+    private val browserManager: BrowserManager,
     private val getGameDetailUseCase: GetGameDetailUseCase,
     private val getScreenshotsUseCase: GetScreenshotsUseCase,
     private val addToFavoritesUseCase: AddToFavoritesUseCase,
@@ -62,8 +61,6 @@ internal class GameDetailViewModel(
             else -> unexpectedEventError(event)
         }
     }
-
-    private val browserManager = BrowserManager(context) // TODO: Получать из di
 
     private fun loadGameDetail(gameId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
