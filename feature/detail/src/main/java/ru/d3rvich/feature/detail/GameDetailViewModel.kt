@@ -22,6 +22,7 @@ import ru.d3rvich.core.ui.base.BaseViewModel
 import ru.d3rvich.feature.detail.browser.BrowserManager
 import ru.d3rvich.feature.detail.model.GameDetailUiAction
 import ru.d3rvich.feature.detail.model.GameDetailUiEvent
+import ru.d3rvich.feature.detail.model.GameDetailUiModel
 import ru.d3rvich.feature.detail.model.GameDetailUiState
 import ru.d3rvich.feature.detail.model.ScreenshotsUiState
 import ru.d3rvich.feature.detail.model.StoresUiModel
@@ -78,7 +79,7 @@ internal class GameDetailViewModel(
                         )
                         setState(detail)
                         when (uiModel.storesUiModel) {
-                            is StoresUiModel.EmptyUrls -> fetchStoreLinks(detail)
+                            is StoresUiModel.EmptyUrls -> fetchStoreLinks(uiModel)
                             StoresUiModel.Empty -> setState(detail.copy(stores = StoresUiState.Empty))
                             is StoresUiModel.Full -> setState(
                                 detail.copy(stores = StoresUiState.Success(stores = uiModel.storesUiModel.stores))
@@ -99,28 +100,35 @@ internal class GameDetailViewModel(
         }
     }
 
-    private suspend fun fetchStoreLinks(detail: GameDetailUiState.Detail) {
-        if (detail.gameDetail.storesUiModel !is StoresUiModel.EmptyUrls) return
-        setState(detail.copy(stores = StoresUiState.Loading))
+    private suspend fun fetchStoreLinks(gameDetail: GameDetailUiModel) {
+        fun applyStoresUiStateToDetail(
+            uiState: StoresUiState,
+            gameDetail: GameDetailUiModel? = null
+        ) {
+            (currentState as? GameDetailUiState.Detail)?.let { detail ->
+                setState(
+                    detail.copy(stores = uiState, gameDetail = gameDetail ?: detail.gameDetail)
+                )
+            }
+        }
+        applyStoresUiStateToDetail(StoresUiState.Loading)
         withContext(Dispatchers.IO) {
             when (val result = getStoreLinksUseCase.invoke(gameId)) {
-                is Result.Failure -> setState(detail.copy(stores = StoresUiState.Error(result.throwable)))
+                is Result.Failure -> applyStoresUiStateToDetail(StoresUiState.Error(result.throwable))
                 is Result.Success -> {
                     withContext(Dispatchers.Default) {
                         val updatedStores = mutableListOf<StoreEntity>()
                         val linkByStoreId = result.value.associateBy { it.storeId }
-                        detail.gameDetail.storesUiModel.stores.forEach { store ->
+                        gameDetail.storesUiModel.stores.forEach { store ->
                             linkByStoreId[store.id]?.let { storeLink ->
                                 updatedStores.add(store.copy(url = storeLink.url))
                             }
                         }
                         val updatedGameDetail =
-                            detail.gameDetail.copy(storesUiModel = StoresUiModel.Full(updatedStores.toPersistentList()))
-                        setState(
-                            detail.copy(
-                                gameDetail = updatedGameDetail,
-                                stores = StoresUiState.Success(stores = updatedStores)
-                            )
+                            gameDetail.copy(storesUiModel = StoresUiModel.Full(updatedStores.toPersistentList()))
+                        applyStoresUiStateToDetail(
+                            uiState = StoresUiState.Success(stores = updatedStores),
+                            gameDetail = updatedGameDetail
                         )
                         if (updatedGameDetail.isFavorite) {
                             addToFavoritesUseCase(updatedGameDetail.toGameDetailEntity())
