@@ -3,17 +3,17 @@ package ru.d3rvich.core.domain.preferences
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import ru.d3rvich.core.domain.model.MetacriticRange
+import org.koin.core.annotation.Single
 import ru.d3rvich.core.domain.entities.GenreFullEntity
 import ru.d3rvich.core.domain.entities.PlatformEntity
 import ru.d3rvich.core.domain.entities.SortingEntity
+import ru.d3rvich.core.domain.model.MetacriticRange
 import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * Created by Ilya Deryabin at 07.03.2024
  */
-@Singleton
+@Single
 class FilterPreferences @Inject constructor() {
 
     private val _filterPreferencesFlow = MutableStateFlow(FilterPreferencesBody.default())

@@ -17,4 +17,5 @@
     <string name="view_in_stores">View in stores</string>
     <string name="store_icon">Icon of %1$s</string>
     <string name="no_screenshots">No screenshots</string>
+    <string name="no_stores_found">No stores found</string>
 </resources>

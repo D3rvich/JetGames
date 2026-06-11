@@ -1,12 +1,13 @@
 plugins {
     alias(libs.plugins.jetgames.android.library)
+    alias(libs.plugins.jetgames.shared.koin)
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
     alias(libs.plugins.kotlin.serialization)
 }
 
 android {
-    namespace = "ru.d3rvich.database"
+    namespace = "ru.d3rvich.core.database"
     room {
         schemaDirectory("$projectDir/schemas")
     }

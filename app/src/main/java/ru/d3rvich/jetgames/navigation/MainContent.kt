@@ -26,9 +26,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.arkivanov.decompose.extensions.compose.stack.Children
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
-import ru.d3rvich.browse.BrowseScreen
-import ru.d3rvich.favorites.FavoritesScreen
-import ru.d3rvich.home.HomeScreen
+import ru.d3rvich.feature.browse.BrowseScreen
+import ru.d3rvich.feature.favorites.FavoritesScreen
+import ru.d3rvich.feature.home.HomeScreen
 import ru.d3rvich.jetgames.navigation.main.MainComponent
 
 @Composable

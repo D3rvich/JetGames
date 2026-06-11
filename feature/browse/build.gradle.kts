@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "ru.d3rvich.browse"
+    namespace = "ru.d3rvich.feature.browse"
 }
 
 dependencies {

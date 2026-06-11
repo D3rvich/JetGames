@@ -45,10 +45,6 @@ gradlePlugin {
             id = "jetgames.android.library"
             implementationClass = "AndroidLibraryConventionPlugin"
         }
-        register("androidHilt") {
-            id = "jetgames.android.hilt"
-            implementationClass = "AndroidHiltConventionPlugin"
-        }
         register("androidFeature") {
             id = "jetgames.android.feature"
             implementationClass = "AndroidFeatureConventionPlugin"
@@ -56,6 +52,14 @@ gradlePlugin {
         register("jvmLibrary") {
             id = "jetgames.jvm.library"
             implementationClass = "JvmLibraryConventionPlugin"
+        }
+        register("sharedKoin") {
+            id = "jetgames.shared.koin"
+            implementationClass = "SharedKoinConventionPlugin"
+        }
+        register("androidKoin") {
+            id = "jetgames.android.koin"
+            implementationClass = "AndroidKoinConventionPlugin"
         }
     }
 }

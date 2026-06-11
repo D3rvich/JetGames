@@ -1,6 +1,6 @@
 plugins {
     alias(libs.plugins.jetgames.jvm.library)
-    alias(libs.plugins.ksp)
+    alias(libs.plugins.jetgames.shared.koin)
 }
 
 dependencies {

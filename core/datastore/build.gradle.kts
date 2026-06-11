@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace = "ru.d3rvich.datastore"
+    namespace = "ru.d3rvich.core.datastore"
 }
 
 dependencies {

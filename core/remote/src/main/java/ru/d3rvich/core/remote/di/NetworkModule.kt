@@ -1,0 +1,63 @@
+package ru.d3rvich.core.remote.di
+
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.android.Android
+import io.ktor.client.plugins.HttpRequestRetry
+import io.ktor.client.plugins.HttpTimeout
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.defaultRequest
+import io.ktor.client.plugins.logging.ANDROID
+import io.ktor.client.plugins.logging.LogLevel
+import io.ktor.client.plugins.logging.Logger
+import io.ktor.client.plugins.logging.Logging
+import io.ktor.client.plugins.resources.Resources
+import io.ktor.http.ContentType
+import io.ktor.http.URLProtocol
+import io.ktor.http.contentType
+import io.ktor.http.path
+import io.ktor.serialization.kotlinx.json.json
+import kotlinx.serialization.json.Json
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Module
+import org.koin.core.annotation.Single
+import ru.d3rvich.core.remote.BuildConfig
+
+@Module(createdAtStart = true)
+@ComponentScan("ru.d3rvich.core.remote.ktor")
+object NetworkModule {
+
+    @Single(createdAtStart = true)
+    fun httpClient(): HttpClient = HttpClient(Android) {
+        expectSuccess = true
+        install(HttpTimeout) {
+            requestTimeoutMillis = 10_000
+            connectTimeoutMillis = 15_000
+            socketTimeoutMillis = 30_000
+        }
+        install(Logging) {
+            logger = Logger.ANDROID
+            level = LogLevel.BODY
+        }
+        install(Resources)
+        install(ContentNegotiation) {
+            json(Json {
+                ignoreUnknownKeys = true
+                isLenient = true
+            })
+        }
+        install(HttpRequestRetry) {
+            maxRetries = 2
+
+            delayMillis { retry -> retry * 1000L }
+        }
+        defaultRequest {
+            url {
+                protocol = URLProtocol.HTTPS
+                host = "api.rawg.io"
+                path("api/")
+                parameters.append("key", BuildConfig.API_KEY)
+            }
+            contentType(ContentType.Application.Json)
+        }
+    }
+}

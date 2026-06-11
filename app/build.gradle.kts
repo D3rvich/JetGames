@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.jetgames.android.application.compose)
-    alias(libs.plugins.jetgames.android.hilt)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.jetgames.android.koin)
 }
 
 android {
@@ -28,6 +28,8 @@ dependencies {
     implementation(projects.core.domain)
     implementation(projects.core.ui)
     implementation(projects.core.data)
+    implementation(projects.core.remote)
+    implementation(projects.core.database)
     implementation(projects.common)
     implementation(projects.feature.home)
     implementation(projects.feature.browse)
@@ -48,9 +50,6 @@ dependencies {
     // Coil
     implementation(libs.coil.network)
     implementation(libs.coil.compose)
-
-    // Hilt additional
-    implementation(libs.androidx.hilt.navigation.compose)
 
     // Coroutines
     implementation(libs.kotlinx.coroutines)

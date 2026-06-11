@@ -2,12 +2,12 @@ import java.util.Properties
 
 plugins {
     alias(libs.plugins.jetgames.android.library)
-    alias(libs.plugins.jetgames.android.hilt)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.jetgames.shared.koin)
 }
 
 android {
-    namespace = "ru.d3rvich.network"
+    namespace = "ru.d3rvich.core.remote"
 
     defaultConfig {
         buildFeatures.buildConfig = true

@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "ru.d3rvich.favorites"
+    namespace = "ru.d3rvich.feature.favorites"
 }
 
 dependencies {

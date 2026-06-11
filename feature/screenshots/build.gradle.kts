@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "ru.d3rvich.screenshots"
+    namespace = "ru.d3rvich.feature.screenshots"
 }
 
 dependencies {

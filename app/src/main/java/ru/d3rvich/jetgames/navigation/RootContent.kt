@@ -10,9 +10,9 @@ import com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback
 import com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback.predictiveBackAnimation
 import com.arkivanov.decompose.extensions.compose.stack.animation.slide
 import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
-import ru.d3rvich.filter.FilterScreen
+import ru.d3rvich.feature.filter.FilterScreen
 import ru.d3rvich.jetgames.navigation.root.RootComponent
-import ru.d3rvich.settings.SettingsScreen
+import ru.d3rvich.feature.settings.SettingsScreen
 
 @OptIn(ExperimentalDecomposeApi::class)
 @Composable

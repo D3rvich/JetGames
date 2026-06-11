@@ -1,10 +1,10 @@
 plugins {
     alias(libs.plugins.jetgames.android.library)
-    alias(libs.plugins.jetgames.android.hilt)
+    alias(libs.plugins.jetgames.android.koin)
 }
 
 android {
-    namespace = "ru.d3rvich.data"
+    namespace = "ru.d3rvich.core.data"
 }
 
 dependencies {
