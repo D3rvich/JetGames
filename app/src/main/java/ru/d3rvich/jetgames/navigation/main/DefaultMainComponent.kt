@@ -16,6 +16,7 @@ import ru.d3rvich.jetgames.navigation.main.favorites.FavoritesComponent
 import ru.d3rvich.jetgames.navigation.main.home.DefaultHomeComponent
 import ru.d3rvich.jetgames.navigation.main.home.HomeComponent
 
+@OptIn(ExperimentalDecomposeApi::class)
 class DefaultMainComponent(
     componentContext: ComponentContext,
     private val onShowGameDetail: (gameId: Int) -> Unit,
@@ -57,7 +58,7 @@ class DefaultMainComponent(
 
     private fun homeComponent(componentContext: ComponentContext): HomeComponent =
         DefaultHomeComponent(
-            componentContext = componentContext,
+            componentContext = componentContext.asJetpackComponentContext(),
             onShowGameDetail = onShowGameDetail,
             onShowSettings = onShowSettings
         )
@@ -65,7 +66,6 @@ class DefaultMainComponent(
     private fun browseComponent(componentContext: ComponentContext): BrowseComponent =
         DefaultBrowseComponent(componentContext = componentContext)
 
-    @OptIn(ExperimentalDecomposeApi::class)
     private fun favoritesComponent(componentContext: ComponentContext): FavoritesComponent =
         DefaultFavoritesComponent(
             componentContext = componentContext.asJetpackComponentContext(),

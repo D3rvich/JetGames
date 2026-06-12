@@ -24,30 +24,29 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 import ru.d3rvich.common.components.ScrollToTopButton
-import ru.d3rvich.feature.home.model.HomeUiEvent
-import ru.d3rvich.feature.home.model.HomeUiState
 import ru.d3rvich.feature.home.model.ListViewMode
 import ru.d3rvich.feature.home.model.rememberListViewModeProvider
+import ru.d3rvich.feature.home.store.HomeStore
 import ru.d3rvich.feature.home.views.GamesView
 import ru.d3rvich.feature.home.views.HomeAppBar
 import kotlin.math.roundToInt
 
 @Composable
 fun HomeScreen(
-    modifier: Modifier = Modifier,
     contentPadding: PaddingValues,
     navigateToDetailScreen: (Int) -> Unit,
     navigateToFilterScreen: () -> Unit,
-    navigateToSettingsScreen: () -> Unit
+    navigateToSettingsScreen: () -> Unit,
+    modifier: Modifier = Modifier,
+    homeViewModel: HomeViewModel = koinViewModel()
 ) {
-    val homeViewModel: HomeViewModel = koinViewModel()
     val state by homeViewModel.uiState.collectAsStateWithLifecycle()
     HomeScreen(
         modifier = modifier,
         state = state,
         contentPadding = contentPadding,
-        onSearchChange = { homeViewModel.obtainEvent(HomeUiEvent.OnSearchChange(it)) },
-        onRefresh = { homeViewModel.obtainEvent(HomeUiEvent.OnRefresh) },
+        onSearchChange = { homeViewModel.obtainIntent(HomeStore.Intent.OnSearchChange(it)) },
+        onRefresh = { homeViewModel.obtainIntent(HomeStore.Intent.OnRefresh) },
         navigateToDetailScreen = navigateToDetailScreen,
         navigateToFilterScreen = navigateToFilterScreen,
         navigateToSettingsScreen = navigateToSettingsScreen
@@ -57,14 +56,14 @@ fun HomeScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun HomeScreen(
-    modifier: Modifier = Modifier,
-    state: HomeUiState,
+    state: HomeStore.State,
     contentPadding: PaddingValues,
     onSearchChange: (String) -> Unit,
     onRefresh: () -> Unit,
     navigateToDetailScreen: (Int) -> Unit,
     navigateToFilterScreen: () -> Unit,
     navigateToSettingsScreen: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val pagingItems = state.games.collectAsLazyPagingItems()
     val gridState = rememberLazyGridState()

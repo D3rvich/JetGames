@@ -76,6 +76,7 @@ fun MainContent(
 
                     is MainComponent.Child.Home -> HomeScreen(
                         contentPadding = paddingValues,
+                        homeViewModel = child.component.homeViewModel,
                         navigateToDetailScreen = mainComponent::onGameClick,
                         navigateToFilterScreen = mainComponent::onFilterClick,
                         navigateToSettingsScreen = mainComponent::onSettingsClick
