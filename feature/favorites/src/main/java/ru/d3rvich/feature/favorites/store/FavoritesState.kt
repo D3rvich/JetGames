@@ -1,4 +1,4 @@
-package ru.d3rvich.feature.favorites.model
+package ru.d3rvich.feature.favorites.store
 
 import androidx.compose.runtime.Stable
 import androidx.paging.PagingData
@@ -10,4 +10,4 @@ import ru.d3rvich.core.domain.entities.GameEntity
  * Created by Ilya Deryabin at 26.04.2024
  */
 @Stable
-internal data class FavoritesUiState(val games: Flow<PagingData<GameEntity>>) : UiState
+internal data class FavoritesState(val games: Flow<PagingData<GameEntity>>) : UiState

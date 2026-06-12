@@ -33,7 +33,7 @@ import org.koin.compose.viewmodel.koinViewModel
 import ru.d3rvich.common.components.DefaultErrorView
 import ru.d3rvich.core.ui.components.GameListItemView
 import ru.d3rvich.core.ui.mapper.toGameUiModel
-import ru.d3rvich.feature.favorites.model.FavoritesUiState
+import ru.d3rvich.feature.favorites.store.FavoritesState
 import ru.d3rvich.common.R as uiR
 
 /**
@@ -41,12 +41,12 @@ import ru.d3rvich.common.R as uiR
  */
 @Composable
 fun FavoritesScreen(
-    modifier: Modifier = Modifier,
     contentPadding: PaddingValues,
     navigateToGameDetail: (gameId: Int) -> Unit,
     navigateToSettingsScreen: () -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: FavoritesViewModel = koinViewModel(),
 ) {
-    val viewModel: FavoritesViewModel = koinViewModel()
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     FavoritesScreen(
         modifier = modifier,
@@ -60,11 +60,11 @@ fun FavoritesScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun FavoritesScreen(
-    modifier: Modifier = Modifier,
-    state: FavoritesUiState,
+    state: FavoritesState,
     contentPadding: PaddingValues,
     navigateToGameDetail: (gameId: Int) -> Unit,
     navigateToSettingsScreen: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val pagingItems = state.games.collectAsLazyPagingItems()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()

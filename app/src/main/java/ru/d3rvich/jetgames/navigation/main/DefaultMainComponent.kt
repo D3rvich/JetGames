@@ -1,6 +1,8 @@
 package ru.d3rvich.jetgames.navigation.main
 
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.ExperimentalDecomposeApi
+import com.arkivanov.decompose.jetpackcomponentcontext.asJetpackComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.bringToFront
@@ -63,11 +65,12 @@ class DefaultMainComponent(
     private fun browseComponent(componentContext: ComponentContext): BrowseComponent =
         DefaultBrowseComponent(componentContext = componentContext)
 
+    @OptIn(ExperimentalDecomposeApi::class)
     private fun favoritesComponent(componentContext: ComponentContext): FavoritesComponent =
         DefaultFavoritesComponent(
-            componentContext = componentContext,
+            componentContext = componentContext.asJetpackComponentContext(),
             onShowGameDetail = onShowGameDetail,
-            onShowSettings = onShowSettings
+            onShowSettings = onShowSettings,
         )
 
     override fun onGameClick(gameId: Int) {

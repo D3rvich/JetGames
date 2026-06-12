@@ -60,7 +60,7 @@ fun MainContent(
                 NavRail(mainComponent)
             }
             Children(mainComponent.stack, Modifier.fillMaxSize()) {
-                when (it.instance) {
+                when (val child = it.instance) {
                     is MainComponent.Child.Browse -> {
                         BrowseScreen(contentPadding = paddingValues)
                     }
@@ -69,7 +69,8 @@ fun MainContent(
                         FavoritesScreen(
                             contentPadding = paddingValues,
                             navigateToGameDetail = mainComponent::onGameClick,
-                            navigateToSettingsScreen = mainComponent::onSettingsClick
+                            navigateToSettingsScreen = mainComponent::onSettingsClick,
+                            viewModel = child.component.favoritesViewModel
                         )
                     }
 

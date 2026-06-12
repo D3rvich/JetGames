@@ -24,6 +24,9 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
                 "implementation"(project(":core:ui"))
                 "implementation"(project(":common"))
 
+                "implementation"(libs.findLibrary("mviKotlin-core").get())
+                "implementation"(libs.findLibrary("mviKotlin-main").get())
+                "implementation"(libs.findLibrary("mviKotlin-extensions-coroutines").get())
                 "implementation"(libs.findLibrary("androidx-lifecycle-runtime-compose").get())
                 "implementation"(libs.findLibrary("androidx-lifecycle-viewmodel-compose").get())
                 "implementation"(libs.findLibrary("androidx-lifecycle-viewmodel-ktx").get())
