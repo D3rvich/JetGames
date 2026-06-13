@@ -64,7 +64,7 @@ class DefaultMainComponent(
         )
 
     private fun browseComponent(componentContext: ComponentContext): BrowseComponent =
-        DefaultBrowseComponent(componentContext = componentContext)
+        DefaultBrowseComponent(componentContext = componentContext.asJetpackComponentContext())
 
     private fun favoritesComponent(componentContext: ComponentContext): FavoritesComponent =
         DefaultFavoritesComponent(

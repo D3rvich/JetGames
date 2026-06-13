@@ -1,40 +1,34 @@
 package ru.d3rvich.feature.browse
 
+import androidx.compose.runtime.Stable
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
 import org.koin.core.annotation.KoinViewModel
-import ru.d3rvich.feature.browse.model.BrowseUiState
+import ru.d3rvich.core.domain.model.LoadingResult
 import ru.d3rvich.core.domain.usecases.GetGenresUseCase
 import ru.d3rvich.core.domain.usecases.GetPlatformsUseCase
-import ru.d3rvich.core.ui.base.BaseViewModel
-import ru.d3rvich.core.ui.base.UiAction
-import ru.d3rvich.core.ui.base.UiEvent
 
 /**
  * Created by Ilya Deryabin at 05.06.2024
  */
+@Stable
 @KoinViewModel
-internal class BrowseViewModel(
-    private val getGenresUseCase: GetGenresUseCase,
-    private val getPlatformsUseCase: GetPlatformsUseCase,
-) : BaseViewModel<BrowseUiState, UiEvent, UiAction>() {
-    override fun createInitialState(): BrowseUiState = BrowseUiState()
+class BrowseViewModel(
+    getGenresUseCase: GetGenresUseCase,
+    getPlatformsUseCase: GetPlatformsUseCase,
+) : ViewModel() {
 
-    override fun obtainEvent(event: UiEvent) {}
+    val genres = getGenresUseCase.invoke().stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = LoadingResult.Loading
+    )
 
-    init {
-        viewModelScope.launch(Dispatchers.IO) {
-            launch {
-                getGenresUseCase.invoke().collect { status ->
-                    setState(currentState.copy(genres = status))
-                }
-            }
-            launch {
-                getPlatformsUseCase.invoke().collect { status ->
-                    setState(currentState.copy(platforms = status))
-                }
-            }
-        }
-    }
+    val platforms = getPlatformsUseCase.invoke().stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = LoadingResult.Loading
+    )
 }

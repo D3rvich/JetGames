@@ -62,7 +62,10 @@ fun MainContent(
             Children(mainComponent.stack, Modifier.fillMaxSize()) {
                 when (val child = it.instance) {
                     is MainComponent.Child.Browse -> {
-                        BrowseScreen(contentPadding = paddingValues)
+                        BrowseScreen(
+                            contentPadding = paddingValues,
+                            browseViewModel = child.component.browseViewModel
+                        )
                     }
 
                     is MainComponent.Child.Favorites -> {

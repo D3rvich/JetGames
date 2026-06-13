@@ -14,7 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.koin.compose.viewmodel.koinViewModel
-import ru.d3rvich.feature.browse.model.BrowseUiState
+import ru.d3rvich.core.domain.entities.GenreFullEntity
+import ru.d3rvich.core.domain.entities.PlatformEntity
+import ru.d3rvich.core.domain.model.LoadingResult
 import ru.d3rvich.feature.browse.views.GenresView
 import ru.d3rvich.feature.browse.views.PlatformsView
 
@@ -23,24 +25,27 @@ import ru.d3rvich.feature.browse.views.PlatformsView
  */
 @Composable
 fun BrowseScreen(
-    modifier: Modifier = Modifier,
     contentPadding: PaddingValues,
+    modifier: Modifier = Modifier,
+    browseViewModel: BrowseViewModel = koinViewModel(),
 ) {
-    val viewModel: BrowseViewModel = koinViewModel()
-    val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val genres by browseViewModel.genres.collectAsStateWithLifecycle()
+    val platforms by browseViewModel.platforms.collectAsStateWithLifecycle()
     BrowseScreen(
-        state = state,
-        modifier = modifier,
         contentPadding = contentPadding,
+        genres = genres,
+        platforms = platforms,
+        modifier = modifier,
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun BrowseScreen(
-    modifier: Modifier = Modifier,
-    state: BrowseUiState,
+    genres: LoadingResult<List<GenreFullEntity>>,
+    platforms: LoadingResult<List<PlatformEntity>>,
     contentPadding: PaddingValues,
+    modifier: Modifier = Modifier,
 ) {
     Scaffold(modifier = modifier.fillMaxSize(),
         topBar = {
@@ -53,8 +58,8 @@ internal fun BrowseScreen(
                 .padding(paddingValues)
                 .padding(contentPadding),
         ) {
-            GenresView(genresStatus = state.genres)
-            PlatformsView(platformsStatus = state.platforms)
+            GenresView(genresStatus = genres)
+            PlatformsView(platformsStatus = platforms)
         }
     }
 }

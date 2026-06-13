@@ -1,6 +1,13 @@
 package ru.d3rvich.jetgames.navigation.main.browse
 
-import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.ExperimentalDecomposeApi
+import com.arkivanov.decompose.jetpackcomponentcontext.JetpackComponentContext
+import com.arkivanov.decompose.jetpackcomponentcontext.viewModel
+import org.koin.core.component.KoinComponent
+import ru.d3rvich.feature.browse.BrowseViewModel
 
-class DefaultBrowseComponent(componentContext: ComponentContext) : BrowseComponent,
-    ComponentContext by componentContext
+@OptIn(ExperimentalDecomposeApi::class)
+class DefaultBrowseComponent(componentContext: JetpackComponentContext) : BrowseComponent,
+    KoinComponent, JetpackComponentContext by componentContext {
+    override val browseViewModel: BrowseViewModel = viewModel { getKoin().get() }
+}

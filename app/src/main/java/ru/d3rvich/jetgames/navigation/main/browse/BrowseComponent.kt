@@ -1,3 +1,7 @@
 package ru.d3rvich.jetgames.navigation.main.browse
 
-interface BrowseComponent
+import ru.d3rvich.feature.browse.BrowseViewModel
+
+interface BrowseComponent {
+    val browseViewModel: BrowseViewModel
+}
