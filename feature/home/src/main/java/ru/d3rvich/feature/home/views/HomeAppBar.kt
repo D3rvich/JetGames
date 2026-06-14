@@ -41,7 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import ru.d3rvich.common.components.SearchField
 import ru.d3rvich.core.ui.theme.JetGamesTheme
-import ru.d3rvich.feature.home.model.ListViewMode
+import ru.d3rvich.feature.home.model.ListDisplayMode
 import ru.d3rvich.common.R as CommonR
 import ru.d3rvich.feature.home.R as HomeR
 
@@ -53,9 +53,9 @@ import ru.d3rvich.feature.home.R as HomeR
 internal fun HomeAppBar(
     searchText: String,
     isFilterEdited: Boolean,
-    currentListViewMode: ListViewMode,
+    currentListDisplayMode: ListDisplayMode,
     onSearchChange: (String) -> Unit,
-    onListViewModeChange: (ListViewMode) -> Unit,
+    onListDisplayModeChange: (ListDisplayMode) -> Unit,
     navigateToFilterScreen: () -> Unit,
     navigateToSettingsScreen: () -> Unit,
     modifier: Modifier = Modifier,
@@ -137,8 +137,8 @@ internal fun HomeAppBar(
             ListViewModeMenu(
                 showMenu = showMenu,
                 onShowMenuChange = { showMenu = it },
-                currentListViewMode = currentListViewMode,
-                onListViewModeChange = onListViewModeChange
+                currentListDisplayMode = currentListDisplayMode,
+                onListViewModeChange = onListDisplayModeChange
             )
             IconButton(onClick = navigateToSettingsScreen) {
                 Icon(
@@ -152,15 +152,15 @@ internal fun HomeAppBar(
 @Composable
 private fun ListViewModeMenu(
     showMenu: Boolean,
-    currentListViewMode: ListViewMode,
+    currentListDisplayMode: ListDisplayMode,
     onShowMenuChange: (Boolean) -> Unit,
-    onListViewModeChange: (ListViewMode) -> Unit,
+    onListViewModeChange: (ListDisplayMode) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(modifier = modifier, contentAlignment = Alignment.TopEnd) {
         IconButton(onClick = { onShowMenuChange(!showMenu) }) {
             AnimatedContent(
-                targetState = currentListViewMode,
+                targetState = currentListDisplayMode,
                 label = "ListViewMode icon animation"
             ) { listViewMode ->
                 Icon(
@@ -170,8 +170,8 @@ private fun ListViewModeMenu(
             }
         }
         DropdownMenu(expanded = showMenu, onDismissRequest = { onShowMenuChange(false) }) {
-            ListViewMode.entries.forEach { item ->
-                val isSelected = item == currentListViewMode
+            ListDisplayMode.entries.forEach { item ->
+                val isSelected = item == currentListDisplayMode
                 val selectedColor = MaterialTheme.colorScheme.primary
                 val selectedItemColors = MenuDefaults.itemColors().copy(
                     textColor = selectedColor,
@@ -213,8 +213,8 @@ private fun HomeAppBarPreview() {
             searchText = "",
             onSearchChange = {},
             isFilterEdited = false,
-            currentListViewMode = ListViewMode.Compact,
-            onListViewModeChange = {},
+            currentListDisplayMode = ListDisplayMode.Compact,
+            onListDisplayModeChange = {},
             navigateToFilterScreen = {},
             navigateToSettingsScreen = {}
         )

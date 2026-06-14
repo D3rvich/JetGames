@@ -1,5 +1,6 @@
 package ru.d3rvich.feature.home
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
@@ -24,8 +25,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 import ru.d3rvich.common.components.ScrollToTopButton
-import ru.d3rvich.feature.home.model.ListViewMode
-import ru.d3rvich.feature.home.model.rememberListViewModeProvider
+import ru.d3rvich.feature.home.model.ListDisplayMode
 import ru.d3rvich.feature.home.store.HomeStore
 import ru.d3rvich.feature.home.views.GamesView
 import ru.d3rvich.feature.home.views.HomeAppBar
@@ -40,26 +40,31 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     homeViewModel: HomeViewModel = koinViewModel()
 ) {
-    val state by homeViewModel.uiState.collectAsStateWithLifecycle()
-    HomeScreen(
-        modifier = modifier,
-        state = state,
-        contentPadding = contentPadding,
-        onSearchChange = { homeViewModel.obtainIntent(HomeStore.Intent.OnSearchChange(it)) },
-        onRefresh = { homeViewModel.obtainIntent(HomeStore.Intent.OnRefresh) },
-        navigateToDetailScreen = navigateToDetailScreen,
-        navigateToFilterScreen = navigateToFilterScreen,
-        navigateToSettingsScreen = navigateToSettingsScreen
-    )
+    when (val state = homeViewModel.uiState.collectAsStateWithLifecycle().value) {
+        HomeStore.State.Loading -> {
+            Box(modifier.fillMaxSize())
+        }
+
+        is HomeStore.State.Content -> {
+            HomeScreen(
+                modifier = modifier,
+                state = state,
+                contentPadding = contentPadding,
+                onIntent = homeViewModel::obtainIntent,
+                navigateToDetailScreen = navigateToDetailScreen,
+                navigateToFilterScreen = navigateToFilterScreen,
+                navigateToSettingsScreen = navigateToSettingsScreen
+            )
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun HomeScreen(
-    state: HomeStore.State,
+    state: HomeStore.State.Content,
     contentPadding: PaddingValues,
-    onSearchChange: (String) -> Unit,
-    onRefresh: () -> Unit,
+    onIntent: (HomeStore.Intent) -> Unit,
     navigateToDetailScreen: (Int) -> Unit,
     navigateToFilterScreen: () -> Unit,
     navigateToSettingsScreen: () -> Unit,
@@ -67,14 +72,12 @@ internal fun HomeScreen(
 ) {
     val pagingItems = state.games.collectAsLazyPagingItems()
     val gridState = rememberLazyGridState()
-    val listViewModeProvider = rememberListViewModeProvider()
-    val currentListViewMode by
-    listViewModeProvider.listViewMode.collectAsStateWithLifecycle()
+    val currentListViewMode = state.listDisplayMode
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val scope = rememberCoroutineScope()
     BoxWithConstraints {
         val itemWidth = when (currentListViewMode) {
-            ListViewMode.Grid -> 160.dp
+            ListDisplayMode.Grid -> 160.dp
             else -> 300.dp
         }
         val maxItemsInColumn = (this.maxWidth / itemWidth).roundToInt()
@@ -102,10 +105,10 @@ internal fun HomeScreen(
                 if (pagingItems.loadState.refresh !is LoadState.Error || state.search.isNotEmpty()) {
                     HomeAppBar(
                         searchText = state.search,
-                        onSearchChange = onSearchChange,
+                        onSearchChange = { onIntent(HomeStore.Intent.SearchChange(it)) },
                         isFilterEdited = state.isFilterEdited,
-                        currentListViewMode = currentListViewMode,
-                        onListViewModeChange = listViewModeProvider::setListViewMode,
+                        currentListDisplayMode = currentListViewMode,
+                        onListDisplayModeChange = { onIntent(HomeStore.Intent.ListDisplayChange(it)) },
                         scrollBehavior = scrollBehavior,
                         navigateToFilterScreen = navigateToFilterScreen,
                         navigateToSettingsScreen = navigateToSettingsScreen,
@@ -115,13 +118,13 @@ internal fun HomeScreen(
         ) { paddingValues ->
             GamesView(
                 pagingItems = pagingItems,
-                listViewMode = currentListViewMode,
+                listDisplayMode = currentListViewMode,
                 contentPadding = PaddingValues(
                     top = paddingValues.calculateTopPadding() + 8.dp,
                     bottom = contentPadding.calculateBottomPadding()
                 ),
                 gridState = gridState,
-                onRefreshPressed = onRefresh,
+                onRefreshPressed = { onIntent(HomeStore.Intent.Refresh) },
                 onGameSelected = { gameId ->
                     navigateToDetailScreen(gameId)
                 }

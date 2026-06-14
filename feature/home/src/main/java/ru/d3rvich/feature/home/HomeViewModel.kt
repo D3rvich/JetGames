@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import org.koin.core.annotation.KoinViewModel
 import ru.d3rvich.core.domain.preferences.FilterPreferences
 import ru.d3rvich.core.domain.usecases.GetGamesUseCase
+import ru.d3rvich.feature.home.model.ListDisplayModeProvider
 import ru.d3rvich.feature.home.store.HomeStore
 import ru.d3rvich.feature.home.store.HomeStoreFactory
 
@@ -23,11 +24,17 @@ import ru.d3rvich.feature.home.store.HomeStoreFactory
 class HomeViewModel(
     getGamesUseCase: GetGamesUseCase,
     filterPreferences: FilterPreferences,
+    listDisplayModeProvider: ListDisplayModeProvider,
     storeFactory: StoreFactory = DefaultStoreFactory(),
 ) : ViewModel() {
 
     private val store: HomeStore =
-        HomeStoreFactory(storeFactory, getGamesUseCase, filterPreferences, viewModelScope).create()
+        HomeStoreFactory(
+            storeFactory = storeFactory,
+            getGamesUseCase = getGamesUseCase,
+            filterPreferences = filterPreferences,
+            listDisplayModeProvider = listDisplayModeProvider,
+        ).create()
 
     internal val uiState = store.stateFlow(
         scope = viewModelScope,

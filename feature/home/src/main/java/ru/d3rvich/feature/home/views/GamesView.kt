@@ -40,20 +40,20 @@ import ru.d3rvich.core.ui.components.GameListItemView
 import ru.d3rvich.core.ui.mapper.toGameUiModel
 import ru.d3rvich.core.ui.theme.JetGamesTheme
 import ru.d3rvich.feature.home.R
-import ru.d3rvich.feature.home.model.ListViewMode
+import ru.d3rvich.feature.home.model.ListDisplayMode
 
 /**
  * Created by Ilya Deryabin at 27.02.2024
  */
 @Composable
 internal fun GamesView(
-    modifier: Modifier = Modifier,
     pagingItems: LazyPagingItems<GameEntity>,
-    listViewMode: ListViewMode,
-    contentPadding: PaddingValues = PaddingValues(),
-    gridState: LazyGridState = rememberLazyGridState(),
+    listDisplayMode: ListDisplayMode,
     onRefreshPressed: () -> Unit,
     onGameSelected: (Int) -> Unit,
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(),
+    gridState: LazyGridState = rememberLazyGridState(),
 ) {
     val focusManager = LocalFocusManager.current
     val connection = remember {
@@ -64,8 +64,8 @@ internal fun GamesView(
             }
         }
     }
-    when {
-        pagingItems.loadState.refresh is LoadState.Error -> {
+    when (pagingItems.loadState.refresh) {
+        is LoadState.Error -> {
             val error = pagingItems.loadState.refresh as? LoadState.Error
             DefaultErrorView(
                 message = error?.error?.message ?: "error",
@@ -73,7 +73,7 @@ internal fun GamesView(
             )
         }
 
-        pagingItems.loadState.refresh is LoadState.NotLoading && pagingItems.itemCount == 0 -> {
+        is LoadState.NotLoading if pagingItems.itemCount == 0 -> {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Text(text = stringResource(R.string.no_items))
             }
@@ -84,7 +84,7 @@ internal fun GamesView(
                 modifier = modifier
                     .fillMaxSize()
                     .nestedScroll(connection),
-                columns = GridCells.Adaptive(if (listViewMode == ListViewMode.Grid) 160.dp else 300.dp),
+                columns = GridCells.Adaptive(if (listDisplayMode == ListDisplayMode.Grid) 160.dp else 300.dp),
                 contentPadding = contentPadding + PaddingValues(horizontal = 8.dp),
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -92,12 +92,12 @@ internal fun GamesView(
             ) {
                 if (pagingItems.loadState.refresh is LoadState.Loading) {
                     items(
-                        count = if (listViewMode == ListViewMode.Grid) 40 else 20,
+                        count = if (listDisplayMode == ListDisplayMode.Grid) 40 else 20,
                         key = { "LoadingStub#$it" }) {
                         LaunchedEffect(Unit) {
                             gridState.scrollToItem(0)
                         }
-                        if (listViewMode == ListViewMode.Grid) {
+                        if (listDisplayMode == ListDisplayMode.Grid) {
                             GameGridItemView(
                                 game = null,
                                 isLoading = true,
@@ -106,16 +106,17 @@ internal fun GamesView(
                             GameListItemView(
                                 game = null,
                                 isLoading = true,
-                                isLarge = listViewMode == ListViewMode.Large,
+                                isLarge = listDisplayMode == ListDisplayMode.Large,
                             )
                         }
                     }
                 }
 
-                items(count = pagingItems.itemCount,
+                items(
+                    count = pagingItems.itemCount,
                     key = pagingItems.itemKey { it.id }) { index ->
                     pagingItems[index]?.let { item ->
-                        if (listViewMode == ListViewMode.Grid) {
+                        if (listDisplayMode == ListDisplayMode.Grid) {
                             GameGridItemView(
                                 game = item.toGameUiModel(),
                                 onItemClick = onGameSelected
@@ -123,7 +124,7 @@ internal fun GamesView(
                         } else {
                             GameListItemView(
                                 game = item.toGameUiModel(),
-                                isLarge = listViewMode == ListViewMode.Large,
+                                isLarge = listDisplayMode == ListDisplayMode.Large,
                                 onItemClick = onGameSelected
                             )
                         }
@@ -132,9 +133,9 @@ internal fun GamesView(
 
                 if (pagingItems.loadState.append == LoadState.Loading) {
                     items(
-                        count = if (listViewMode == ListViewMode.Grid) 20 else 10,
+                        count = if (listDisplayMode == ListDisplayMode.Grid) 20 else 10,
                         key = { "LoadingStub#$it" }) {
-                        if (listViewMode == ListViewMode.Grid) {
+                        if (listDisplayMode == ListDisplayMode.Grid) {
                             GameGridItemView(
                                 game = null,
                                 isLoading = true,
@@ -143,7 +144,7 @@ internal fun GamesView(
                             GameListItemView(
                                 game = null,
                                 isLoading = true,
-                                isLarge = listViewMode == ListViewMode.Large,
+                                isLarge = listDisplayMode == ListDisplayMode.Large,
                             )
                         }
                     }
@@ -162,28 +163,51 @@ private operator fun PaddingValues.plus(other: PaddingValues): PaddingValues = P
     bottom = this.calculateBottomPadding() + other.calculateBottomPadding(),
 )
 
+private val previewPagingData = List(10) {
+    GameEntity(
+        id = it,
+        name = "Game $it",
+        imageUrl = null,
+        metacritic = (it + 1) * 10,
+        rating = (it + 1) % 5f,
+        ratings = null,
+        released = LocalDate(2007, 11, it + 1),
+        genres = null,
+        parentPlatforms = null
+    )
+}
+
 @Preview(showBackground = true)
 @Composable
-private fun GamesViewPreview() {
+private fun GamesViewPreview_Loading() {
     JetGamesTheme {
         val pagingData = flowOf(
             PagingData.from(
-                List(10) {
-                    GameEntity(
-                        id = it,
-                        name = "Game $it",
-                        imageUrl = null,
-                        metacritic = (it + 1) * 10,
-                        rating = (it + 1) % 5f,
-                        ratings = null,
-                        released = LocalDate(2007, 11, it + 1),
-                        genres = null,
-                        parentPlatforms = null
-                    )
-                }, sourceLoadStates = LoadStates(
-                    refresh = LoadState.NotLoading(
-                        false
-                    ),
+                previewPagingData, sourceLoadStates = LoadStates(
+                    refresh = LoadState.Loading,
+                    prepend = LoadState.Loading,
+                    append = LoadState.Loading
+                )
+            )
+        )
+        val games = pagingData.collectAsLazyPagingItems()
+        GamesView(
+            modifier = Modifier.fillMaxSize(),
+            pagingItems = games,
+            listDisplayMode = ListDisplayMode.Grid,
+            onRefreshPressed = { },
+            onGameSelected = {})
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun GamesViewPreview_Content() {
+    JetGamesTheme {
+        val pagingData = flowOf(
+            PagingData.from(
+                previewPagingData, sourceLoadStates = LoadStates(
+                    refresh = LoadState.NotLoading(false),
                     prepend = LoadState.NotLoading(false),
                     append = LoadState.NotLoading(false)
                 )
@@ -193,7 +217,7 @@ private fun GamesViewPreview() {
         GamesView(
             modifier = Modifier.fillMaxSize(),
             pagingItems = games,
-            listViewMode = ListViewMode.Grid,
+            listDisplayMode = ListDisplayMode.Grid,
             onRefreshPressed = { },
             onGameSelected = {})
     }
