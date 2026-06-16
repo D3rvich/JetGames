@@ -1,67 +1,32 @@
 package ru.d3rvich.feature.settings
 
-import android.os.Build
+import androidx.compose.runtime.Stable
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.launch
+import com.arkivanov.mvikotlin.core.store.StoreFactory
+import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
+import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
+import kotlinx.coroutines.flow.SharingStarted
 import org.koin.core.annotation.KoinViewModel
-import ru.d3rvich.core.domain.model.ColorModeType
-import ru.d3rvich.core.domain.model.ThemeType
 import ru.d3rvich.core.domain.repositories.UserPreferencesRepository
-import ru.d3rvich.core.ui.base.BaseViewModel
-import ru.d3rvich.core.ui.base.UiAction
-import ru.d3rvich.core.ui.base.UiEvent
-import ru.d3rvich.core.ui.base.UiState
+import ru.d3rvich.feature.settings.store.SettingsStore
+import ru.d3rvich.feature.settings.store.SettingsStoreFactory
 
+@Stable
 @KoinViewModel
-internal class SettingsViewModel(private val userPreferencesRepository: UserPreferencesRepository) :
-    BaseViewModel<SettingsUiState, SettingsUiEvent, UiAction>() {
+class SettingsViewModel(
+    userPreferencesRepository: UserPreferencesRepository,
+    storeFactory: StoreFactory = DefaultStoreFactory()
+) : ViewModel() {
 
-    override fun createInitialState(): SettingsUiState = SettingsUiState.Loading
+    private val store = SettingsStoreFactory(storeFactory, userPreferencesRepository).create()
 
-    override fun obtainEvent(event: SettingsUiEvent) {
-        viewModelScope.launch {
-            when (event) {
-                is SettingsUiEvent.UpdateColorMode -> {
-                    userPreferencesRepository.setCurrentColorMode(event.colorModeType)
-                }
+    internal val uiState = store.stateFlow(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000)
+    )
 
-                is SettingsUiEvent.UpdateThemeType -> {
-                    userPreferencesRepository.setCurrentTheme(event.themeType)
-                }
-            }
-        }
+    internal fun obtainIntent(intent: SettingsStore.Intent) {
+        store.accept(intent)
     }
-
-    private val isDynamicColorSupported by lazy {
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
-    }
-
-    init {
-        viewModelScope.launch {
-            userPreferencesRepository.getUserPreferences().collect { data ->
-                setState(
-                    SettingsUiState.Settings(
-                        themeType = data.theme,
-                        colorModeType = data.colorMode,
-                        inDynamicColorSupported = isDynamicColorSupported
-                    )
-                )
-            }
-        }
-    }
-}
-
-internal sealed interface SettingsUiState : UiState {
-    data object Loading : SettingsUiState
-    class Settings(
-        val themeType: ThemeType,
-        val colorModeType: ColorModeType,
-        val inDynamicColorSupported: Boolean
-    ) : SettingsUiState
-}
-
-internal sealed interface SettingsUiEvent : UiEvent {
-    class UpdateThemeType(val themeType: ThemeType) : SettingsUiEvent
-
-    class UpdateColorMode(val colorModeType: ColorModeType) : SettingsUiEvent
 }

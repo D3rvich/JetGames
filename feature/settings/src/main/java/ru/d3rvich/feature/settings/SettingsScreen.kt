@@ -36,21 +36,27 @@ import org.koin.compose.viewmodel.koinViewModel
 import ru.d3rvich.core.domain.model.ColorModeType
 import ru.d3rvich.core.domain.model.ThemeType
 import ru.d3rvich.core.ui.theme.JetGamesTheme
+import ru.d3rvich.feature.settings.store.SettingsStore
 import ru.d3rvich.common.R as uiR
 
 /**
  * Created by Ilya Deryabin at 05.09.2024
  */
 @Composable
-fun SettingsScreen(modifier: Modifier = Modifier, navigateBack: () -> Unit = {}) {
-    val viewModel: SettingsViewModel = koinViewModel()
+fun SettingsScreen(
+    modifier: Modifier = Modifier,
+    viewModel: SettingsViewModel = koinViewModel(),
+    navigateBack: () -> Unit = {}
+) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     SettingsScreen(
         modifier = modifier,
         state = state,
-        onThemeChange = { theme -> viewModel.obtainEvent(SettingsUiEvent.UpdateThemeType(theme)) },
+        onThemeChange = { theme ->
+            viewModel.obtainIntent(SettingsStore.Intent.ThemeTypeSelected(theme))
+        },
         onColorModeChange = { colorCode ->
-            viewModel.obtainEvent(SettingsUiEvent.UpdateColorMode(colorCode))
+            viewModel.obtainIntent(SettingsStore.Intent.ColorModeSelected(colorCode))
         },
         navigateBack = navigateBack
     )
@@ -59,8 +65,8 @@ fun SettingsScreen(modifier: Modifier = Modifier, navigateBack: () -> Unit = {})
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SettingsScreen(
+    state: SettingsStore.State,
     modifier: Modifier = Modifier,
-    state: SettingsUiState,
     onThemeChange: (ThemeType) -> Unit = {},
     onColorModeChange: (ColorModeType) -> Unit = {},
     navigateBack: () -> Unit = {}
@@ -80,7 +86,7 @@ private fun SettingsScreen(
                 })
         }) { paddingValues ->
         when (state) {
-            SettingsUiState.Loading -> {
+            SettingsStore.State.Loading -> {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -91,7 +97,7 @@ private fun SettingsScreen(
                 }
             }
 
-            is SettingsUiState.Settings -> {
+            is SettingsStore.State.Settings -> {
                 Column(
                     modifier = Modifier
                         .padding(paddingValues)
@@ -118,9 +124,9 @@ private fun SettingsScreen(
 
 @Composable
 private fun ThemeMode(
-    modifier: Modifier = Modifier,
     theme: ThemeType,
-    onThemeChange: (ThemeType) -> Unit
+    onThemeChange: (ThemeType) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
         Text(
@@ -157,10 +163,10 @@ private fun ThemeMode(
 
 @Composable
 private fun DynamicTheme(
-    modifier: Modifier = Modifier,
     isDynamicColorSupported: Boolean,
     colorMode: ColorModeType,
-    onColorModeChange: (ColorModeType) -> Unit
+    onColorModeChange: (ColorModeType) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier.fillMaxWidth()
@@ -196,10 +202,10 @@ private fun DynamicTheme(
 
 @Composable
 private fun SettingOptionItem(
-    modifier: Modifier = Modifier,
     text: String,
     selected: Boolean,
     onClick: () -> Unit,
+    modifier: Modifier = Modifier,
     enabled: Boolean = true
 ) {
     Row(
@@ -224,7 +230,7 @@ private fun SettingOptionItem(
 @Composable
 private fun SettingsScreenPreview_Loading() {
     JetGamesTheme {
-        SettingsScreen(state = SettingsUiState.Loading)
+        SettingsScreen(state = SettingsStore.State.Loading)
     }
 }
 
@@ -233,7 +239,7 @@ private fun SettingsScreenPreview_Loading() {
 private fun SettingsScreenPreview() {
     JetGamesTheme {
         SettingsScreen(
-            state = SettingsUiState.Settings(
+            state = SettingsStore.State.Settings(
                 themeType = ThemeType.System,
                 colorModeType = ColorModeType.Default,
                 inDynamicColorSupported = false

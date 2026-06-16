@@ -1,6 +1,8 @@
 package ru.d3rvich.jetgames.navigation.root
 
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.ExperimentalDecomposeApi
+import com.arkivanov.decompose.jetpackcomponentcontext.asJetpackComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.childStack
@@ -19,6 +21,7 @@ import ru.d3rvich.jetgames.navigation.root.RootComponent.Child.*
 import ru.d3rvich.jetgames.navigation.settings.DefaultSettingsComponent
 import ru.d3rvich.jetgames.navigation.settings.SettingsComponent
 
+@OptIn(ExperimentalDecomposeApi::class)
 class DefaultRootComponent(componentContext: ComponentContext) : RootComponent,
     ComponentContext by componentContext, BackHandlerOwner {
     private val navigation = StackNavigation<Config>()
@@ -64,7 +67,7 @@ class DefaultRootComponent(componentContext: ComponentContext) : RootComponent,
 
     private fun settingsComponent(componentContext: ComponentContext): SettingsComponent =
         DefaultSettingsComponent(
-            componentContext = componentContext,
+            componentContext = componentContext.asJetpackComponentContext(),
             onCLose = { navigation.pop() })
 
     private fun filterComponent(componentContext: ComponentContext): FilterComponent =

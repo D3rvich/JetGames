@@ -46,11 +46,14 @@ fun RootContent(
             }
 
             is RootComponent.Child.Settings -> {
-                SettingsScreen { child.component.onBackClick() }
+                SettingsScreen(
+                    navigateBack = child.component::onBackClick,
+                    viewModel = child.component.settingsViewModel
+                )
             }
 
             is RootComponent.Child.Filter -> {
-                FilterScreen { child.component.onBackClick() }
+                FilterScreen(onNavigateBack = child.component::onBackClick)
             }
         }
     }
