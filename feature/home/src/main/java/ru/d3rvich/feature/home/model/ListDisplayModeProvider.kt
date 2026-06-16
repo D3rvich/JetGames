@@ -1,38 +1,49 @@
 package ru.d3rvich.feature.home.model
 
-import android.content.Context
-import androidx.core.content.edit
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.WhileSubscribed
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import org.koin.core.annotation.Factory
+import org.koin.core.annotation.InjectedParam
+import ru.d3rvich.core.domain.model.ListDisplayOption
+import ru.d3rvich.core.domain.repositories.UserPreferencesRepository
+import kotlin.time.Duration.Companion.milliseconds
 
 @Factory
-class ListDisplayModeProvider(context: Context) {
+internal class ListDisplayModeProvider(
+    @InjectedParam scope: CoroutineScope,
+    private val cacheProvider: CacheProvider
+) {
+    val listDisplayModeFlow: StateFlow<ListDisplayMode?> = cacheProvider.getListDisplayMode()
+        .stateIn(
+            scope = scope,
+            started = SharingStarted.WhileSubscribed(5000.milliseconds),
+            initialValue = null
+        )
 
-    private val _currentListViewMode = MutableStateFlow<ListDisplayMode?>(null)
+    suspend fun setListViewMode(displayMode: ListDisplayMode) {
+        cacheProvider.setListDisplayMode(displayMode)
+    }
 
-    val listDisplayModeFlow: StateFlow<ListDisplayMode?>
-        get() = _currentListViewMode.asStateFlow()
+    interface CacheProvider {
+        fun getListDisplayMode(): Flow<ListDisplayMode>
 
-    private val sharedPreferences =
-        context.getSharedPreferences(SharedPreferencesKey, Context.MODE_PRIVATE)
-            .also { preferences ->
-                preferences.getString(ListViewModeKey, DefaultListDisplayMode.name)
-                    ?.let { modeName ->
-                        _currentListViewMode.value = ListDisplayMode.valueOf(modeName)
-                    }
-            }
-
-    fun setListViewMode(viewMode: ListDisplayMode) {
-        _currentListViewMode.value = viewMode
-        sharedPreferences.edit {
-            putString(ListViewModeKey, viewMode.name)
-        }
+        suspend fun setListDisplayMode(mode: ListDisplayMode)
     }
 }
 
-private const val SharedPreferencesKey = "ListViewModeProvider_SharedPreferences"
-private const val ListViewModeKey = "ListViewMode"
+@Factory(binds = [ListDisplayModeProvider.CacheProvider::class])
+internal class CacheProviderImpl(private val userPreferencesRepository: UserPreferencesRepository) :
+    ListDisplayModeProvider.CacheProvider {
+    override fun getListDisplayMode(): Flow<ListDisplayMode> =
+        userPreferencesRepository.getListDisplayOption()
+            .map(ListDisplayOption::toListDisplayMode)
 
-private val DefaultListDisplayMode = ListDisplayMode.Compact
+    override suspend fun setListDisplayMode(mode: ListDisplayMode) {
+        userPreferencesRepository.setListDisplayOption(mode.toListDisplayOption())
+    }
+}

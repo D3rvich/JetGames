@@ -9,6 +9,9 @@ import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.SharingStarted
 import org.koin.core.annotation.KoinViewModel
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import org.koin.core.parameter.parametersOf
 import ru.d3rvich.core.domain.preferences.FilterPreferences
 import ru.d3rvich.core.domain.usecases.GetGamesUseCase
 import ru.d3rvich.feature.home.model.ListDisplayModeProvider
@@ -24,9 +27,12 @@ import ru.d3rvich.feature.home.store.HomeStoreFactory
 class HomeViewModel(
     getGamesUseCase: GetGamesUseCase,
     filterPreferences: FilterPreferences,
-    listDisplayModeProvider: ListDisplayModeProvider,
     storeFactory: StoreFactory = DefaultStoreFactory(),
-) : ViewModel() {
+) : ViewModel(), KoinComponent {
+
+    private val listDisplayModeProvider: ListDisplayModeProvider by inject {
+        parametersOf(viewModelScope)
+    }
 
     private val store: HomeStore =
         HomeStoreFactory(

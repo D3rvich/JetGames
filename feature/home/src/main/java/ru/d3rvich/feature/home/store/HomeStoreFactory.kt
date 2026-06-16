@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.launch
 import ru.d3rvich.core.domain.entities.GameEntity
 import ru.d3rvich.core.domain.preferences.FilterPreferences
 import ru.d3rvich.core.domain.preferences.isDefault
@@ -79,7 +80,9 @@ internal class HomeStoreFactory(
                     refreshTrigger.tryEmit(Unit)
                 }
                 onIntent<HomeStore.Intent.ListDisplayChange> {
-                    listDisplayModeProvider.setListViewMode(it.listDisplayMode)
+                    launch {
+                        listDisplayModeProvider.setListViewMode(it.listDisplayMode)
+                    }
                 }
             },
             reducer = { message ->

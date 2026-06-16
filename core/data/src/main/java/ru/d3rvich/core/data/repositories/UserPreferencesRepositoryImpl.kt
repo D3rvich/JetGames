@@ -7,6 +7,7 @@ import ru.d3rvich.core.domain.model.ThemeType
 import ru.d3rvich.core.domain.model.UserPreferences
 import ru.d3rvich.core.domain.repositories.UserPreferencesRepository
 import ru.d3rvich.core.datastore.JetGamesPreferencesDataStore
+import ru.d3rvich.core.domain.model.ListDisplayOption
 
 @Single(binds = [UserPreferencesRepository::class])
 internal class UserPreferencesRepositoryImpl(
@@ -15,11 +16,17 @@ internal class UserPreferencesRepositoryImpl(
 
     override fun getUserPreferences(): Flow<UserPreferences> = dataStore.userPreferences
 
+    override fun getListDisplayOption(): Flow<ListDisplayOption> = dataStore.listDisplayOption
+
     override suspend fun setCurrentTheme(theme: ThemeType) {
         dataStore.setTheme(theme = theme)
     }
 
     override suspend fun setCurrentColorMode(colorModeType: ColorModeType) {
         dataStore.setColorMode(colorMode = colorModeType)
+    }
+
+    override suspend fun setListDisplayOption(option: ListDisplayOption) {
+        dataStore.setListDisplayOption(option = option)
     }
 }

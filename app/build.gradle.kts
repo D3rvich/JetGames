@@ -30,6 +30,7 @@ dependencies {
     implementation(projects.core.data)
     implementation(projects.core.remote)
     implementation(projects.core.database)
+    implementation(projects.core.datastore)
     implementation(projects.common)
     implementation(projects.feature.home)
     implementation(projects.feature.browse)
