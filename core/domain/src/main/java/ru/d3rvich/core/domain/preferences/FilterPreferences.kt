@@ -1,5 +1,6 @@
 package ru.d3rvich.core.domain.preferences
 
+import kotlinx.collections.immutable.persistentSetOf
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,26 +25,28 @@ class FilterPreferences @Inject constructor() {
     fun applyFilterPreferences(body: FilterPreferencesBody) {
         _filterPreferencesFlow.value = body
     }
+
+    fun reset() {
+        _filterPreferencesFlow.value = FilterPreferencesBody.default()
+    }
 }
 
 data class FilterPreferencesBody(
     val sortBy: SortingEntity,
     val isReversed: Boolean,
-    val selectedPlatforms: List<PlatformEntity>,
-    val selectedGenres: List<GenreFullEntity>,
+    val selectedPlatforms: Set<PlatformEntity>,
+    val selectedGenres: Set<GenreFullEntity>,
     val metacriticRange: MetacriticRange,
 ) {
 
     override fun equals(other: Any?): Boolean {
-        return if (other !is FilterPreferencesBody) {
-            false
-        } else {
-            other.sortBy == sortBy
-                    && other.isReversed == isReversed
-                    && other.selectedPlatforms == selectedPlatforms
-                    && other.selectedGenres == selectedGenres
-                    && other.metacriticRange == metacriticRange
-        }
+        if (other !is FilterPreferencesBody)
+            return false
+        return other.sortBy == sortBy
+                && other.isReversed == isReversed
+                && other.selectedPlatforms == selectedPlatforms
+                && other.selectedGenres == selectedGenres
+                && other.metacriticRange == metacriticRange
     }
 
     override fun hashCode(): Int {
@@ -59,8 +62,8 @@ data class FilterPreferencesBody(
         fun default(): FilterPreferencesBody = FilterPreferencesBody(
             sortBy = SortingEntity.NoSorting,
             isReversed = true,
-            selectedPlatforms = emptyList(),
-            selectedGenres = emptyList(),
+            selectedPlatforms = persistentSetOf(),
+            selectedGenres = persistentSetOf(),
             metacriticRange = MetacriticRange.None
         )
     }

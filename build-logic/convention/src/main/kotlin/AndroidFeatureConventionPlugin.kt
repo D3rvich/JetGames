@@ -24,6 +24,7 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
                 "implementation"(project(":core:ui"))
                 "implementation"(project(":common"))
 
+                "implementation"(libs.findLibrary("kotlinx-collections-immutable").get())
                 "implementation"(libs.findLibrary("mviKotlin-core").get())
                 "implementation"(libs.findLibrary("mviKotlin-main").get())
                 "implementation"(libs.findLibrary("mviKotlin-extensions-coroutines").get())

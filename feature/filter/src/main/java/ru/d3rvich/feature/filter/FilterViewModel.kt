@@ -1,125 +1,48 @@
 package ru.d3rvich.feature.filter
 
+import androidx.compose.runtime.Stable
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.arkivanov.mvikotlin.core.store.StoreFactory
+import com.arkivanov.mvikotlin.extensions.coroutines.labels
+import com.arkivanov.mvikotlin.extensions.coroutines.labelsChannel
+import com.arkivanov.mvikotlin.extensions.coroutines.stateFlow
+import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.WhileSubscribed
 import org.koin.core.annotation.KoinViewModel
-import ru.d3rvich.core.domain.entities.GenreFullEntity
-import ru.d3rvich.core.domain.entities.PlatformEntity
-import ru.d3rvich.core.domain.entities.SortingEntity
-import ru.d3rvich.core.domain.model.LoadingResult
-import ru.d3rvich.core.domain.model.MetacriticRange
 import ru.d3rvich.core.domain.preferences.FilterPreferences
-import ru.d3rvich.core.domain.preferences.FilterPreferencesBody
 import ru.d3rvich.core.domain.usecases.GetGenresUseCase
 import ru.d3rvich.core.domain.usecases.GetPlatformsUseCase
-import ru.d3rvich.core.ui.base.BaseViewModel
-import ru.d3rvich.feature.filter.model.FilterUiAction
-import ru.d3rvich.feature.filter.model.FilterUiEvent
-import ru.d3rvich.feature.filter.model.FilterUiState
-import ru.d3rvich.feature.filter.model.ListAction
-import ru.d3rvich.feature.filter.model.update
+import ru.d3rvich.feature.filter.store.FilterStore
+import ru.d3rvich.feature.filter.store.FilterStoreFactory
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
  * Created by Ilya Deryabin at 29.02.2024
  */
+@Stable
 @KoinViewModel
-internal class FilterViewModel(
+class FilterViewModel(
     private val filterPreferences: FilterPreferences,
     private val getPlatformsUseCase: GetPlatformsUseCase,
     private val getGenresUseCase: GetGenresUseCase,
-) : BaseViewModel<FilterUiState, FilterUiEvent, FilterUiAction>() {
+    storeFactory: StoreFactory = DefaultStoreFactory(),
+) : ViewModel() {
 
-    init {
-        setState(currentState.copy(filterPreferencesBody = filterPreferences.filterPreferencesFlow.value))
-        viewModelScope.launch(Dispatchers.IO) {
-            launch {
-                getPlatformsUseCase.invoke().collect { status ->
-                    if (status is LoadingResult.Success) {
-                        setState(currentState.copy(platforms = status.value))
-                    }
-                }
-            }
-            launch {
-                getGenresUseCase.invoke().collect { status ->
-                    if (status is LoadingResult.Success) {
-                        setState(currentState.copy(genres = status.value))
-                    }
-                }
-            }
-        }
-    }
+    private val store: FilterStore = FilterStoreFactory(
+        storeFactory = storeFactory,
+        filterPreferences = filterPreferences,
+        getPlatformsUseCase = getPlatformsUseCase,
+        getGenresUseCase = getGenresUseCase
+    ).create()
 
-    override fun createInitialState(): FilterUiState = FilterUiState(
-        sortingList = SortingEntity.entries,
-        platforms = emptyList(),
-        genres = emptyList(),
-        filterPreferencesBody = FilterPreferencesBody.default()
-    )
+    internal val uiState =
+        store.stateFlow(viewModelScope, SharingStarted.WhileSubscribed(5000.milliseconds))
 
-    override fun obtainEvent(event: FilterUiEvent) {
-        when (event) {
-            is FilterUiEvent.OnApplyClicked -> {
-                filterPreferences.applyFilterPreferences(currentState.filterPreferencesBody)
-                sendAction {
-                    FilterUiAction.NavigateBack
-                }
-            }
+    internal val labels = store.labels
 
-            FilterUiEvent.OnResetClicked -> {
-                val defaultBody = FilterPreferencesBody.default()
-                updateFilterPref(defaultBody)
-                filterPreferences.applyFilterPreferences(defaultBody)
-                sendAction {
-                    FilterUiAction.NavigateBack
-                }
-            }
-
-            is FilterUiEvent.OnSortChange -> updateFilterPref(event.sortBy)
-
-            is FilterUiEvent.OnReversedChange -> updateFilterPref(event.isReversed)
-
-            is FilterUiEvent.OnSelectedGenresChange -> updateFilterPrefGenres(event.action)
-
-            is FilterUiEvent.OnSelectedPlatformsChange -> updateFilterPrefPlatforms(event.action)
-
-            is FilterUiEvent.OnMetacriticRangeChange -> updateFilterPref(event.range)
-        }
-    }
-
-    private fun updateFilterPref(body: FilterPreferencesBody) {
-        setState(currentState.copy(filterPreferencesBody = body))
-    }
-
-    private fun updateFilterPref(sortBy: SortingEntity) {
-        val updatedFilterPrefBody = currentState.filterPreferencesBody.copy(sortBy = sortBy)
-        setState(currentState.copy(filterPreferencesBody = updatedFilterPrefBody))
-    }
-
-    private fun updateFilterPref(isReversed: Boolean) {
-        val updatedFilterPrefBody = currentState.filterPreferencesBody.copy(isReversed = isReversed)
-        setState(currentState.copy(filterPreferencesBody = updatedFilterPrefBody))
-    }
-
-    private fun updateFilterPref(metacriticRange: MetacriticRange) {
-        val updatedFilterPrefBody =
-            currentState.filterPreferencesBody.copy(metacriticRange = metacriticRange)
-        setState(currentState.copy(filterPreferencesBody = updatedFilterPrefBody))
-    }
-
-    private fun updateFilterPrefPlatforms(action: ListAction<PlatformEntity>) {
-        val updatedList =
-            currentState.filterPreferencesBody.selectedPlatforms.toMutableList().update(action)
-        val updatedFilterPrefBody =
-            currentState.filterPreferencesBody.copy(selectedPlatforms = updatedList.toList())
-        setState(currentState.copy(filterPreferencesBody = updatedFilterPrefBody))
-    }
-
-    private fun updateFilterPrefGenres(action: ListAction<GenreFullEntity>) {
-        val updatedList =
-            currentState.filterPreferencesBody.selectedGenres.toMutableList().update(action)
-        val updatedFilterPrefBody =
-            currentState.filterPreferencesBody.copy(selectedGenres = updatedList.toList())
-        setState(currentState.copy(filterPreferencesBody = updatedFilterPrefBody))
+    internal fun obtainIntent(intent: FilterStore.Intent) {
+        store.accept(intent)
     }
 }

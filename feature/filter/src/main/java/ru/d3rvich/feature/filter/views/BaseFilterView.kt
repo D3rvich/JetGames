@@ -32,6 +32,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kotlinx.collections.immutable.ImmutableSet
+import kotlinx.collections.immutable.toImmutableList
 import ru.d3rvich.core.ui.theme.JetGamesTheme
 import ru.d3rvich.feature.filter.R
 import ru.d3rvich.common.R as uiR
@@ -100,7 +102,7 @@ internal fun BaseFilterView(
 @Composable
 internal fun <T> BaseListSelectFilterView(
     label: String,
-    selectedItems: List<T>,
+    selectedItems: ImmutableSet<T>,
     itemName: (item: T) -> String,
     onRemoveSelectedItem: (item: T) -> Unit,
     onClearSelectedItems: () -> Unit,
@@ -194,7 +196,7 @@ internal fun InnerContentListHeader(
 
 @Composable
 private fun <T> InnerContentSelectedItems(
-    items: List<T>,
+    items: ImmutableSet<T>,
     itemName: (item: T) -> String,
     onRemoveItem: (item: T) -> Unit,
     modifier: Modifier = Modifier,
@@ -207,7 +209,7 @@ private fun <T> InnerContentSelectedItems(
             .padding(start = 8.dp),
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        items(items = items, key = itemKey) { item ->
+        items(items = items.toImmutableList(), key = itemKey) { item ->
             Row(
                 modifier = Modifier
                     .animateItem()

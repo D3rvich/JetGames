@@ -1,7 +1,6 @@
 package ru.d3rvich.core.data.repositories
 
 import kotlinx.coroutines.flow.Flow
-import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Single
 import ru.d3rvich.core.domain.entities.GenreFullEntity
 import ru.d3rvich.core.domain.model.LoadingResult

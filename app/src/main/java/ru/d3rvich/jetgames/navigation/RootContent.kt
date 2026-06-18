@@ -53,7 +53,10 @@ fun RootContent(
             }
 
             is RootComponent.Child.Filter -> {
-                FilterScreen(onNavigateBack = child.component::onBackClick)
+                FilterScreen(
+                    onNavigateBack = child.component::onBackClick,
+                    viewModel = child.component.filterViewModel
+                )
             }
         }
     }

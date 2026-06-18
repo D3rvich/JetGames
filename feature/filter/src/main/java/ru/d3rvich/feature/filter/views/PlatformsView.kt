@@ -3,12 +3,13 @@ package ru.d3rvich.feature.filter.views
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import kotlinx.collections.immutable.ImmutableSet
 import ru.d3rvich.core.domain.entities.PlatformEntity
 import ru.d3rvich.feature.filter.R
 
 @Composable
 internal fun PlatformsView(
-    selectedPlatforms: List<PlatformEntity>,
+    selectedPlatforms: ImmutableSet<PlatformEntity>,
     modifier: Modifier = Modifier,
     onRemovePlatform: (PlatformEntity) -> Unit,
     onClearRequest: () -> Unit,

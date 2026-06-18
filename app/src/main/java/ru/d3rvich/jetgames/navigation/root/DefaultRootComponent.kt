@@ -71,7 +71,9 @@ class DefaultRootComponent(componentContext: ComponentContext) : RootComponent,
             onCLose = { navigation.pop() })
 
     private fun filterComponent(componentContext: ComponentContext): FilterComponent =
-        DefaultFilterComponent(componentContext, onClose = { navigation.pop() })
+        DefaultFilterComponent(
+            componentContext = componentContext.asJetpackComponentContext(),
+            onClose = { navigation.pop() })
 
     override fun onBackClicked() {
         navigation.pop()

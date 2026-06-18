@@ -1,5 +1,8 @@
 package ru.d3rvich.core.data.model
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+
 internal interface LocalDataSource<T : Any> {
 
     suspend fun execute(): T?
@@ -13,7 +16,7 @@ internal fun <T : Any> localDataSource(
 ): LocalDataSource<T> =
     object : LocalDataSource<T> {
 
-        override suspend fun execute(): T = execute()
+        override suspend fun execute(): T = withContext(Dispatchers.IO) { execute() }
 
-        override suspend fun update(value: T) = update(value)
+        override suspend fun update(value: T) = withContext(Dispatchers.IO) { update(value) }
     }
