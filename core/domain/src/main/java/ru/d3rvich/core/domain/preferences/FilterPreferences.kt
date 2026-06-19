@@ -3,7 +3,6 @@ package ru.d3rvich.core.domain.preferences
 import kotlinx.collections.immutable.persistentSetOf
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import org.koin.core.annotation.Single
 import ru.d3rvich.core.domain.entities.GenreFullEntity
 import ru.d3rvich.core.domain.entities.PlatformEntity
@@ -16,18 +15,15 @@ import javax.inject.Inject
  */
 @Single
 class FilterPreferences @Inject constructor() {
-
-    private val _filterPreferencesFlow = MutableStateFlow(FilterPreferencesBody.default())
-
     val filterPreferencesFlow: StateFlow<FilterPreferencesBody>
-        get() = _filterPreferencesFlow.asStateFlow()
+        field = MutableStateFlow(FilterPreferencesBody.default())
 
     fun applyFilterPreferences(body: FilterPreferencesBody) {
-        _filterPreferencesFlow.value = body
+        filterPreferencesFlow.value = body
     }
 
     fun reset() {
-        _filterPreferencesFlow.value = FilterPreferencesBody.default()
+        filterPreferencesFlow.value = FilterPreferencesBody.default()
     }
 }
 
