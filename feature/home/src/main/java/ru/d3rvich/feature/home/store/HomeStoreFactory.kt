@@ -6,6 +6,7 @@ import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.coroutineExecutorFactory
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -15,8 +16,10 @@ import kotlinx.coroutines.flow.WhileSubscribed
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
@@ -53,23 +56,26 @@ internal class HomeStoreFactory(
                         .map { (search, body) ->
                             val games = getGamesUseCase.invoke(search, body).cachedIn(this)
                             Triple(games, search, body)
-                        }.shareIn(
+                        }.flowOn(Dispatchers.IO).shareIn(
                             scope = this,
                             started = SharingStarted.WhileSubscribed(5000.milliseconds),
                             replay = 1
                         )
-                    combine(gamesFlow, listDisplayModeProvider.listDisplayModeFlow.filterNotNull()) { triple, listDisplayMode ->
+                    combine(
+                        gamesFlow,
+                        listDisplayModeProvider.listDisplayModeFlow.filterNotNull()
+                    ) { triple, listDisplayMode ->
                         val (games, search, body) = triple
                         val isFilterEdited = !body.isDefault()
-                        dispatch(
-                            Message.Loaded(
-                                games = games,
-                                search = search,
-                                isFilterEdited = isFilterEdited,
-                                listDisplayMode = listDisplayMode
-                            )
+                        Message.Loaded(
+                            games = games,
+                            search = search,
+                            isFilterEdited = isFilterEdited,
+                            listDisplayMode = listDisplayMode
                         )
-                    }.launchIn(this)
+                    }.flowOn(Dispatchers.Default)
+                        .onEach { message -> dispatch(message) }
+                        .launchIn(this)
                 }
 
                 onIntent<HomeStore.Intent.SearchChange> { intent ->
@@ -80,7 +86,7 @@ internal class HomeStoreFactory(
                     refreshTrigger.tryEmit(Unit)
                 }
                 onIntent<HomeStore.Intent.ListDisplayChange> {
-                    launch {
+                    launch(Dispatchers.Default) {
                         listDisplayModeProvider.setListViewMode(it.listDisplayMode)
                     }
                 }
