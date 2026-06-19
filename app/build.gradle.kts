@@ -49,6 +49,9 @@ dependencies {
     implementation(libs.decompose.extentionsCompose)
     implementation(libs.decompose.jetpackComponentContext)
 
+    // Immutable collections
+    implementation(libs.kotlinx.collections.immutable)
+
     // Coil
     implementation(libs.coil.network)
     implementation(libs.coil.compose)

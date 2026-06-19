@@ -41,6 +41,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.util.lerp
+import kotlinx.collections.immutable.ImmutableList
 import ru.d3rvich.core.domain.model.ColorModeType
 import ru.d3rvich.core.domain.model.ThemeType
 import ru.d3rvich.core.domain.model.UserPreferences
@@ -60,7 +61,7 @@ import ru.d3rvich.common.R as uiR
  */
 @Composable
 fun ScreenshotsScreen(
-    screenshots: List<String>,
+    screenshots: ImmutableList<String>,
     modifier: Modifier = Modifier,
     selectedItem: Int = 0,
     onPageChange: (Int) -> Unit,

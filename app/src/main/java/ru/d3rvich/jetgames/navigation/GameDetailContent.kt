@@ -10,9 +10,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
+import kotlinx.collections.immutable.toImmutableList
 import ru.d3rvich.feature.detail.GameDetailScreen
-import ru.d3rvich.jetgames.navigation.detail.GameDetailComponent
 import ru.d3rvich.feature.screenshots.ScreenshotsScreen
+import ru.d3rvich.jetgames.navigation.detail.GameDetailComponent
 
 @Composable
 fun GameDetailContent(component: GameDetailComponent, modifier: Modifier = Modifier) {
@@ -37,7 +38,7 @@ fun GameDetailContent(component: GameDetailComponent, modifier: Modifier = Modif
                 screenshotsSlot.child?.let { screenshotsComponent ->
                     with(screenshotsComponent.instance) {
                         ScreenshotsScreen(
-                            screenshots = screenshots,
+                            screenshots = screenshots.toImmutableList(),
                             selectedItem = selectedScreenshot,
                             onPageChange = ::onPageChange,
                             onBackPressed = ::onBackClick
