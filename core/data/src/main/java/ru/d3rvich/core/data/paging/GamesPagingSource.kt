@@ -55,7 +55,7 @@ class GamesPagingSource(
         } else {
             null
         }
-        val metacritic = if (filterPreferencesBody.metacriticRange != MetacriticRange.None) {
+        val metacritic = if (filterPreferencesBody.metacriticRange != MetacriticRange.Unspecific) {
             with(filterPreferencesBody.metacriticRange) {
                 "${min.roundToInt()},${max.roundToInt()}"
             }

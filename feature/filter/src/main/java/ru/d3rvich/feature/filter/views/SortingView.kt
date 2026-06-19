@@ -25,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,6 +35,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 import ru.d3rvich.common.R
 import ru.d3rvich.core.domain.entities.SortingEntity
 import ru.d3rvich.feature.filter.R as FilterR
@@ -43,20 +46,24 @@ import ru.d3rvich.feature.filter.R as FilterR
  */
 @Composable
 internal fun SortingView(
-    sortingList: List<SortingEntity>,
+    sortingList: ImmutableList<SortingEntity>,
     selectedSorting: SortingEntity,
     isSortReversed: Boolean,
-    modifier: Modifier = Modifier,
     onSortingSelected: (SortingEntity) -> Unit,
     onReversedChange: (isReversed: Boolean) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
+    var showInnerContent by rememberSaveable { mutableStateOf(false) }
     BaseFilterView(
         modifier = modifier,
         label = stringResource(id = FilterR.string.sort_by_label),
-        trailingIcon = { isOpen -> ChangeVisibilityContainerDefaults.DefaultIcon(isOpen = isOpen) },
-        selectedItemView = {
+        isInnerContainerVisible = showInnerContent,
+        onInnerContainerVisibilityChange = { showInnerContent = it },
+        trailingIcon = { ChangeVisibilityContainerDefaults.DefaultIcon(isOpen = showInnerContent) },
+        selectedItem = {
             AnimatedContent(
                 targetState = selectedSorting,
+                contentAlignment = Alignment.CenterEnd,
                 transitionSpec = {
                     when {
                         initialState == SortingEntity.NoSorting ||
@@ -69,7 +76,7 @@ internal fun SortingView(
                 },
                 label = "textAnimation"
             ) { entity ->
-                Text(text = if (entity != SortingEntity.NoSorting) entity.name else "")
+                Text(text = if (entity != SortingEntity.NoSorting) entity.stringRes() else "")
             }
         }) {
         SortingViewContent(
@@ -85,12 +92,12 @@ internal fun SortingView(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SortingViewContent(
-    sortingList: List<SortingEntity>,
+    sortingList: ImmutableList<SortingEntity>,
     selectedSorting: SortingEntity,
     isReversed: Boolean,
-    modifier: Modifier = Modifier,
     onSortingSelected: (SortingEntity) -> Unit,
     onReversedChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier
@@ -107,12 +114,12 @@ private fun SortingViewContent(
             modifier = Modifier.weight(1f)
         ) {
             OutlinedTextField(
-                value = selectedSorting.getStringRes(),
+                value = selectedSorting.stringRes(),
                 onValueChange = {},
                 readOnly = true,
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                 modifier = Modifier
-                    .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryEditable, true)
+                    .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable, true)
                     .fillMaxWidth()
             )
             ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
@@ -120,7 +127,7 @@ private fun SortingViewContent(
                     DropdownMenuItem(
                         text = {
                             Text(
-                                text = sorting.getStringRes(),
+                                text = sorting.stringRes(),
                                 fontWeight = if (sorting == selectedSorting) FontWeight.Bold else null
                             )
                         },
@@ -132,21 +139,21 @@ private fun SortingViewContent(
             }
         }
         IconButton(onClick = { onReversedChange(!isReversed) }) {
-            val iconRotation = animateFloatAsState(
+            val iconRotation by animateFloatAsState(
                 targetValue = if (isReversed) 0f else 180f,
                 label = "iconRotation"
             )
             Icon(
                 painter = painterResource(id = R.drawable.ic_arrow_downward_24),
                 contentDescription = null,
-                modifier = Modifier.graphicsLayer(rotationZ = iconRotation.value)
+                modifier = Modifier.graphicsLayer { rotationZ = iconRotation }
             )
         }
     }
 }
 
 @Composable
-private fun SortingEntity.getStringRes(): String =
+private fun SortingEntity.stringRes(): String =
     stringResource(
         id = when (this) {
             SortingEntity.NoSorting -> FilterR.string.no_sorting
@@ -162,7 +169,7 @@ private fun SortingEntity.getStringRes(): String =
 private fun SortingViewPreview() {
     Box(modifier = Modifier.fillMaxSize()) {
         SortingViewContent(
-            sortingList = SortingEntity.entries,
+            sortingList = SortingEntity.entries.toImmutableList(),
             selectedSorting = SortingEntity.Rating,
             isReversed = true,
             onSortingSelected = {},

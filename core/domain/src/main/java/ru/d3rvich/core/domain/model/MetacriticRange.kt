@@ -10,7 +10,7 @@ data class MetacriticRange(
     @param:FloatRange(from = 0.0, to = 100.0) val max: Float = 100f,
 ) {
     companion object {
-        val None = MetacriticRange(min = Float.NaN, max = Float.NaN)
+        val Unspecific = MetacriticRange(min = 0f, max = 100f)
     }
 }
 

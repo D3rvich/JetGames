@@ -44,32 +44,10 @@ import ru.d3rvich.common.R as uiR
 @Composable
 internal fun BaseFilterView(
     label: String,
-    trailingIcon: @Composable (isInnerContainerVisible: Boolean) -> Unit,
-    modifier: Modifier = Modifier,
-    selectedItemView: (@Composable () -> Unit)? = null,
-    innerContent: @Composable () -> Unit,
-) {
-    var isInnerContentVisible by rememberSaveable {
-        mutableStateOf(false)
-    }
-    BaseFilterView(
-        modifier = modifier,
-        label = label,
-        isInnerContainerVisible = isInnerContentVisible,
-        onInnerContainerVisibilityChange = { isInnerContentVisible = it },
-        selectedItem = selectedItemView,
-        trailingIcon = trailingIcon,
-        innerContent = innerContent
-    )
-}
-
-@Composable
-internal fun BaseFilterView(
-    label: String,
     isInnerContainerVisible: Boolean,
     onInnerContainerVisibilityChange: (isInnerContainerVisible: Boolean) -> Unit,
-    trailingIcon: @Composable (isInnerContainerVisible: Boolean) -> Unit,
     modifier: Modifier = Modifier,
+    trailingIcon: @Composable () -> Unit,
     selectedItem: (@Composable () -> Unit)? = null,
     innerContent: @Composable () -> Unit,
 ) {
@@ -91,7 +69,7 @@ internal fun BaseFilterView(
                 textAlign = TextAlign.Start
             )
             selectedItem?.invoke()
-            trailingIcon(isInnerContainerVisible)
+            trailingIcon()
         }
         ChangeVisibilityContainer(visible = isInnerContainerVisible) {
             innerContent()
@@ -131,8 +109,8 @@ internal fun <T> BaseListSelectFilterView(
             ChangeVisibilityContainerDefaults.MultiStateIcon(
                 iconDirection = when {
                     selectedItems.isEmpty() -> IconDirection.Right
-                    showInnerContent -> IconDirection.Down
-                    else -> IconDirection.Up
+                    showInnerContent -> IconDirection.Up
+                    else -> IconDirection.Down
                 }
             )
         },

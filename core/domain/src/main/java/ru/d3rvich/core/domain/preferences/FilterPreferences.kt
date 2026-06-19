@@ -60,7 +60,7 @@ data class FilterPreferencesBody(
             isReversed = true,
             selectedPlatforms = persistentSetOf(),
             selectedGenres = persistentSetOf(),
-            metacriticRange = MetacriticRange.None
+            metacriticRange = MetacriticRange.Unspecific
         )
     }
 }

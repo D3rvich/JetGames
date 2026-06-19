@@ -7,7 +7,7 @@ import ru.d3rvich.core.domain.entities.GenreFullEntity
 import ru.d3rvich.core.domain.entities.PlatformEntity
 import ru.d3rvich.core.domain.entities.SortingEntity
 import ru.d3rvich.core.domain.model.MetacriticRange
-import ru.d3rvich.core.domain.preferences.FilterPreferencesBody
+import ru.d3rvich.feature.filter.model.FilterPreferencesBodyUiModel
 import ru.d3rvich.feature.filter.model.ListAction
 
 internal interface FilterStore : Store<FilterStore.Intent, FilterStore.State, FilterStore.Label> {
@@ -16,7 +16,7 @@ internal interface FilterStore : Store<FilterStore.Intent, FilterStore.State, Fi
         val sortingList: ImmutableList<SortingEntity>,
         val platforms: ImmutableList<PlatformEntity>,
         val genres: ImmutableList<GenreFullEntity>,
-        val filterPreferencesBody: FilterPreferencesBody,
+        val filterPreferencesBody: FilterPreferencesBodyUiModel,
     )
 
     sealed interface Intent {

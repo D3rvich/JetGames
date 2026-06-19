@@ -8,6 +8,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.RangeSlider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -19,14 +23,17 @@ import kotlin.math.roundToInt
 @Composable
 internal fun MetacriticView(
     range: ClosedFloatingPointRange<Float>,
-    modifier: Modifier = Modifier,
     onRangeChange: (ClosedFloatingPointRange<Float>) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
+    var showInnerContent by rememberSaveable { mutableStateOf(false) }
     BaseFilterView(
         modifier = modifier,
+        isInnerContainerVisible = showInnerContent,
+        onInnerContainerVisibilityChange = { showInnerContent = it },
         label = stringResource(id = R.string.metacritic_label),
-        trailingIcon = { isOpen ->
-            ChangeVisibilityContainerDefaults.DefaultIcon(isOpen = isOpen)
+        trailingIcon = {
+            ChangeVisibilityContainerDefaults.DefaultIcon(isOpen = showInnerContent)
         }) {
         MetacriticViewContent(range = range, onRangeChange = onRangeChange)
     }
@@ -35,8 +42,8 @@ internal fun MetacriticView(
 @Composable
 private fun MetacriticViewContent(
     range: ClosedFloatingPointRange<Float>,
-    modifier: Modifier = Modifier,
     onRangeChange: (ClosedFloatingPointRange<Float>) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier.padding(vertical = 12.dp, horizontal = 12.dp),

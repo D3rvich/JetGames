@@ -5,6 +5,7 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.coroutineExecutorFactory
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.collections.immutable.toImmutableSet
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
@@ -17,9 +18,11 @@ import ru.d3rvich.core.domain.entities.PlatformEntity
 import ru.d3rvich.core.domain.entities.SortingEntity
 import ru.d3rvich.core.domain.model.LoadingResult
 import ru.d3rvich.core.domain.preferences.FilterPreferences
-import ru.d3rvich.core.domain.preferences.FilterPreferencesBody
 import ru.d3rvich.core.domain.usecases.GetGenresUseCase
 import ru.d3rvich.core.domain.usecases.GetPlatformsUseCase
+import ru.d3rvich.feature.filter.model.FilterPreferencesBodyUiModel
+import ru.d3rvich.feature.filter.model.toFilterPreferencesBody
+import ru.d3rvich.feature.filter.model.toFilterPreferencesBodyUiModel
 import ru.d3rvich.feature.filter.model.update
 
 internal class FilterStoreFactory(
@@ -35,13 +38,13 @@ internal class FilterStoreFactory(
                 sortingList = SortingEntity.entries.toImmutableList(),
                 platforms = emptyList<PlatformEntity>().toImmutableList(),
                 genres = emptyList<GenreFullEntity>().toImmutableList(),
-                filterPreferencesBody = filterPreferences.filterPreferencesFlow.value
+                filterPreferencesBody = filterPreferences.filterPreferencesFlow.value.toFilterPreferencesBodyUiModel()
             ),
             bootstrapper = SimpleBootstrapper(Unit),
             executorFactory = coroutineExecutorFactory {
                 onAction<Unit> {
                     filterPreferences.filterPreferencesFlow.map { body ->
-                        Msg.UpdateFilterPreferencesBody(body)
+                        Msg.UpdateFilterPreferencesBody(body.toFilterPreferencesBodyUiModel())
                     }
                         .flowOn(Dispatchers.Default)
                         .onEach { msg -> dispatch(msg) }
@@ -67,7 +70,7 @@ internal class FilterStoreFactory(
                     publish(FilterStore.Label.CloseScreen)
                 }
                 onIntent<FilterStore.Intent.OnApplyClicked> {
-                    val currentBody = state().filterPreferencesBody
+                    val currentBody = state().filterPreferencesBody.toFilterPreferencesBody()
                     filterPreferences.applyFilterPreferences(currentBody)
                     publish(FilterStore.Label.CloseScreen)
                 }
@@ -81,7 +84,7 @@ internal class FilterStoreFactory(
                 }
                 onIntent<FilterStore.Intent.OnSelectedGenresChange> { intent ->
                     val updatedList = state().filterPreferencesBody.selectedGenres.toMutableSet()
-                        .update(intent.action)
+                        .update(intent.action).toImmutableSet()
                     val updatedBody =
                         state().filterPreferencesBody.copy(selectedGenres = updatedList)
                     dispatch(Msg.UpdateFilterPreferencesBody(updatedBody))
@@ -90,7 +93,9 @@ internal class FilterStoreFactory(
                     val currentBody = state().filterPreferencesBody
                     val updatedList =
                         currentBody.selectedPlatforms.toMutableSet().update(intent.action)
-                    val updatedBody = currentBody.copy(selectedPlatforms = updatedList)
+                            .toImmutableSet()
+                    val updatedBody =
+                        currentBody.copy(selectedPlatforms = updatedList)
                     dispatch(Msg.UpdateFilterPreferencesBody(updatedBody))
                 }
                 onIntent<FilterStore.Intent.OnMetacriticRangeChange> { intent ->
@@ -116,6 +121,6 @@ internal class FilterStoreFactory(
             val platforms: List<PlatformEntity>
         ) : Msg
 
-        data class UpdateFilterPreferencesBody(val body: FilterPreferencesBody) : Msg
+        data class UpdateFilterPreferencesBody(val body: FilterPreferencesBodyUiModel) : Msg
     }
 }

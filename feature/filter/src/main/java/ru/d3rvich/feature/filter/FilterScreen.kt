@@ -1,6 +1,6 @@
 package ru.d3rvich.feature.filter
 
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
@@ -10,13 +10,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.selection.toggleable
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -43,17 +40,18 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableSet
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.collections.immutable.toImmutableSet
 import org.koin.compose.viewmodel.koinViewModel
 import ru.d3rvich.core.domain.entities.GenreFullEntity
 import ru.d3rvich.core.domain.entities.PlatformEntity
 import ru.d3rvich.core.domain.entities.SortingEntity
 import ru.d3rvich.core.domain.model.MetacriticRange
 import ru.d3rvich.core.domain.preferences.FilterPreferencesBody
-import ru.d3rvich.core.domain.preferences.isDefault
 import ru.d3rvich.core.ui.theme.JetGamesTheme
 import ru.d3rvich.feature.filter.model.ListAction
+import ru.d3rvich.feature.filter.model.isDefault
+import ru.d3rvich.feature.filter.model.toFilterPreferencesBodyUiModel
 import ru.d3rvich.feature.filter.store.FilterStore
 import ru.d3rvich.feature.filter.views.FilterAppBar
 import ru.d3rvich.feature.filter.views.GenresView
@@ -75,24 +73,8 @@ fun FilterScreen(
     FilterScreen(
         modifier = modifier,
         state = state,
-        onApply = { viewModel.obtainIntent(FilterStore.Intent.OnApplyClicked) },
-        onReset = { viewModel.obtainIntent(FilterStore.Intent.OnResetClicked) },
+        onIntent = viewModel::obtainIntent,
         onNavigateBack = onNavigateBack,
-        onSelectedGenresChange = { listAction ->
-            viewModel.obtainIntent(FilterStore.Intent.OnSelectedGenresChange(listAction))
-        },
-        onSelectedPlatformsChange = { listAction ->
-            viewModel.obtainIntent(FilterStore.Intent.OnSelectedPlatformsChange(listAction))
-        },
-        onSortChange = { sortingEntity ->
-            viewModel.obtainIntent(FilterStore.Intent.OnSortChange(sortingEntity))
-        },
-        onSortReversedChange = { isReversed ->
-            viewModel.obtainIntent(FilterStore.Intent.OnReversedChange(isReversed))
-        },
-        onMetacriticRangeChange = { metacriticRange ->
-            viewModel.obtainIntent(FilterStore.Intent.OnMetacriticRangeChange(metacriticRange))
-        },
     )
     LaunchedEffect(viewModel) {
         viewModel.labels.collect { label ->
@@ -107,35 +89,28 @@ fun FilterScreen(
 @Composable
 private fun FilterScreen(
     state: FilterStore.State,
-    onApply: () -> Unit,
-    onReset: () -> Unit,
+    onIntent: (FilterStore.Intent) -> Unit,
     onNavigateBack: () -> Unit,
-    onSelectedGenresChange: (ListAction<GenreFullEntity>) -> Unit,
-    onSelectedPlatformsChange: (ListAction<PlatformEntity>) -> Unit,
-    onSortChange: (SortingEntity) -> Unit,
-    onSortReversedChange: (Boolean) -> Unit,
-    onMetacriticRangeChange: (MetacriticRange) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var specToShow: FilterSpecToShow? by rememberSaveable {
         mutableStateOf(null)
     }
-    val showResetButton: Boolean by remember(state.filterPreferencesBody) {
+    val showResetButton: Boolean by remember(state) {
         derivedStateOf { !state.filterPreferencesBody.isDefault() }
     }
     Scaffold(
-        modifier = modifier
-            .fillMaxSize()
-            .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)),
+        modifier = modifier.fillMaxSize(),
+        contentWindowInsets = WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal),
         topBar = {
             FilterAppBar(
                 isResetButtonVisible = showResetButton,
                 onBackClicked = onNavigateBack,
-                onResetClicked = onReset,
+                onResetClicked = { onIntent(FilterStore.Intent.OnResetClicked) },
             )
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = onApply) {
+            FloatingActionButton(onClick = { onIntent(FilterStore.Intent.OnApplyClicked) }) {
                 Icon(
                     painter = painterResource(uiR.drawable.check_24px),
                     contentDescription = stringResource(R.string.apply_filter)
@@ -143,91 +118,134 @@ private fun FilterScreen(
             }
         }
     ) { innerPadding ->
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .padding(innerPadding)
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
+                .fillMaxSize(),
+            contentPadding = PaddingValues(bottom = 80.dp)
         ) {
-            GenresView(
-                selectedGenres = state.filterPreferencesBody.selectedGenres.toImmutableSet(),
-                onRemoveGenre = {
-                    onSelectedGenresChange(ListAction.RemoveItem(it))
-                },
-                onClearRequest = {
-                    onSelectedGenresChange(ListAction.Clear())
-                },
-                requestGenresDialog = { specToShow = FilterSpecToShow.Genres })
-            PlatformsView(
-                selectedPlatforms = state.filterPreferencesBody.selectedPlatforms.toImmutableSet(),
-                onRemovePlatform = { item ->
-                    onSelectedPlatformsChange(ListAction.RemoveItem(item))
-                },
-                onClearRequest = {
-                    onSelectedPlatformsChange(ListAction.Clear())
-                },
-                requestPlatformsDialog = { specToShow = FilterSpecToShow.Platform })
-            SortingView(
-                sortingList = state.sortingList,
-                selectedSorting = state.filterPreferencesBody.sortBy,
-                isSortReversed = state.filterPreferencesBody.isReversed,
-                onSortingSelected = { sorting ->
-                    onSortChange(sorting)
-                },
-                onReversedChange = { isReversed ->
-                    onSortReversedChange(isReversed)
-                }
-            )
-            val metacriticRange =
-                if (state.filterPreferencesBody.metacriticRange != MetacriticRange.None) {
-                    with(state.filterPreferencesBody.metacriticRange) {
-                        min..max
+            item {
+                GenresView(
+                    selectedGenres = state.filterPreferencesBody.selectedGenres,
+                    onRemoveGenre = {
+                        onIntent(FilterStore.Intent.OnSelectedGenresChange(ListAction.RemoveItem(it)))
+                    },
+                    onClearRequest = {
+                        onIntent(FilterStore.Intent.OnSelectedGenresChange(ListAction.Clear()))
+                    },
+                    requestGenresDialog = { specToShow = FilterSpecToShow.Genres })
+            }
+            item {
+                PlatformsView(
+                    selectedPlatforms = state.filterPreferencesBody.selectedPlatforms,
+                    onRemovePlatform = { item ->
+                        onIntent(
+                            FilterStore.Intent.OnSelectedPlatformsChange(
+                                ListAction.RemoveItem(item)
+                            )
+                        )
+                    },
+                    onClearRequest = {
+                        onIntent(FilterStore.Intent.OnSelectedPlatformsChange(ListAction.Clear()))
+                    },
+                    requestPlatformsDialog = { specToShow = FilterSpecToShow.Platform })
+            }
+            item {
+                SortingView(
+                    sortingList = state.sortingList,
+                    selectedSorting = state.filterPreferencesBody.sortBy,
+                    isSortReversed = state.filterPreferencesBody.isReversed,
+                    onSortingSelected = { sorting ->
+                        onIntent(FilterStore.Intent.OnSortChange(sorting))
+                    },
+                    onReversedChange = { isReversed ->
+                        onIntent(FilterStore.Intent.OnReversedChange(isReversed))
                     }
-                } else {
-                    0f..100f
-                }
-            MetacriticView(
-                range = metacriticRange,
-                onRangeChange = { floatRange ->
-                    val range = MetacriticRange(floatRange = floatRange)
-                    onMetacriticRangeChange(range)
-                },
-            )
+                )
+            }
+            item {
+                val metacriticRange =
+                    if (state.filterPreferencesBody.metacriticRange != MetacriticRange.Unspecific) {
+                        with(state.filterPreferencesBody.metacriticRange) {
+                            min..max
+                        }
+                    } else {
+                        0f..100f
+                    }
+                MetacriticView(
+                    range = metacriticRange,
+                    onRangeChange = { floatRange ->
+                        val range = MetacriticRange(floatRange = floatRange)
+                        onIntent(FilterStore.Intent.OnMetacriticRangeChange(range))
+                    },
+                )
+            }
         }
         specToShow?.let { specToShowNotNull ->
-            ModalBottomSheet(
-                onDismissRequest = { specToShow = null },
-            ) {
-                when (specToShowNotNull) {
-                    FilterSpecToShow.Genres -> {
-                        BottomSheetContent(
-                            items = state.genres,
-                            selectedItems = state.filterPreferencesBody.selectedGenres.toImmutableSet(),
-                            onItemSelected = {
-                                onSelectedGenresChange(ListAction.AddItem(it))
-                            },
-                            onItemRemoved = {
-                                onSelectedGenresChange(ListAction.RemoveItem(it))
-                            },
-                            getItemName = GenreFullEntity::name
-                        )
-                    }
+            FilterBottomSheet(
+                spec = specToShowNotNull,
+                state = state,
+                onIntent = onIntent,
+                onDismiss = { specToShow = null })
+        }
+    }
+}
 
-                    FilterSpecToShow.Platform -> {
-                        BottomSheetContent(
-                            items = state.platforms,
-                            selectedItems = state.filterPreferencesBody.selectedPlatforms.toImmutableSet(),
-                            onItemSelected = {
-                                onSelectedPlatformsChange(ListAction.AddItem(it))
-                            },
-                            onItemRemoved = {
-                                onSelectedPlatformsChange(ListAction.RemoveItem(it))
-                            },
-                            getItemName = PlatformEntity::name
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun FilterBottomSheet(
+    spec: FilterSpecToShow,
+    state: FilterStore.State,
+    onIntent: (FilterStore.Intent) -> Unit,
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        modifier = modifier,
+    ) {
+        when (spec) {
+            FilterSpecToShow.Genres -> BottomSheetContent(
+                items = state.genres,
+                selectedItems = state.filterPreferencesBody.selectedGenres,
+                onItemSelected = {
+                    onIntent(
+                        FilterStore.Intent.OnSelectedGenresChange(
+                            ListAction.AddItem(it)
                         )
-                    }
-                }
-            }
+                    )
+                },
+                onItemRemoved = {
+                    onIntent(
+                        FilterStore.Intent.OnSelectedGenresChange(
+                            ListAction.RemoveItem(it)
+                        )
+                    )
+                },
+                itemName = GenreFullEntity::name,
+                itemKey = GenreFullEntity::id
+            )
+
+            FilterSpecToShow.Platform -> BottomSheetContent(
+                items = state.platforms,
+                selectedItems = state.filterPreferencesBody.selectedPlatforms,
+                onItemSelected = {
+                    onIntent(
+                        FilterStore.Intent.OnSelectedPlatformsChange(
+                            ListAction.AddItem(it)
+                        )
+                    )
+                },
+                onItemRemoved = {
+                    onIntent(
+                        FilterStore.Intent.OnSelectedPlatformsChange(
+                            ListAction.RemoveItem(it)
+                        )
+                    )
+                },
+                itemName = PlatformEntity::name,
+                itemKey = PlatformEntity::id
+            )
         }
     }
 }
@@ -238,7 +256,8 @@ private fun <T> BottomSheetContent(
     selectedItems: ImmutableSet<T>,
     onItemSelected: (T) -> Unit,
     onItemRemoved: (T) -> Unit,
-    getItemName: (T) -> String,
+    itemKey: (T) -> Any,
+    itemName: (T) -> String,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
@@ -246,7 +265,7 @@ private fun <T> BottomSheetContent(
             .fillMaxWidth()
             .selectableGroup()
     ) {
-        items(items) { item ->
+        items(items, key = itemKey) { item ->
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
@@ -261,6 +280,7 @@ private fun <T> BottomSheetContent(
                         },
                         role = Role.Checkbox
                     )
+                    .fillMaxWidth()
                     .height(56.dp)
                     .padding(16.dp)
             ) {
@@ -269,7 +289,7 @@ private fun <T> BottomSheetContent(
                     onCheckedChange = null
                 )
                 Text(
-                    text = getItemName(item),
+                    text = itemName(item),
                     modifier = Modifier.padding(start = 16.dp),
                     style = MaterialTheme.typography.bodyLarge
                 )
@@ -289,20 +309,14 @@ private fun FilterScreenPreview() {
     JetGamesTheme {
         val state = FilterStore.State(
             sortingList = SortingEntity.entries.toImmutableList(),
-            platforms = emptyList<PlatformEntity>().toImmutableList(),
-            genres = emptyList<GenreFullEntity>().toImmutableList(),
-            filterPreferencesBody = FilterPreferencesBody.default()
+            platforms = persistentListOf(),
+            genres = persistentListOf(),
+            filterPreferencesBody = FilterPreferencesBody.default().toFilterPreferencesBodyUiModel()
         )
         FilterScreen(
             state = state,
-            onApply = { },
-            onReset = { },
+            onIntent = {},
             onNavigateBack = { },
-            onSelectedGenresChange = { },
-            onSelectedPlatformsChange = { },
-            onSortChange = { },
-            onSortReversedChange = { },
-            onMetacriticRangeChange = { },
         )
     }
 }
