@@ -61,7 +61,7 @@ class DefaultRootComponent(componentContext: ComponentContext) : RootComponent,
         gameId: Int
     ): GameDetailComponent =
         DefaultGameDetailComponent(
-            componentContext = componentContext,
+            componentContext = componentContext.asJetpackComponentContext(),
             gameId = gameId,
             onClose = { navigation.pop() })
 

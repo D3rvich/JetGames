@@ -20,6 +20,7 @@ fun GameDetailContent(component: GameDetailComponent, modifier: Modifier = Modif
     Box(modifier.fillMaxSize()) {
         GameDetailScreen(
             gameId = component.gameId,
+            viewModel = component.gameDetailViewModel,
             navigateToScreenshotScreen = { selectedItem, screenshots ->
                 component.onScreenshotsClick(
                     selectedItem,

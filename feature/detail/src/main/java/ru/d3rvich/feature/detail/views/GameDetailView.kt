@@ -53,8 +53,8 @@ import ru.d3rvich.core.ui.theme.DarkBlue
 import ru.d3rvich.core.ui.theme.Purple
 import ru.d3rvich.feature.detail.R
 import ru.d3rvich.feature.detail.model.GameDetailUiModel
-import ru.d3rvich.feature.detail.model.ScreenshotsUiState
-import ru.d3rvich.feature.detail.model.StoresUiState
+import ru.d3rvich.feature.detail.model.ScreenshotsState
+import ru.d3rvich.feature.detail.model.StoresState
 import ru.d3rvich.feature.detail.model.toGameDetailUiModel
 
 /**
@@ -64,8 +64,8 @@ import ru.d3rvich.feature.detail.model.toGameDetailUiModel
 @Composable
 internal fun GameDetailView(
     detail: GameDetailUiModel,
-    screenshotsState: ScreenshotsUiState,
-    storeUiState: StoresUiState,
+    screenshotsState: ScreenshotsState,
+    storeUiState: StoresState,
     modifier: Modifier = Modifier,
     onFavoriteChange: (Boolean) -> Unit,
     onScreenshotClicked: (selectedItem: Int) -> Unit,
@@ -268,8 +268,8 @@ private fun GameDetailViewPreview() {
     )
     GameDetailView(
         detail = detail.toGameDetailUiModel(),
-        screenshotsState = ScreenshotsUiState.NoScreenshots,
-        storeUiState = StoresUiState.Empty,
+        screenshotsState = ScreenshotsState.NoScreenshots,
+        storeUiState = StoresState.Empty,
         onFavoriteChange = {},
         onScreenshotClicked = {},
         onBackClicked = {},

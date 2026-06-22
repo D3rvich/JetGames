@@ -7,7 +7,7 @@ import androidx.browser.customtabs.CustomTabsIntent
 import org.koin.core.annotation.Factory
 
 @Factory(binds = [BrowserManager::class])
-internal class BrowserManager(private val context: Context) {
+class BrowserManager(private val context: Context) {
     private val intent = CustomTabsIntent.Builder().build().also {
         it.intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
     }

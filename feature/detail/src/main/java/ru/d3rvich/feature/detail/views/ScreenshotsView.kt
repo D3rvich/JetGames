@@ -22,7 +22,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import ru.d3rvich.feature.detail.R
-import ru.d3rvich.feature.detail.model.ScreenshotsUiState
+import ru.d3rvich.feature.detail.model.ScreenshotsState
 
 /**
  * Created by Ilya Deryabin at 16.03.2024
@@ -30,7 +30,7 @@ import ru.d3rvich.feature.detail.model.ScreenshotsUiState
 @Composable
 internal fun ScreenshotsView(
     modifier: Modifier = Modifier,
-    screenshotsState: ScreenshotsUiState,
+    screenshotsState: ScreenshotsState,
     onItemClicked: (Int) -> Unit,
 ) {
     LazyRow(
@@ -39,7 +39,7 @@ internal fun ScreenshotsView(
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         when (screenshotsState) {
-            ScreenshotsUiState.Loading -> {
+            ScreenshotsState.Loading -> {
                 items(10) {
                     ScreenshotItem(
                         isLoading = true,
@@ -48,7 +48,7 @@ internal fun ScreenshotsView(
                 }
             }
 
-            ScreenshotsUiState.NoScreenshots -> {
+            ScreenshotsState.NoScreenshots -> {
                 item {
                     Box(
                         modifier = Modifier.fillParentMaxSize(),
@@ -59,7 +59,7 @@ internal fun ScreenshotsView(
                 }
             }
 
-            is ScreenshotsUiState.Error -> {
+            is ScreenshotsState.Error -> {
                 item {
                     Box(
                         modifier = modifier.fillMaxSize(),
@@ -70,7 +70,7 @@ internal fun ScreenshotsView(
                 }
             }
 
-            is ScreenshotsUiState.Success -> {
+            is ScreenshotsState.Success -> {
                 items(screenshotsState.screenshots) { item ->
                     val index = screenshotsState.screenshots.indexOf(item)
                     ScreenshotItem(

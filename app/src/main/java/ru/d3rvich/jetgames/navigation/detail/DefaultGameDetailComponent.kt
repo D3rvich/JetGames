@@ -1,6 +1,8 @@
 package ru.d3rvich.jetgames.navigation.detail
 
-import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.ExperimentalDecomposeApi
+import com.arkivanov.decompose.jetpackcomponentcontext.JetpackComponentContext
+import com.arkivanov.decompose.jetpackcomponentcontext.viewModel
 import com.arkivanov.decompose.router.slot.ChildSlot
 import com.arkivanov.decompose.router.slot.SlotNavigation
 import com.arkivanov.decompose.router.slot.activate
@@ -8,16 +10,24 @@ import com.arkivanov.decompose.router.slot.childSlot
 import com.arkivanov.decompose.router.slot.dismiss
 import com.arkivanov.decompose.value.Value
 import kotlinx.serialization.Serializable
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
+import org.koin.core.parameter.parametersOf
+import ru.d3rvich.feature.detail.GameDetailViewModel
 import ru.d3rvich.jetgames.navigation.screenshots.DefaultScreenshotsComponent
 import ru.d3rvich.jetgames.navigation.screenshots.ScreenshotsComponent
 
+@OptIn(ExperimentalDecomposeApi::class)
 class DefaultGameDetailComponent(
-    componentContext: ComponentContext,
+    componentContext: JetpackComponentContext,
     override val gameId: Int,
     private val onClose: () -> Unit
-) : GameDetailComponent, ComponentContext by componentContext {
+) : GameDetailComponent, KoinComponent, JetpackComponentContext by componentContext {
 
     private val screenshotsNavigation = SlotNavigation<ScreenshotsConfig>()
+
+    override val gameDetailViewModel: GameDetailViewModel =
+        viewModel { get { parametersOf(gameId) } }
 
     override val screenshotsOverlay: Value<ChildSlot<*, ScreenshotsComponent>> =
         childSlot(
@@ -37,7 +47,7 @@ class DefaultGameDetailComponent(
 
     private fun child(
         config: ScreenshotsConfig,
-        childComponent: ComponentContext
+        childComponent: JetpackComponentContext
     ): ScreenshotsComponent =
         DefaultScreenshotsComponent(
             componentContext = childComponent,

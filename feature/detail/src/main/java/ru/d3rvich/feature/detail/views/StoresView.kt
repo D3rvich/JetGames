@@ -20,39 +20,40 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import ru.d3rvich.core.domain.entities.StoreEntity
 import ru.d3rvich.core.ui.icon.tryFindIcon
 import ru.d3rvich.feature.detail.R
-import ru.d3rvich.feature.detail.model.StoresUiState
+import ru.d3rvich.feature.detail.model.StoresState
 
 @Composable
 internal fun StoresView(
-    uiState: StoresUiState,
+    uiState: StoresState,
     modifier: Modifier = Modifier,
     onSelected: (storeUrl: String) -> Unit,
 ) {
     GameDetailItem(stringResource(R.string.view_in_stores), modifier) {
         when (uiState) {
-            StoresUiState.Empty -> {
+            StoresState.Empty -> {
                 DefaultBoxWrapper {
                     Text(stringResource(R.string.no_stores_found))
                 }
             }
 
-            is StoresUiState.Error -> {
+            is StoresState.Error -> {
                 DefaultBoxWrapper {
                     Text("Error")
                 }
             }
 
-            StoresUiState.Loading -> {
+            StoresState.Loading -> {
                 DefaultBoxWrapper {
                     CircularProgressIndicator()
                 }
             }
 
-            is StoresUiState.Success -> {
+            is StoresState.Success -> {
                 Stores(uiState.stores.toPersistentList(), onSelected)
             }
         }
@@ -122,24 +123,24 @@ private fun Stores(
 @Preview(showBackground = true)
 @Composable
 private fun StoresViewPreview_Loading() {
-    StoresView(uiState = StoresUiState.Loading) {}
+    StoresView(uiState = StoresState.Loading) {}
 }
 
 @Preview(showBackground = true)
 @Composable
 private fun StoresViewPreview_Empty() {
-    StoresView(uiState = StoresUiState.Empty) {}
+    StoresView(uiState = StoresState.Empty) {}
 }
 
 @Preview(showBackground = true)
 @Composable
 private fun StoresViewPreview_Success() {
-    val stores = listOf(StoreEntity(0, "Steam"), StoreEntity(1, "GOG"))
-    StoresView(uiState = StoresUiState.Success(stores = stores)) {}
+    val stores = persistentListOf(StoreEntity(0, "Steam"), StoreEntity(1, "GOG"))
+    StoresView(uiState = StoresState.Success(stores = stores)) {}
 }
 
 @Preview(showBackground = true)
 @Composable
 private fun StoresViewPreview_Error() {
-    StoresView(uiState = StoresUiState.Error(RuntimeException())) {}
+    StoresView(uiState = StoresState.Error(RuntimeException())) {}
 }

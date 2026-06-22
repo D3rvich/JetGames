@@ -1,14 +1,16 @@
 package ru.d3rvich.jetgames.navigation.screenshots
 
-import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.ExperimentalDecomposeApi
+import com.arkivanov.decompose.jetpackcomponentcontext.JetpackComponentContext
 import kotlinx.serialization.builtins.serializer
 
+@OptIn(ExperimentalDecomposeApi::class)
 class DefaultScreenshotsComponent(
-    componentContext: ComponentContext,
+    componentContext: JetpackComponentContext,
     initialScreenshot: Int,
     override val screenshots: List<String>,
     private val onClose: () -> Unit
-) : ScreenshotsComponent, ComponentContext by componentContext {
+) : ScreenshotsComponent, JetpackComponentContext by componentContext {
 
     private var _selectedScreenshot =
         stateKeeper.consume(SELECTED_ITEM_KEY, Int.serializer()) ?: initialScreenshot

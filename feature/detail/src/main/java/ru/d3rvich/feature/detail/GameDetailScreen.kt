@@ -6,7 +6,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -15,10 +14,8 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import ru.d3rvich.common.components.DefaultErrorView
 import ru.d3rvich.core.domain.entities.ScreenshotEntity
-import ru.d3rvich.feature.detail.model.GameDetailUiAction
-import ru.d3rvich.feature.detail.model.GameDetailUiEvent
-import ru.d3rvich.feature.detail.model.GameDetailUiState
-import ru.d3rvich.feature.detail.model.ScreenshotsUiState
+import ru.d3rvich.feature.detail.model.ScreenshotsState
+import ru.d3rvich.feature.detail.store.GameDetailStore
 import ru.d3rvich.feature.detail.views.GameDetailView
 import ru.d3rvich.feature.detail.views.LoadingView
 
@@ -31,8 +28,8 @@ fun GameDetailScreen(
     navigateToScreenshotScreen: (selectedItem: Int, screenshots: List<ScreenshotEntity>) -> Unit,
     navigateBack: () -> Unit,
     modifier: Modifier = Modifier,
+    viewModel: GameDetailViewModel = koinViewModel(key = gameId.toString()) { parametersOf(gameId) },
 ) {
-    val viewModel: GameDetailViewModel = koinViewModel(key = gameId.toString()) { parametersOf(gameId) }
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     Scaffold(
@@ -43,61 +40,48 @@ fun GameDetailScreen(
         GameDetailScreen(
             modifier = Modifier.padding(contentPadding),
             state = state,
-            onFavoriteChange = { viewModel.obtainEvent(GameDetailUiEvent.OnFavoriteChange(it)) },
-            onRefresh = { viewModel.obtainEvent(GameDetailUiEvent.OnRefresh) },
+            onIntent = { viewModel.obtainEvent(it) },
             onNavigateBack = navigateBack,
             navigateToScreenshotScreen = navigateToScreenshotScreen,
-            onGameStoreSelected = { viewModel.obtainEvent(GameDetailUiEvent.OnGameStoreSelected(it)) }
         )
-    }
-    LaunchedEffect(viewModel) {
-        viewModel.uiAction.collect { uiAction ->
-            when (uiAction) {
-                GameDetailUiAction.ShowGameStoreDownloadError -> {
-                    snackbarHostState.showSnackbar(message = "Check internet connection.")
-                }
-            }
-        }
     }
 }
 
 @Composable
 internal fun GameDetailScreen(
-    state: GameDetailUiState,
-    onFavoriteChange: (isFavorite: Boolean) -> Unit,
-    onRefresh: () -> Unit,
+    state: GameDetailStore.State,
+    onIntent: (GameDetailStore.Intent) -> Unit,
     onNavigateBack: () -> Unit,
     navigateToScreenshotScreen: (selectedItem: Int, screenshots: List<ScreenshotEntity>) -> Unit,
-    onGameStoreSelected: (storeUrl: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     when (state) {
-        is GameDetailUiState.Detail -> {
+        is GameDetailStore.State.GameDetail -> {
             GameDetailView(
                 modifier = modifier,
                 detail = state.gameDetail,
                 screenshotsState = state.screenshots,
                 storeUiState = state.stores,
-                onFavoriteChange = onFavoriteChange,
+                onFavoriteChange = { onIntent(GameDetailStore.Intent.OnFavoriteChange(it)) },
                 onBackClicked = onNavigateBack,
                 onScreenshotClicked = { selectedItem ->
-                    if (state.screenshots is ScreenshotsUiState.Success) {
+                    if (state.screenshots is ScreenshotsState.Success) {
                         navigateToScreenshotScreen(selectedItem, state.gameDetail.screenshots)
                     }
                 },
-                onGameStoreSelected = onGameStoreSelected
+                onGameStoreSelected = { onIntent(GameDetailStore.Intent.OnGameStoreSelected(it)) }
             )
         }
 
-        is GameDetailUiState.Error -> {
+        is GameDetailStore.State.Error -> {
             DefaultErrorView(
                 modifier = modifier,
                 message = state.errorMessage,
-                onRefreshPressed = onRefresh
+                onRefreshPressed = { onIntent(GameDetailStore.Intent.OnRefresh) }
             )
         }
 
-        GameDetailUiState.Loading -> {
+        GameDetailStore.State.Loading -> {
             LoadingView(modifier = modifier)
         }
     }
