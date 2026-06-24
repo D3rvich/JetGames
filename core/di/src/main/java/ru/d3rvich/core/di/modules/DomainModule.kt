@@ -1,4 +1,4 @@
-package ru.d3rvich.jetgames.di
+package ru.d3rvich.core.di.modules
 
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module
