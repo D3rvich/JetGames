@@ -15,10 +15,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.arkivanov.decompose.defaultComponentContext
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.d3rvich.core.domain.model.UserPreferences
+import ru.d3rvich.core.navigation.RootContent
+import ru.d3rvich.core.navigation.root.DefaultRootComponent
 import ru.d3rvich.core.ui.model.asUiState
 import ru.d3rvich.core.ui.theme.JetGamesTheme
-import ru.d3rvich.jetgames.navigation.RootContent
-import ru.d3rvich.jetgames.navigation.root.DefaultRootComponent
 
 class MainActivity : ComponentActivity() {
 

@@ -30,14 +30,6 @@ dependencies {
     implementation(projects.core.data)
     implementation(projects.core.navigation)
     implementation(projects.core.di)
-    implementation(projects.common)
-    implementation(projects.feature.home)
-    implementation(projects.feature.browse)
-    implementation(projects.feature.favorites)
-    implementation(projects.feature.filter)
-    implementation(projects.feature.detail)
-    implementation(projects.feature.screenshots)
-    implementation(projects.feature.settings)
 
     implementation(libs.splashscreen)
     implementation(libs.androidx.lifecycle.runtime)
@@ -45,19 +37,12 @@ dependencies {
 
     // Decompose
     implementation(libs.decompose.core)
-    implementation(libs.decompose.extentionsCompose)
-    implementation(libs.decompose.jetpackComponentContext)
-
-    // Immutable collections
-    implementation(libs.kotlinx.collections.immutable)
 
     // Coil
-    implementation(libs.coil.network)
-    implementation(libs.coil.compose)
+    implementation(libs.coil)
 
     // Coroutines
     implementation(libs.kotlinx.coroutines)
-    implementation(libs.kotlinx.serializationJson)
 
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.espresso.core)

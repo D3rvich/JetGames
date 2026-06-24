@@ -14,9 +14,7 @@ import coil3.util.DebugLogger
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.plugin.module.dsl.modules
-import ru.d3rvich.common.R
 import ru.d3rvich.core.di.initKoin
-import ru.d3rvich.jetgames.di.ViewModelModule
 import timber.log.Timber
 
 /**

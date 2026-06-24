@@ -59,6 +59,7 @@ koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel" }
 koin-annotations = { module = "io.insert-koin:koin-annotations" }
 androidx-datastore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "androidxDataStore" }
 androidx-browser = { group = "androidx.browser", name = "browser", version.ref = "androidxBrowser" }
+coil = { group = "io.coil-kt.coil3", name = "coil", version.ref = 'coil' }
 coil-network = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coil" }
 coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
 kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
