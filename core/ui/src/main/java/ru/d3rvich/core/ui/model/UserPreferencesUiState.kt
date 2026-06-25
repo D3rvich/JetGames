@@ -3,8 +3,8 @@ package ru.d3rvich.core.ui.model
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
-import ru.d3rvich.core.domain.model.ThemeType
 import ru.d3rvich.core.domain.model.UserPreferences
+import ru.d3rvich.core.model.ThemeType
 
 @Immutable
 data class UserPreferencesUiState(val userPreferences: UserPreferences)

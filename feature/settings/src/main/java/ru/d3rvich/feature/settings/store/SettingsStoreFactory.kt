@@ -29,7 +29,7 @@ internal class SettingsStoreFactory(
 
                 onIntent<SettingsStore.Intent.ColorModeSelected> { intent ->
                     launch {
-                        userPreferencesRepository.setCurrentColorMode(intent.colorModeType)
+                        userPreferencesRepository.setCurrentColorMode(intent.colorMode)
                     }
                 }
 
@@ -46,7 +46,7 @@ internal class SettingsStoreFactory(
                         with(message.userPreferences) {
                             SettingsStore.State.Settings(
                                 themeType = theme,
-                                colorModeType = colorMode,
+                                colorMode = colorMode,
                                 inDynamicColorSupported = isDynamicThemeSupported
                             )
                         }

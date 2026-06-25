@@ -15,9 +15,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
-import ru.d3rvich.core.domain.model.ColorModeType
-import ru.d3rvich.core.domain.model.ThemeType
 import ru.d3rvich.core.domain.model.UserPreferences
+import ru.d3rvich.core.model.ColorMode
+import ru.d3rvich.core.model.ThemeType
 import ru.d3rvich.core.ui.model.UserPreferencesUiState
 import ru.d3rvich.core.ui.model.asUiState
 import ru.d3rvich.core.ui.settings.LocalUserPreferences
@@ -55,7 +55,7 @@ fun JetGamesTheme(
     val userPreferences =
         remember(userPreferencesUiState) { userPreferencesUiState.userPreferences }
     val dynamicColor =
-        remember(userPreferences) { userPreferences.colorMode == ColorModeType.Dynamic }
+        remember(userPreferences) { userPreferences.colorMode == ColorMode.Dynamic }
     val darkTheme = when (userPreferences.theme) {
         ThemeType.Light -> false
         ThemeType.Dark -> true

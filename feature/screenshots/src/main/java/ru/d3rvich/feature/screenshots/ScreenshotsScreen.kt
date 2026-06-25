@@ -42,9 +42,9 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.util.lerp
 import kotlinx.collections.immutable.ImmutableList
-import ru.d3rvich.core.domain.model.ColorModeType
-import ru.d3rvich.core.domain.model.ThemeType
 import ru.d3rvich.core.domain.model.UserPreferences
+import ru.d3rvich.core.model.ColorMode
+import ru.d3rvich.core.model.ThemeType
 import ru.d3rvich.core.ui.model.asUiState
 import ru.d3rvich.core.ui.theme.JetGamesTheme
 import ru.d3rvich.feature.screenshots.util.DragToDismissState
@@ -135,7 +135,7 @@ private fun ScreenWrapper(
     modifier: Modifier = Modifier,
     content: @Composable BoxWithConstraintsScope.() -> Unit
 ) {
-    val darkPreferences = UserPreferences(ThemeType.Dark, ColorModeType.Default).asUiState()
+    val darkPreferences = UserPreferences(ThemeType.Dark, ColorMode.Default).asUiState()
     JetGamesTheme(darkPreferences) {
         CompositionLocalProvider(LocalOverscrollFactory provides null) {
             BoxWithConstraints(modifier = modifier) {

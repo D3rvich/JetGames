@@ -10,10 +10,10 @@ import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.koin.core.annotation.Single
-import ru.d3rvich.core.domain.model.ColorModeType
 import ru.d3rvich.core.domain.model.ListDisplayOption
-import ru.d3rvich.core.domain.model.ThemeType
 import ru.d3rvich.core.domain.model.UserPreferences
+import ru.d3rvich.core.model.ColorMode
+import ru.d3rvich.core.model.ThemeType
 
 @Single
 class JetGamesPreferencesDataStore(private val context: Context) {
@@ -32,7 +32,7 @@ class JetGamesPreferencesDataStore(private val context: Context) {
         val themeRaw = preferences[PreferencesScheme.THEME_TYPE]
         val colorRaw = preferences[PreferencesScheme.COLOR_MODE]
         val theme = if (themeRaw != null) ThemeType.valueOf(themeRaw) else ThemeType.System
-        val color = if (colorRaw != null) ColorModeType.valueOf(colorRaw) else ColorModeType.Default
+        val color = if (colorRaw != null) ColorMode.valueOf(colorRaw) else ColorMode.Default
         UserPreferences(theme, color)
     }
 
@@ -49,7 +49,7 @@ class JetGamesPreferencesDataStore(private val context: Context) {
         }
     }
 
-    suspend fun setColorMode(colorMode: ColorModeType) {
+    suspend fun setColorMode(colorMode: ColorMode) {
         context.dataStore.edit { preferences ->
             preferences[PreferencesScheme.COLOR_MODE] = colorMode.name
         }

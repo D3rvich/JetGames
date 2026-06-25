@@ -33,8 +33,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.koin.compose.viewmodel.koinViewModel
-import ru.d3rvich.core.domain.model.ColorModeType
-import ru.d3rvich.core.domain.model.ThemeType
+import ru.d3rvich.core.model.ColorMode
+import ru.d3rvich.core.model.ThemeType
 import ru.d3rvich.core.ui.theme.JetGamesTheme
 import ru.d3rvich.feature.settings.store.SettingsStore
 import ru.d3rvich.common.R as uiR
@@ -68,7 +68,7 @@ private fun SettingsScreen(
     state: SettingsStore.State,
     modifier: Modifier = Modifier,
     onThemeChange: (ThemeType) -> Unit = {},
-    onColorModeChange: (ColorModeType) -> Unit = {},
+    onColorModeChange: (ColorMode) -> Unit = {},
     navigateBack: () -> Unit = {}
 ) {
     Scaffold(
@@ -112,7 +112,7 @@ private fun SettingsScreen(
                     HorizontalDivider()
                     DynamicTheme(
                         modifier = Modifier.padding(top = 8.dp),
-                        colorMode = state.colorModeType,
+                        colorMode = state.colorMode,
                         isDynamicColorSupported = state.inDynamicColorSupported,
                         onColorModeChange = onColorModeChange
                     )
@@ -164,8 +164,8 @@ private fun ThemeMode(
 @Composable
 private fun DynamicTheme(
     isDynamicColorSupported: Boolean,
-    colorMode: ColorModeType,
-    onColorModeChange: (ColorModeType) -> Unit,
+    colorMode: ColorMode,
+    onColorModeChange: (ColorMode) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -183,16 +183,16 @@ private fun DynamicTheme(
         ) {
             SettingOptionItem(
                 text = stringResource(R.string.color_mode_default),
-                selected = colorMode == ColorModeType.Default,
+                selected = colorMode == ColorMode.Default,
                 onClick = {
-                    onColorModeChange(ColorModeType.Default)
+                    onColorModeChange(ColorMode.Default)
                 }
             )
             SettingOptionItem(
                 text = stringResource(R.string.color_mode_dynamic),
-                selected = colorMode == ColorModeType.Dynamic,
+                selected = colorMode == ColorMode.Dynamic,
                 onClick = {
-                    onColorModeChange(ColorModeType.Dynamic)
+                    onColorModeChange(ColorMode.Dynamic)
                 },
                 enabled = isDynamicColorSupported
             )
@@ -241,7 +241,7 @@ private fun SettingsScreenPreview() {
         SettingsScreen(
             state = SettingsStore.State.Settings(
                 themeType = ThemeType.System,
-                colorModeType = ColorModeType.Default,
+                colorMode = ColorMode.Default,
                 inDynamicColorSupported = false
             )
         )

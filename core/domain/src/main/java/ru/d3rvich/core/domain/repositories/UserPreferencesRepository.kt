@@ -1,10 +1,10 @@
 package ru.d3rvich.core.domain.repositories
 
 import kotlinx.coroutines.flow.Flow
-import ru.d3rvich.core.domain.model.ColorModeType
 import ru.d3rvich.core.domain.model.ListDisplayOption
-import ru.d3rvich.core.domain.model.ThemeType
 import ru.d3rvich.core.domain.model.UserPreferences
+import ru.d3rvich.core.model.ColorMode
+import ru.d3rvich.core.model.ThemeType
 
 interface UserPreferencesRepository {
 
@@ -14,7 +14,7 @@ interface UserPreferencesRepository {
 
     suspend fun setCurrentTheme(theme: ThemeType)
 
-    suspend fun setCurrentColorMode(colorModeType: ColorModeType)
+    suspend fun setCurrentColorMode(colorMode: ColorMode)
 
     suspend fun setListDisplayOption(option: ListDisplayOption)
 }

@@ -1,17 +1,9 @@
 package ru.d3rvich.core.domain.model
 
+import ru.d3rvich.core.model.ColorMode
+import ru.d3rvich.core.model.ThemeType
+
 data class UserPreferences(
     val theme: ThemeType = ThemeType.System,
-    val colorMode: ColorModeType = ColorModeType.Default
+    val colorMode: ColorMode = ColorMode.Default
 )
-
-enum class ThemeType {
-    Light,
-    Dark,
-    System
-}
-
-enum class ColorModeType {
-    Default,
-    Dynamic
-}
