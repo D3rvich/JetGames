@@ -1,7 +1,7 @@
-package ru.d3rvich.feature.settings.intergation
+package ru.d3rvich.feature.settings.impl.intergation
 
 import ru.d3rvich.feature.settings.api.SettingsComponent
-import ru.d3rvich.feature.settings.store.SettingsStore
+import ru.d3rvich.feature.settings.impl.store.SettingsStore
 
 internal val stateToModel: (SettingsStore.State) -> SettingsComponent.Model = { state ->
     when (state) {

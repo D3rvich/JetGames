@@ -1,4 +1,4 @@
-package ru.d3rvich.feature.settings.intergation
+package ru.d3rvich.feature.settings.impl.intergation
 
 import com.arkivanov.decompose.Cancellation
 import com.arkivanov.decompose.ComponentContext
@@ -12,8 +12,8 @@ import org.koin.core.annotation.InjectedParam
 import ru.d3rvich.core.model.ColorMode
 import ru.d3rvich.core.model.ThemeType
 import ru.d3rvich.feature.settings.api.SettingsComponent
-import ru.d3rvich.feature.settings.store.SettingsStore
-import ru.d3rvich.feature.settings.store.SettingsStoreFactory
+import ru.d3rvich.feature.settings.impl.store.SettingsStore
+import ru.d3rvich.feature.settings.impl.store.SettingsStoreFactory
 
 @Factory(binds = [SettingsComponent::class])
 internal class DefaultSettingsComponent(

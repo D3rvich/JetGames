@@ -1,4 +1,4 @@
-package ru.d3rvich.feature.settings
+package ru.d3rvich.feature.settings.impl
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

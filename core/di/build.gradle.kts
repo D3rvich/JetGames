@@ -19,8 +19,7 @@ dependencies {
     implementation(projects.feature.filter)
     implementation(projects.feature.detail)
     implementation(projects.feature.screenshots)
-    implementation(projects.feature.settings.api)
-    implementation(projects.feature.settings)
+    implementation(projects.feature.settings.impl)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)

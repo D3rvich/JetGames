@@ -1,4 +1,4 @@
-package ru.d3rvich.feature.settings.store
+package ru.d3rvich.feature.settings.impl.store
 
 import android.os.Build
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper

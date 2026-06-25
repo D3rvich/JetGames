@@ -12,7 +12,7 @@ import com.arkivanov.decompose.extensions.compose.stack.animation.slide
 import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
 import ru.d3rvich.feature.filter.FilterScreen
 import ru.d3rvich.core.navigation.root.RootComponent
-import ru.d3rvich.feature.settings.SettingsContent
+import ru.d3rvich.feature.settings.impl.SettingsContent
 
 @OptIn(ExperimentalDecomposeApi::class)
 @Composable
@@ -29,8 +29,7 @@ fun RootContent(
             fallbackAnimation = stackAnimation { child ->
                 when (child.instance) {
                     is RootComponent.Child.Filter, is RootComponent.Child.Settings -> slide()
-                    is RootComponent.Child.GameDetail -> fade()
-                    is RootComponent.Child.Main -> null
+                    else -> fade()
                 }
             },
             selector = { backEvent, _, _ -> androidPredictiveBackAnimatableV2(backEvent) },
