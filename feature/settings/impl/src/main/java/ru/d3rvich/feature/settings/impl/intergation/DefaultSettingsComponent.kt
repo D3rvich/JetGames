@@ -1,16 +1,14 @@
 package ru.d3rvich.feature.settings.impl.intergation
 
-import com.arkivanov.decompose.Cancellation
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.operator.map
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
-import com.arkivanov.mvikotlin.core.rx.observer
-import com.arkivanov.mvikotlin.core.store.Store
 import org.koin.core.annotation.Factory
 import org.koin.core.annotation.InjectedParam
 import ru.d3rvich.core.model.ColorMode
 import ru.d3rvich.core.model.ThemeType
+import ru.d3rvich.core.ui.utils.asValue
 import ru.d3rvich.feature.settings.api.SettingsComponent
 import ru.d3rvich.feature.settings.impl.store.SettingsStore
 import ru.d3rvich.feature.settings.impl.store.SettingsStoreFactory
@@ -35,17 +33,5 @@ internal class DefaultSettingsComponent(
 
     override fun onCloseClick() {
         output(SettingsComponent.Output.Finished)
-    }
-}
-
-fun <T : Any> Store<*, T, *>.asValue(): Value<T> = object : Value<T>() {
-    override val value: T get() = state
-
-    override fun subscribe(observer: (T) -> Unit): Cancellation {
-        val disposable = states(observer(onNext = observer))
-
-        return Cancellation {
-            disposable.dispose()
-        }
     }
 }

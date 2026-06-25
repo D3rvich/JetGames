@@ -9,7 +9,7 @@ import ru.d3rvich.jetgames.libs
 /**
  * Created by Ilya Deryabin at 11.05.2024
  */
-class AndroidFeatureConventionPlugin : Plugin<Project> {
+class AndroidFeatureImplConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
             apply(plugin = "jetgames.android.library")

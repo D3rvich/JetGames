@@ -45,9 +45,13 @@ gradlePlugin {
             id = "jetgames.android.library"
             implementationClass = "AndroidLibraryConventionPlugin"
         }
-        register("androidFeature") {
-            id = "jetgames.android.feature"
-            implementationClass = "AndroidFeatureConventionPlugin"
+        register("androidFeatureApi") {
+            id = "jetgames.android.feature.api"
+            implementationClass = "AndroidFeatureApiConventionPlugin"
+        }
+        register("androidFeatureImpl") {
+            id = "jetgames.android.feature.impl"
+            implementationClass = "AndroidFeatureImplConventionPlugin"
         }
         register("jvmLibrary") {
             id = "jetgames.jvm.library"
