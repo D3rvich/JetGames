@@ -31,41 +31,35 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import org.koin.compose.viewmodel.koinViewModel
+import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import ru.d3rvich.core.model.ColorMode
 import ru.d3rvich.core.model.ThemeType
 import ru.d3rvich.core.ui.theme.JetGamesTheme
-import ru.d3rvich.feature.settings.store.SettingsStore
+import ru.d3rvich.feature.settings.api.SettingsComponent
 import ru.d3rvich.common.R as uiR
 
 /**
  * Created by Ilya Deryabin at 05.09.2024
  */
 @Composable
-fun SettingsScreen(
-    modifier: Modifier = Modifier,
-    viewModel: SettingsViewModel = koinViewModel(),
-    navigateBack: () -> Unit = {}
+fun SettingsContent(
+    component: SettingsComponent,
+    modifier: Modifier = Modifier
 ) {
-    val state by viewModel.uiState.collectAsStateWithLifecycle()
-    SettingsScreen(
+    val model by component.models.subscribeAsState()
+    SettingsContent(
         modifier = modifier,
-        state = state,
-        onThemeChange = { theme ->
-            viewModel.obtainIntent(SettingsStore.Intent.ThemeTypeSelected(theme))
-        },
-        onColorModeChange = { colorCode ->
-            viewModel.obtainIntent(SettingsStore.Intent.ColorModeSelected(colorCode))
-        },
-        navigateBack = navigateBack
+        model = model,
+        onThemeChange = component::setThemeType,
+        onColorModeChange = component::setColorMode,
+        navigateBack = component::onCloseClick
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun SettingsScreen(
-    state: SettingsStore.State,
+private fun SettingsContent(
+    model: SettingsComponent.Model,
     modifier: Modifier = Modifier,
     onThemeChange: (ThemeType) -> Unit = {},
     onColorModeChange: (ColorMode) -> Unit = {},
@@ -85,8 +79,8 @@ private fun SettingsScreen(
                     }
                 })
         }) { paddingValues ->
-        when (state) {
-            SettingsStore.State.Loading -> {
+        when (model) {
+            SettingsComponent.Model.Loading -> {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -97,7 +91,7 @@ private fun SettingsScreen(
                 }
             }
 
-            is SettingsStore.State.Settings -> {
+            is SettingsComponent.Model.Settings -> {
                 Column(
                     modifier = Modifier
                         .padding(paddingValues)
@@ -106,14 +100,14 @@ private fun SettingsScreen(
                 ) {
                     ThemeMode(
                         modifier = Modifier.padding(top = 8.dp),
-                        theme = state.themeType,
+                        theme = model.themeType,
                         onThemeChange = onThemeChange
                     )
                     HorizontalDivider()
                     DynamicTheme(
                         modifier = Modifier.padding(top = 8.dp),
-                        colorMode = state.colorMode,
-                        isDynamicColorSupported = state.inDynamicColorSupported,
+                        colorMode = model.colorMode,
+                        isDynamicColorSupported = model.inDynamicColorSupported,
                         onColorModeChange = onColorModeChange
                     )
                 }
@@ -230,7 +224,7 @@ private fun SettingOptionItem(
 @Composable
 private fun SettingsScreenPreview_Loading() {
     JetGamesTheme {
-        SettingsScreen(state = SettingsStore.State.Loading)
+        SettingsContent(model = SettingsComponent.Model.Loading)
     }
 }
 
@@ -238,8 +232,8 @@ private fun SettingsScreenPreview_Loading() {
 @Composable
 private fun SettingsScreenPreview() {
     JetGamesTheme {
-        SettingsScreen(
-            state = SettingsStore.State.Settings(
+        SettingsContent(
+            model = SettingsComponent.Model.Settings(
                 themeType = ThemeType.System,
                 colorMode = ColorMode.Default,
                 inDynamicColorSupported = false

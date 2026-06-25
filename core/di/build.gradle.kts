@@ -19,6 +19,7 @@ dependencies {
     implementation(projects.feature.filter)
     implementation(projects.feature.detail)
     implementation(projects.feature.screenshots)
+    implementation(projects.feature.settings.api)
     implementation(projects.feature.settings)
 
     testImplementation(libs.junit)

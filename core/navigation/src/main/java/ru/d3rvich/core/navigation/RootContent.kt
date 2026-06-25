@@ -12,7 +12,7 @@ import com.arkivanov.decompose.extensions.compose.stack.animation.slide
 import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
 import ru.d3rvich.feature.filter.FilterScreen
 import ru.d3rvich.core.navigation.root.RootComponent
-import ru.d3rvich.feature.settings.SettingsScreen
+import ru.d3rvich.feature.settings.SettingsContent
 
 @OptIn(ExperimentalDecomposeApi::class)
 @Composable
@@ -46,10 +46,7 @@ fun RootContent(
             }
 
             is RootComponent.Child.Settings -> {
-                SettingsScreen(
-                    navigateBack = child.component::onBackClick,
-                    viewModel = child.component.settingsViewModel
-                )
+                SettingsContent(child.component)
             }
 
             is RootComponent.Child.Filter -> {

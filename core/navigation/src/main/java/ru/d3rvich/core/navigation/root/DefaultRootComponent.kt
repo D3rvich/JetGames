@@ -11,18 +11,23 @@ import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.backhandler.BackHandlerOwner
 import kotlinx.serialization.Serializable
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
+import org.koin.core.parameter.parameterSetOf
 import ru.d3rvich.core.navigation.detail.DefaultGameDetailComponent
 import ru.d3rvich.core.navigation.detail.GameDetailComponent
 import ru.d3rvich.core.navigation.filter.DefaultFilterComponent
 import ru.d3rvich.core.navigation.filter.FilterComponent
 import ru.d3rvich.core.navigation.main.DefaultMainComponent
 import ru.d3rvich.core.navigation.main.MainComponent
-import ru.d3rvich.core.navigation.root.RootComponent.Child.*
-import ru.d3rvich.core.navigation.settings.DefaultSettingsComponent
-import ru.d3rvich.core.navigation.settings.SettingsComponent
+import ru.d3rvich.core.navigation.root.RootComponent.Child.Filter
+import ru.d3rvich.core.navigation.root.RootComponent.Child.GameDetail
+import ru.d3rvich.core.navigation.root.RootComponent.Child.Main
+import ru.d3rvich.core.navigation.root.RootComponent.Child.Settings
+import ru.d3rvich.feature.settings.api.SettingsComponent
 
 @OptIn(ExperimentalDecomposeApi::class)
-class DefaultRootComponent(componentContext: ComponentContext) : RootComponent,
+class DefaultRootComponent(componentContext: ComponentContext) : RootComponent, KoinComponent,
     ComponentContext by componentContext, BackHandlerOwner {
     private val navigation = StackNavigation<Config>()
 
@@ -65,10 +70,14 @@ class DefaultRootComponent(componentContext: ComponentContext) : RootComponent,
             gameId = gameId,
             onClose = { navigation.pop() })
 
-    private fun settingsComponent(componentContext: ComponentContext): SettingsComponent =
-        DefaultSettingsComponent(
-            componentContext = componentContext.asJetpackComponentContext(),
-            onCLose = { navigation.pop() })
+    private fun settingsComponent(componentContext: ComponentContext): SettingsComponent {
+        val output: (SettingsComponent.Output) -> Unit = { output ->
+            when (output) {
+                SettingsComponent.Output.Finished -> navigation.pop()
+            }
+        }
+        return get { parameterSetOf(componentContext, output) }
+    }
 
     private fun filterComponent(componentContext: ComponentContext): FilterComponent =
         DefaultFilterComponent(
