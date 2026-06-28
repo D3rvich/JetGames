@@ -1,7 +1,14 @@
 package ru.d3rvich.core.navigation
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.extensions.compose.stack.Children
@@ -10,8 +17,11 @@ import com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback
 import com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback.predictiveBackAnimation
 import com.arkivanov.decompose.extensions.compose.stack.animation.slide
 import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
-import ru.d3rvich.feature.filter.FilterScreen
+import com.arkivanov.decompose.extensions.compose.subscribeAsState
+import kotlinx.collections.immutable.toImmutableList
 import ru.d3rvich.core.navigation.root.RootComponent
+import ru.d3rvich.feature.filter.FilterScreen
+import ru.d3rvich.feature.screenshots.ScreenshotsScreen
 import ru.d3rvich.feature.settings.impl.SettingsContent
 
 @OptIn(ExperimentalDecomposeApi::class)
@@ -53,6 +63,23 @@ fun RootContent(
                     onNavigateBack = child.component::onBackClick,
                     viewModel = child.component.filterViewModel
                 )
+            }
+        }
+    }
+    val screenshotSlot by rootComponent.screenshotOverlay.subscribeAsState()
+    AnimatedContent(
+        screenshotSlot,
+        transitionSpec = { fadeIn() togetherWith fadeOut() }) { slot ->
+        Box(Modifier.fillMaxSize()) {
+            slot.child?.let { child ->
+                with(child.instance.component) {
+                    ScreenshotsScreen(
+                        screenshots = screenshots.toImmutableList(),
+                        selectedItem = selectedScreenshot,
+                        onPageChange = ::onPageChange,
+                        onBackPressed = ::onBackClick
+                    )
+                }
             }
         }
     }

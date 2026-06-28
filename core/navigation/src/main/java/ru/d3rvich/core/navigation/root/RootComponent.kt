@@ -1,15 +1,19 @@
 package ru.d3rvich.core.navigation.root
 
+import com.arkivanov.decompose.router.slot.ChildSlot
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.backhandler.BackHandlerOwner
 import ru.d3rvich.core.navigation.detail.GameDetailComponent
 import ru.d3rvich.core.navigation.filter.FilterComponent
 import ru.d3rvich.core.navigation.main.MainComponent
+import ru.d3rvich.core.navigation.screenshots.ScreenshotsComponent
 import ru.d3rvich.feature.settings.api.SettingsComponent
 
-interface RootComponent: BackHandlerOwner {
+interface RootComponent : BackHandlerOwner {
     val stack: Value<ChildStack<*, Child>>
+
+    val screenshotOverlay: Value<ChildSlot<*, ScreenshotsChild>>
 
     fun onBackClicked()
 
@@ -19,4 +23,6 @@ interface RootComponent: BackHandlerOwner {
         class Settings(val component: SettingsComponent) : Child
         class Filter(val component: FilterComponent) : Child
     }
+
+    class ScreenshotsChild(val component: ScreenshotsComponent)
 }
