@@ -113,5 +113,6 @@ jetgames-android-library-compose = { id = "jetgames.android.library.compose" }
 jetgames-android-feature-api = { id = "jetgames.android.feature.api" }
 jetgames-android-feature-impl = { id = "jetgames.android.feature.impl" }
 jetgames-jvm-library = { id = "jetgames.jvm.library" }
+jetgames-jvm-library-compose = { id = "jetgames.jvm.library.compose" }
 jetgames-shared-koin = { id = "jetgames.shared.koin" }
 jetgames-android-koin = { id = "jetgames.android.koin" }

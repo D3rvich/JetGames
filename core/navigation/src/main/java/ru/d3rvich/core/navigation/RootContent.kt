@@ -19,10 +19,11 @@ import com.arkivanov.decompose.extensions.compose.stack.animation.slide
 import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import kotlinx.collections.immutable.toImmutableList
+import org.koin.compose.koinInject
 import ru.d3rvich.core.navigation.root.RootComponent
 import ru.d3rvich.feature.filter.FilterScreen
 import ru.d3rvich.feature.screenshots.ScreenshotsScreen
-import ru.d3rvich.feature.settings.impl.SettingsContent
+import ru.d3rvich.feature.settings.api.SettingsUiFactory
 
 @OptIn(ExperimentalDecomposeApi::class)
 @Composable
@@ -31,6 +32,7 @@ fun RootContent(
     windowSizeClass: WindowSizeClass,
     modifier: Modifier = Modifier
 ) {
+    val settingsUi: SettingsUiFactory = koinInject()
     Children(
         stack = rootComponent.stack,
         modifier = modifier,
@@ -55,7 +57,7 @@ fun RootContent(
             }
 
             is RootComponent.Child.Settings -> {
-                SettingsContent(child.component)
+                settingsUi.Content(child.component)
             }
 
             is RootComponent.Child.Filter -> {

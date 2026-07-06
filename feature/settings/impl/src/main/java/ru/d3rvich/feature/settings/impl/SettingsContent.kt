@@ -42,7 +42,7 @@ import ru.d3rvich.common.R as uiR
  * Created by Ilya Deryabin at 05.09.2024
  */
 @Composable
-fun SettingsContent(
+internal fun SettingsContent(
     component: SettingsComponent,
     modifier: Modifier = Modifier
 ) {

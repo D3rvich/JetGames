@@ -3,6 +3,7 @@ package ru.d3rvich.jetgames
 import com.android.build.api.dsl.CommonExtension
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies
+import org.jetbrains.kotlin.gradle.dsl.KotlinJvmExtension
 
 internal fun Project.configureAndroidCompose(commonExtension: CommonExtension) {
     commonExtension.apply {
@@ -20,6 +21,17 @@ internal fun Project.configureAndroidCompose(commonExtension: CommonExtension) {
             "implementation"(libs.findLibrary("androidx-compose-ui-preview").get())
             "androidTestImplementation"(platform(bom))
             "debugImplementation"(libs.findLibrary("androidx-compose-ui-tooling").get())
+        }
+    }
+}
+
+internal fun Project.configureJvmCompose(commonExtension: KotlinJvmExtension) {
+    commonExtension.apply {
+        pluginManager.apply("org.jetbrains.kotlin.plugin.compose")
+        dependencies {
+            val bom = libs.findLibrary("androidx-compose-bom").get()
+            "implementation"(platform(bom))
+            "implementation"(libs.findLibrary("androidx-compose-runtime").get())
         }
     }
 }

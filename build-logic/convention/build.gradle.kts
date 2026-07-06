@@ -57,6 +57,10 @@ gradlePlugin {
             id = "jetgames.jvm.library"
             implementationClass = "JvmLibraryConventionPlugin"
         }
+        register("jvmLibraryCompose") {
+            id = "jetgames.jvm.library.compose"
+            implementationClass = "JvmLibraryComposeConventionPlugin"
+        }
         register("sharedKoin") {
             id = "jetgames.shared.koin"
             implementationClass = "SharedKoinConventionPlugin"

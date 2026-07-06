@@ -1,5 +1,6 @@
 package ru.d3rvich.feature.settings.api
 
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import com.arkivanov.decompose.value.Value
@@ -31,4 +32,9 @@ interface SettingsComponent {
     sealed interface Output {
         data object Finished : Output
     }
+}
+
+fun interface SettingsUiFactory {
+    @Composable
+    fun Content(component: SettingsComponent)
 }
