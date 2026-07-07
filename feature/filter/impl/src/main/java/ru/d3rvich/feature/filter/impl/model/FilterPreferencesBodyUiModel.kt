@@ -1,4 +1,4 @@
-package ru.d3rvich.feature.filter.model
+package ru.d3rvich.feature.filter.impl.model
 
 import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.toImmutableSet

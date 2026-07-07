@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "ru.d3rvich.feature.filter"
+    namespace = "ru.d3rvich.feature.filter.impl"
 }
 
 dependencies {

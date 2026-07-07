@@ -49,16 +49,18 @@ import ru.d3rvich.core.domain.entities.SortingEntity
 import ru.d3rvich.core.domain.model.MetacriticRange
 import ru.d3rvich.core.domain.preferences.FilterPreferencesBody
 import ru.d3rvich.core.ui.theme.JetGamesTheme
-import ru.d3rvich.feature.filter.model.ListAction
-import ru.d3rvich.feature.filter.model.isDefault
-import ru.d3rvich.feature.filter.model.toFilterPreferencesBodyUiModel
-import ru.d3rvich.feature.filter.store.FilterStore
-import ru.d3rvich.feature.filter.views.FilterAppBar
-import ru.d3rvich.feature.filter.views.GenresView
-import ru.d3rvich.feature.filter.views.MetacriticView
-import ru.d3rvich.feature.filter.views.PlatformsView
-import ru.d3rvich.feature.filter.views.SortingView
-import ru.d3rvich.common.R as uiR
+import ru.d3rvich.feature.filter.impl.FilterViewModel
+import ru.d3rvich.feature.filter.impl.model.ListAction
+import ru.d3rvich.feature.filter.impl.model.isDefault
+import ru.d3rvich.feature.filter.impl.model.toFilterPreferencesBodyUiModel
+import ru.d3rvich.feature.filter.impl.store.FilterStore
+import ru.d3rvich.feature.filter.impl.views.FilterAppBar
+import ru.d3rvich.feature.filter.impl.views.GenresView
+import ru.d3rvich.feature.filter.impl.views.MetacriticView
+import ru.d3rvich.feature.filter.impl.views.PlatformsView
+import ru.d3rvich.feature.filter.impl.views.SortingView
+import ru.d3rvich.common.R as commonR
+import ru.d3rvich.feature.filter.impl.R
 
 /**
  * Created by Ilya Deryabin at 29.02.2024
@@ -112,7 +114,7 @@ private fun FilterScreen(
         floatingActionButton = {
             FloatingActionButton(onClick = { onIntent(FilterStore.Intent.OnApplyClicked) }) {
                 Icon(
-                    painter = painterResource(uiR.drawable.check_24px),
+                    painter = painterResource(commonR.drawable.check_24px),
                     contentDescription = stringResource(R.string.apply_filter)
                 )
             }

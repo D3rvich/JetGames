@@ -18,7 +18,6 @@ import com.arkivanov.essenty.backhandler.BackHandlerOwner
 import kotlinx.serialization.Serializable
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
-import org.koin.core.parameter.parameterSetOf
 import ru.d3rvich.core.navigation.detail.DefaultGameDetailComponent
 import ru.d3rvich.core.navigation.detail.GameDetailComponent
 import ru.d3rvich.core.navigation.filter.DefaultFilterComponent
@@ -121,7 +120,8 @@ class DefaultRootComponent(componentContext: ComponentContext) : RootComponent, 
                 SettingsComponent.Output.Finished -> navigation.pop()
             }
         }
-        return get { parameterSetOf(componentContext, output) }
+        val factory: SettingsComponent.Factory = get()
+        return factory.create(componentContext = componentContext, output = output)
     }
 
     private fun filterComponent(componentContext: ComponentContext): FilterComponent =

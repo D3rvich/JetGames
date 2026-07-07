@@ -1,11 +1,11 @@
-package ru.d3rvich.feature.filter.views
+package ru.d3rvich.feature.filter.impl.views
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import kotlinx.collections.immutable.ImmutableSet
 import ru.d3rvich.core.domain.entities.GenreFullEntity
-import ru.d3rvich.feature.filter.R
+import ru.d3rvich.feature.filter.impl.R
 
 @Composable
 internal fun GenresView(

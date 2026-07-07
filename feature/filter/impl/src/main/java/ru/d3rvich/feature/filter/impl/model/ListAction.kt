@@ -1,4 +1,4 @@
-package ru.d3rvich.feature.filter.model
+package ru.d3rvich.feature.filter.impl.model
 
 internal sealed interface ListAction<out T : Any> {
     data class AddItem<T : Any>(val item: T) : ListAction<T>

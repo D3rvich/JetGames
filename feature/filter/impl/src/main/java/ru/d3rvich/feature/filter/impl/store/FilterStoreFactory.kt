@@ -1,4 +1,4 @@
-package ru.d3rvich.feature.filter.store
+package ru.d3rvich.feature.filter.impl.store
 
 import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
@@ -20,10 +20,10 @@ import ru.d3rvich.core.domain.model.LoadingResult
 import ru.d3rvich.core.domain.preferences.FilterPreferences
 import ru.d3rvich.core.domain.usecases.GetGenresUseCase
 import ru.d3rvich.core.domain.usecases.GetPlatformsUseCase
-import ru.d3rvich.feature.filter.model.FilterPreferencesBodyUiModel
-import ru.d3rvich.feature.filter.model.toFilterPreferencesBody
-import ru.d3rvich.feature.filter.model.toFilterPreferencesBodyUiModel
-import ru.d3rvich.feature.filter.model.update
+import ru.d3rvich.feature.filter.impl.model.FilterPreferencesBodyUiModel
+import ru.d3rvich.feature.filter.impl.model.toFilterPreferencesBody
+import ru.d3rvich.feature.filter.impl.model.toFilterPreferencesBodyUiModel
+import ru.d3rvich.feature.filter.impl.model.update
 
 internal class FilterStoreFactory(
     private val storeFactory: StoreFactory,

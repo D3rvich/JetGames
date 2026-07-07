@@ -21,7 +21,8 @@ dependencies {
     implementation(projects.feature.screenshots)
     implementation(projects.feature.settings.api)
     implementation(projects.feature.settings.impl)
-    implementation(projects.feature.filter)
+    implementation(projects.feature.filter.api)
+    implementation(projects.feature.filter.impl)
 
     implementation(libs.kotlinx.collections.immutable)
     implementation(libs.kotlinx.serializationJson)

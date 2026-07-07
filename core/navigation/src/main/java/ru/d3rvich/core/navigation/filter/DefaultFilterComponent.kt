@@ -5,7 +5,7 @@ import com.arkivanov.decompose.jetpackcomponentcontext.JetpackComponentContext
 import com.arkivanov.decompose.jetpackcomponentcontext.viewModel
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
-import ru.d3rvich.feature.filter.FilterViewModel
+import ru.d3rvich.feature.filter.impl.FilterViewModel
 
 @OptIn(ExperimentalDecomposeApi::class)
 class DefaultFilterComponent(componentContext: JetpackComponentContext, private val onClose: () -> Unit) :

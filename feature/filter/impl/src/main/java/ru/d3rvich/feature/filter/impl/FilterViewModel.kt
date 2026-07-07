@@ -1,4 +1,4 @@
-package ru.d3rvich.feature.filter
+package ru.d3rvich.feature.filter.impl
 
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
@@ -13,8 +13,8 @@ import org.koin.core.annotation.KoinViewModel
 import ru.d3rvich.core.domain.preferences.FilterPreferences
 import ru.d3rvich.core.domain.usecases.GetGenresUseCase
 import ru.d3rvich.core.domain.usecases.GetPlatformsUseCase
-import ru.d3rvich.feature.filter.store.FilterStore
-import ru.d3rvich.feature.filter.store.FilterStoreFactory
+import ru.d3rvich.feature.filter.impl.store.FilterStore
+import ru.d3rvich.feature.filter.impl.store.FilterStoreFactory
 import kotlin.time.Duration.Companion.milliseconds
 
 /**

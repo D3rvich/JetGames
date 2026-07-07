@@ -1,4 +1,4 @@
-package ru.d3rvich.feature.filter.views
+package ru.d3rvich.feature.filter.impl.views
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.SizeTransform
@@ -26,7 +26,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import ru.d3rvich.feature.filter.R
+import ru.d3rvich.feature.filter.impl.R
 
 /**
  * Created by Ilya Deryabin at 03.05.2024

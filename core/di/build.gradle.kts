@@ -16,7 +16,7 @@ dependencies {
     implementation(projects.feature.home)
     implementation(projects.feature.browse)
     implementation(projects.feature.favorites)
-    implementation(projects.feature.filter)
+    implementation(projects.feature.filter.impl)
     implementation(projects.feature.detail)
     implementation(projects.feature.screenshots)
     implementation(projects.feature.settings.impl)

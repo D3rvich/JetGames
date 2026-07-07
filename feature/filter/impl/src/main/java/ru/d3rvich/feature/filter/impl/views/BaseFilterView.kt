@@ -1,4 +1,4 @@
-package ru.d3rvich.feature.filter.views
+package ru.d3rvich.feature.filter.impl.views
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -35,7 +35,7 @@ import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.toImmutableList
 import ru.d3rvich.core.ui.theme.JetGamesTheme
-import ru.d3rvich.feature.filter.R
+import ru.d3rvich.feature.filter.impl.R
 import ru.d3rvich.common.R as uiR
 
 /**
