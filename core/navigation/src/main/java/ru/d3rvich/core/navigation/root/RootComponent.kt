@@ -7,7 +7,7 @@ import com.arkivanov.essenty.backhandler.BackHandlerOwner
 import ru.d3rvich.core.navigation.detail.GameDetailComponent
 import ru.d3rvich.core.navigation.filter.FilterComponent
 import ru.d3rvich.core.navigation.main.MainComponent
-import ru.d3rvich.core.navigation.screenshots.ScreenshotsComponent
+import ru.d3rvich.feature.screenshots.api.ScreenshotsComponent
 import ru.d3rvich.feature.settings.api.SettingsComponent
 
 interface RootComponent : BackHandlerOwner {

@@ -6,6 +6,7 @@ import com.arkivanov.decompose.jetpackcomponentcontext.asJetpackComponentContext
 import com.arkivanov.decompose.router.slot.ChildSlot
 import com.arkivanov.decompose.router.slot.SlotNavigation
 import com.arkivanov.decompose.router.slot.activate
+import com.arkivanov.decompose.router.slot.child
 import com.arkivanov.decompose.router.slot.childSlot
 import com.arkivanov.decompose.router.slot.dismiss
 import com.arkivanov.decompose.router.stack.ChildStack
@@ -28,8 +29,7 @@ import ru.d3rvich.core.navigation.root.RootComponent.Child.Filter
 import ru.d3rvich.core.navigation.root.RootComponent.Child.GameDetail
 import ru.d3rvich.core.navigation.root.RootComponent.Child.Main
 import ru.d3rvich.core.navigation.root.RootComponent.Child.Settings
-import ru.d3rvich.core.navigation.screenshots.DefaultScreenshotsComponent
-import ru.d3rvich.core.navigation.screenshots.ScreenshotsComponent
+import ru.d3rvich.feature.screenshots.api.ScreenshotsComponent
 import ru.d3rvich.feature.settings.api.SettingsComponent
 
 @OptIn(ExperimentalDecomposeApi::class)
@@ -133,11 +133,15 @@ class DefaultRootComponent(componentContext: ComponentContext) : RootComponent, 
         componentContext: ComponentContext,
         items: List<String>,
         selectedItem: Int
-    ): ScreenshotsComponent = DefaultScreenshotsComponent(
-        componentContext = componentContext.asJetpackComponentContext(),
-        initialScreenshot = selectedItem,
-        screenshots = items,
-        onClose = { screenshotsNavigation.dismiss() })
+    ): ScreenshotsComponent {
+        val output: (ScreenshotsComponent.Output) -> Unit = {
+            when (it) {
+                ScreenshotsComponent.Output.Finished -> screenshotsNavigation.dismiss()
+            }
+        }
+        val componentFactory: ScreenshotsComponent.Factory = get()
+        return componentFactory.create(componentContext, items, selectedItem, output)
+    }
 
     override fun onBackClicked() {
         navigation.pop()

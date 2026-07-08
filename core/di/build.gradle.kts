@@ -18,7 +18,7 @@ dependencies {
     implementation(projects.feature.favorites)
     implementation(projects.feature.filter.impl)
     implementation(projects.feature.detail)
-    implementation(projects.feature.screenshots)
+    implementation(projects.feature.screenshots.impl)
     implementation(projects.feature.settings.impl)
 
     testImplementation(libs.junit)

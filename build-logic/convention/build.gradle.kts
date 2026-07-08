@@ -54,13 +54,13 @@ gradlePlugin {
             id = "jetgames.android.feature.impl"
             implementationClass = "AndroidFeatureImplConventionPlugin"
         }
+        register("androidFeatureUi") {
+            id = "jetgames.android.feature.ui"
+            implementationClass = "AndroidFeatureUiConventionPlugin"
+        }
         register("jvmLibrary") {
             id = "jetgames.jvm.library"
             implementationClass = "JvmLibraryConventionPlugin"
-        }
-        register("jvmLibraryCompose") {
-            id = "jetgames.jvm.library.compose"
-            implementationClass = "JvmLibraryComposeConventionPlugin"
         }
         register("sharedKoin") {
             id = "jetgames.shared.koin"

@@ -18,7 +18,9 @@ dependencies {
     implementation(projects.feature.browse)
     implementation(projects.feature.favorites)
     implementation(projects.feature.detail)
-    implementation(projects.feature.screenshots)
+    implementation(projects.feature.screenshots.api)
+    implementation(projects.feature.screenshots.impl)
+    implementation(projects.feature.screenshots.ui)
     implementation(projects.feature.settings.api)
     implementation(projects.feature.settings.impl)
     implementation(projects.feature.filter.api)
@@ -27,6 +29,6 @@ dependencies {
     implementation(libs.kotlinx.collections.immutable)
     implementation(libs.kotlinx.serializationJson)
     implementation(libs.decompose.core)
-    implementation(libs.decompose.extentionsCompose)
+    implementation(libs.decompose.extensionsCompose)
     implementation(libs.decompose.jetpackComponentContext)
 }

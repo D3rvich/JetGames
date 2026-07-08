@@ -29,6 +29,9 @@ slf4j = "2.0.17-0"
 junit = "4.13.2"
 androidx-test-ext-junit = "1.3.0"
 espresso-core = "3.7.0"
+coreKtx = "1.19.0"
+appcompat = "1.7.1"
+material = "1.14.0"
 
 [libraries]
 androidx-lifecycle-runtime = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "androidxLifecycle" }
@@ -66,7 +69,7 @@ coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref 
 kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 decompose-core = { group = "com.arkivanov.decompose", name = "decompose", version.ref = "decompose" }
-decompose-extentionsCompose = { group = "com.arkivanov.decompose", name = "extensions-compose", version.ref = "decompose" }
+decompose-extensionsCompose = { group = "com.arkivanov.decompose", name = "extensions-compose", version.ref = "decompose" }
 decompose-jetpackComponentContext = { group = "com.arkivanov.decompose", name = "jetpack-component-context", version.ref = "decompose" }
 mviKotlin-core = { group = "com.arkivanov.mvikotlin", name = "mvikotlin", version.ref = "mviKotlin" }
 mviKotlin-main = { group = "com.arkivanov.mvikotlin", name = "mvikotlin-main", version.ref = "mviKotlin" }
@@ -95,6 +98,9 @@ android-tools-common = { group = "com.android.tools", name = "common", version.r
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 compose-gradlePlugin = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "kotlin" }
 ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
@@ -113,7 +119,7 @@ jetgames-android-library = { id = "jetgames.android.library" }
 jetgames-android-library-compose = { id = "jetgames.android.library.compose" }
 jetgames-android-feature-api = { id = "jetgames.android.feature.api" }
 jetgames-android-feature-impl = { id = "jetgames.android.feature.impl" }
+jetgames-android-feature-ui = { id = "jetgames.android.feature.ui" }
 jetgames-jvm-library = { id = "jetgames.jvm.library" }
-jetgames-jvm-library-compose = { id = "jetgames.jvm.library.compose" }
 jetgames-shared-koin = { id = "jetgames.shared.koin" }
 jetgames-android-koin = { id = "jetgames.android.koin" }

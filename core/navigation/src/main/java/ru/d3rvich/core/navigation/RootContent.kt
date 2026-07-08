@@ -18,11 +18,10 @@ import com.arkivanov.decompose.extensions.compose.stack.animation.predictiveback
 import com.arkivanov.decompose.extensions.compose.stack.animation.slide
 import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
-import kotlinx.collections.immutable.toImmutableList
 import org.koin.compose.koinInject
 import ru.d3rvich.core.navigation.root.RootComponent
 import ru.d3rvich.feature.filter.FilterScreen
-import ru.d3rvich.feature.screenshots.ScreenshotsScreen
+import ru.d3rvich.feature.screenshots.ui.ScreenshotsContent
 import ru.d3rvich.feature.settings.api.SettingsUiFactory
 
 @OptIn(ExperimentalDecomposeApi::class)
@@ -74,14 +73,7 @@ fun RootContent(
         transitionSpec = { fadeIn() togetherWith fadeOut() }) { slot ->
         Box(Modifier.fillMaxSize()) {
             slot.child?.let { child ->
-                with(child.instance.component) {
-                    ScreenshotsScreen(
-                        screenshots = screenshots.toImmutableList(),
-                        selectedItem = selectedScreenshot,
-                        onPageChange = ::onPageChange,
-                        onBackPressed = ::onBackClick
-                    )
-                }
+                ScreenshotsContent(child.instance.component)
             }
         }
     }
