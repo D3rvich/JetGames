@@ -10,8 +10,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ru.d3rvich.feature.browse.R
-import ru.d3rvich.core.domain.entities.PlatformEntity
 import ru.d3rvich.core.domain.model.LoadingResult
+import ru.d3rvich.core.entity.PlatformEntity
 
 /**
  * Created by Ilya Deryabin at 29.10.2024

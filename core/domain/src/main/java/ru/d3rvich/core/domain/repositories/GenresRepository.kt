@@ -2,7 +2,7 @@ package ru.d3rvich.core.domain.repositories
 
 import kotlinx.coroutines.flow.Flow
 import ru.d3rvich.core.domain.model.LoadingResult
-import ru.d3rvich.core.domain.entities.GenreFullEntity
+import ru.d3rvich.core.entity.GenreFullEntity
 
 /**
  * Created by Ilya Deryabin at 04.04.2024

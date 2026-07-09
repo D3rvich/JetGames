@@ -13,7 +13,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import ru.d3rvich.common.components.DefaultErrorView
-import ru.d3rvich.core.domain.entities.ScreenshotEntity
+import ru.d3rvich.core.entity.ScreenshotEntity
 import ru.d3rvich.feature.detail.model.ScreenshotsState
 import ru.d3rvich.feature.detail.store.GameDetailStore
 import ru.d3rvich.feature.detail.views.GameDetailView

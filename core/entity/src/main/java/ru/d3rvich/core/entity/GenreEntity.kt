@@ -1,4 +1,4 @@
-package ru.d3rvich.core.domain.entities
+package ru.d3rvich.core.entity
 
 data class GenreEntity(
     val id: Int,

@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
-import ru.d3rvich.core.domain.entities.StoreEntity
+import ru.d3rvich.core.entity.StoreEntity
 import ru.d3rvich.core.ui.icon.tryFindIcon
 import ru.d3rvich.feature.detail.R
 import ru.d3rvich.feature.detail.model.StoresState

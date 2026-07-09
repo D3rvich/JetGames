@@ -7,14 +7,14 @@ import org.koin.core.annotation.InjectedParam
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.koin.core.parameter.parametersOf
-import ru.d3rvich.core.domain.entities.GameEntity
-import ru.d3rvich.core.domain.entities.SortingEntity
-import ru.d3rvich.core.domain.entities.getReversed
 import ru.d3rvich.core.domain.model.MetacriticRange
 import ru.d3rvich.core.domain.model.Result
 import ru.d3rvich.core.domain.preferences.FilterPreferencesBody
 import ru.d3rvich.core.data.mapper.asResult
 import ru.d3rvich.core.data.mapper.toGameEntity
+import ru.d3rvich.core.entity.GameEntity
+import ru.d3rvich.core.entity.SortingEntity
+import ru.d3rvich.core.entity.getReversed
 import ru.d3rvich.core.remote.JetGamesNetworkDataSource
 import kotlin.math.roundToInt
 

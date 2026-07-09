@@ -34,7 +34,7 @@ import androidx.paging.compose.itemKey
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.datetime.LocalDate
 import ru.d3rvich.common.components.DefaultErrorView
-import ru.d3rvich.core.domain.entities.GameEntity
+import ru.d3rvich.core.entity.GameEntity
 import ru.d3rvich.core.ui.components.GameGridItemView
 import ru.d3rvich.core.ui.components.GameListItemView
 import ru.d3rvich.core.ui.mapper.toGameUiModel

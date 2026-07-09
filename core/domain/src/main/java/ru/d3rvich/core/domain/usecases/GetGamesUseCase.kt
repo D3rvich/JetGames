@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 import org.koin.core.annotation.Factory
 import ru.d3rvich.core.domain.preferences.FilterPreferencesBody
 import ru.d3rvich.core.domain.repositories.GamesRepository
-import ru.d3rvich.core.domain.entities.GameEntity
+import ru.d3rvich.core.entity.GameEntity
 import javax.inject.Inject
 
 /**

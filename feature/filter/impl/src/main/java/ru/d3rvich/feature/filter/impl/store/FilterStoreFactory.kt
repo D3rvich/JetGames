@@ -13,13 +13,13 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import ru.d3rvich.core.domain.entities.GenreFullEntity
-import ru.d3rvich.core.domain.entities.PlatformEntity
-import ru.d3rvich.core.domain.entities.SortingEntity
 import ru.d3rvich.core.domain.model.LoadingResult
 import ru.d3rvich.core.domain.preferences.FilterPreferences
 import ru.d3rvich.core.domain.usecases.GetGenresUseCase
 import ru.d3rvich.core.domain.usecases.GetPlatformsUseCase
+import ru.d3rvich.core.entity.GenreFullEntity
+import ru.d3rvich.core.entity.PlatformEntity
+import ru.d3rvich.core.entity.SortingEntity
 import ru.d3rvich.feature.filter.impl.model.FilterPreferencesBodyUiModel
 import ru.d3rvich.feature.filter.impl.model.toFilterPreferencesBody
 import ru.d3rvich.feature.filter.impl.model.toFilterPreferencesBodyUiModel

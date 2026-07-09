@@ -2,7 +2,7 @@ package ru.d3rvich.feature.detail.model
 
 import androidx.compose.runtime.Immutable
 import kotlinx.collections.immutable.ImmutableList
-import ru.d3rvich.core.domain.entities.ScreenshotEntity
+import ru.d3rvich.core.entity.ScreenshotEntity
 
 /**
  * Created by Ilya Deryabin at 15.03.2024

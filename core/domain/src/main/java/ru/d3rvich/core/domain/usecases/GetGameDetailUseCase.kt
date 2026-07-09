@@ -3,11 +3,11 @@ package ru.d3rvich.core.domain.usecases
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import org.koin.core.annotation.Factory
-import ru.d3rvich.core.domain.entities.GameDetailEntity
 import ru.d3rvich.core.domain.model.Result
 import ru.d3rvich.core.domain.model.LoadingResult
 import ru.d3rvich.core.domain.model.asLoadingResult
 import ru.d3rvich.core.domain.repositories.GamesRepository
+import ru.d3rvich.core.entity.GameDetailEntity
 import javax.inject.Inject
 
 /**

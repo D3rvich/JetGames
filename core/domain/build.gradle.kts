@@ -11,6 +11,7 @@ compileKotlin.compilerOptions {
 }
 
 dependencies {
+    api(projects.core.entity)
     api(projects.core.model)
     implementation(libs.javax.inject)
     implementation(libs.kotlinx.coroutines)

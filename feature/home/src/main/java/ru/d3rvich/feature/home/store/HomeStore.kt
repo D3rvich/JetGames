@@ -4,7 +4,7 @@ import androidx.compose.runtime.Stable
 import androidx.paging.PagingData
 import com.arkivanov.mvikotlin.core.store.Store
 import kotlinx.coroutines.flow.Flow
-import ru.d3rvich.core.domain.entities.GameEntity
+import ru.d3rvich.core.entity.GameEntity
 import ru.d3rvich.feature.home.model.ListDisplayMode
 
 internal interface HomeStore : Store<HomeStore.Intent, HomeStore.State, Nothing> {

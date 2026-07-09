@@ -1,4 +1,4 @@
-package ru.d3rvich.feature.filter
+package ru.d3rvich.feature.filter.impl
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -43,13 +43,12 @@ import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import org.koin.compose.viewmodel.koinViewModel
-import ru.d3rvich.core.domain.entities.GenreFullEntity
-import ru.d3rvich.core.domain.entities.PlatformEntity
-import ru.d3rvich.core.domain.entities.SortingEntity
 import ru.d3rvich.core.domain.model.MetacriticRange
 import ru.d3rvich.core.domain.preferences.FilterPreferencesBody
+import ru.d3rvich.core.entity.GenreFullEntity
+import ru.d3rvich.core.entity.PlatformEntity
+import ru.d3rvich.core.entity.SortingEntity
 import ru.d3rvich.core.ui.theme.JetGamesTheme
-import ru.d3rvich.feature.filter.impl.FilterViewModel
 import ru.d3rvich.feature.filter.impl.model.ListAction
 import ru.d3rvich.feature.filter.impl.model.isDefault
 import ru.d3rvich.feature.filter.impl.model.toFilterPreferencesBodyUiModel
@@ -60,7 +59,6 @@ import ru.d3rvich.feature.filter.impl.views.MetacriticView
 import ru.d3rvich.feature.filter.impl.views.PlatformsView
 import ru.d3rvich.feature.filter.impl.views.SortingView
 import ru.d3rvich.common.R as commonR
-import ru.d3rvich.feature.filter.impl.R
 
 /**
  * Created by Ilya Deryabin at 29.02.2024

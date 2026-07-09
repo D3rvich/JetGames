@@ -10,10 +10,10 @@ import ru.d3rvich.core.data.model.SyncTimeManager
 import ru.d3rvich.core.data.model.localDataSource
 import ru.d3rvich.core.data.util.cashedRemoteRequest
 import ru.d3rvich.core.database.JetGamesDatabase
-import ru.d3rvich.core.domain.entities.PlatformEntity
 import ru.d3rvich.core.domain.model.LoadingResult
 import ru.d3rvich.core.domain.model.map
 import ru.d3rvich.core.domain.repositories.PlatformsRepository
+import ru.d3rvich.core.entity.PlatformEntity
 import ru.d3rvich.core.remote.JetGamesNetworkDataSource
 import ru.d3rvich.core.remote.util.getAllPlatforms
 

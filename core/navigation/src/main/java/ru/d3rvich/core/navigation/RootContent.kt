@@ -20,7 +20,7 @@ import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import org.koin.compose.koinInject
 import ru.d3rvich.core.navigation.root.RootComponent
-import ru.d3rvich.feature.filter.FilterScreen
+import ru.d3rvich.feature.filter.impl.FilterScreen
 import ru.d3rvich.feature.screenshots.ui.ScreenshotsContent
 import ru.d3rvich.feature.settings.api.SettingsUiFactory
 

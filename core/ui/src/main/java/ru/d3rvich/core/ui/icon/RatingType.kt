@@ -11,7 +11,7 @@ import androidx.compose.runtime.Stable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import ru.d3rvich.core.domain.entities.RatingEntity
+import ru.d3rvich.core.entity.RatingEntity
 import ru.d3rvich.core.ui.theme.JetGamesTheme
 
 /**

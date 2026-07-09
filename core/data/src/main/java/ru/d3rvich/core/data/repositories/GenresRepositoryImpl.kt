@@ -2,10 +2,6 @@ package ru.d3rvich.core.data.repositories
 
 import kotlinx.coroutines.flow.Flow
 import org.koin.core.annotation.Single
-import ru.d3rvich.core.domain.entities.GenreFullEntity
-import ru.d3rvich.core.domain.model.LoadingResult
-import ru.d3rvich.core.domain.model.map
-import ru.d3rvich.core.domain.repositories.GenresRepository
 import ru.d3rvich.core.data.mapper.asResult
 import ru.d3rvich.core.data.mapper.toGenreDBO
 import ru.d3rvich.core.data.mapper.toGenreFullEntity
@@ -14,6 +10,10 @@ import ru.d3rvich.core.data.model.SyncTimeManager
 import ru.d3rvich.core.data.model.localDataSource
 import ru.d3rvich.core.data.util.cashedRemoteRequest
 import ru.d3rvich.core.database.JetGamesDatabase
+import ru.d3rvich.core.domain.model.LoadingResult
+import ru.d3rvich.core.domain.model.map
+import ru.d3rvich.core.domain.repositories.GenresRepository
+import ru.d3rvich.core.entity.GenreFullEntity
 import ru.d3rvich.core.remote.JetGamesNetworkDataSource
 import ru.d3rvich.core.remote.util.getAllGenres
 

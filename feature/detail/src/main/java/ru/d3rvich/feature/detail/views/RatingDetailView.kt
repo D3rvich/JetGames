@@ -31,7 +31,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import ru.d3rvich.core.domain.entities.RatingEntity
+import ru.d3rvich.core.entity.RatingEntity
 import ru.d3rvich.core.ui.icon.RatingType
 import ru.d3rvich.core.ui.icon.findWrapper
 import ru.d3rvich.core.ui.icon.textIcon

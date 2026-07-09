@@ -42,9 +42,9 @@ import kotlinx.datetime.format
 import kotlinx.datetime.format.MonthNames
 import kotlinx.datetime.format.char
 import ru.d3rvich.common.components.CollapsingText
-import ru.d3rvich.core.domain.entities.GameDetailEntity
-import ru.d3rvich.core.domain.entities.ParentPlatformEntity
-import ru.d3rvich.core.domain.entities.RatingEntity
+import ru.d3rvich.core.entity.GameDetailEntity
+import ru.d3rvich.core.entity.ParentPlatformEntity
+import ru.d3rvich.core.entity.RatingEntity
 import ru.d3rvich.core.ui.icon.RatingType
 import ru.d3rvich.core.ui.icon.findWrapper
 import ru.d3rvich.core.ui.icon.textIcon

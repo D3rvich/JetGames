@@ -9,7 +9,7 @@ import com.arkivanov.mvikotlin.extensions.coroutines.coroutineExecutorFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
-import ru.d3rvich.core.domain.entities.GameEntity
+import ru.d3rvich.core.entity.GameEntity
 import ru.d3rvich.core.domain.usecases.GetFavoriteGamesUseCase
 
 internal class FavoritesStoreFactory(

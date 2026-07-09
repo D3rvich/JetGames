@@ -2,7 +2,7 @@ package ru.d3rvich.feature.detail.model
 
 import androidx.compose.runtime.Immutable
 import kotlinx.collections.immutable.ImmutableList
-import ru.d3rvich.core.domain.entities.StoreEntity
+import ru.d3rvich.core.entity.StoreEntity
 
 @Immutable
 internal sealed interface StoresState {

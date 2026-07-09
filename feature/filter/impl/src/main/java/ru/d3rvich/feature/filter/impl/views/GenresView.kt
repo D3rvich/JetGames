@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import kotlinx.collections.immutable.ImmutableSet
-import ru.d3rvich.core.domain.entities.GenreFullEntity
+import ru.d3rvich.core.entity.GenreFullEntity
 import ru.d3rvich.feature.filter.impl.R
 
 @Composable

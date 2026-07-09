@@ -1,4 +1,4 @@
-package ru.d3rvich.core.domain.entities
+package ru.d3rvich.core.entity
 
 data class StoreEntity(val id: Int, val name: String, val url: String? = null)
 

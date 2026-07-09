@@ -4,10 +4,10 @@ import androidx.paging.PagingData
 import kotlinx.coroutines.flow.Flow
 import ru.d3rvich.core.domain.model.Result
 import ru.d3rvich.core.domain.preferences.FilterPreferencesBody
-import ru.d3rvich.core.domain.entities.GameDetailEntity
-import ru.d3rvich.core.domain.entities.GameEntity
-import ru.d3rvich.core.domain.entities.StoreLinkEntity
-import ru.d3rvich.core.domain.entities.ScreenshotEntity
+import ru.d3rvich.core.entity.GameDetailEntity
+import ru.d3rvich.core.entity.GameEntity
+import ru.d3rvich.core.entity.ScreenshotEntity
+import ru.d3rvich.core.entity.StoreLinkEntity
 
 interface GamesRepository {
     fun getGames(

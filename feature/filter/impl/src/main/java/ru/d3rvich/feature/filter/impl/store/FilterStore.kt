@@ -3,10 +3,10 @@ package ru.d3rvich.feature.filter.impl.store
 import androidx.compose.runtime.Immutable
 import com.arkivanov.mvikotlin.core.store.Store
 import kotlinx.collections.immutable.ImmutableList
-import ru.d3rvich.core.domain.entities.GenreFullEntity
-import ru.d3rvich.core.domain.entities.PlatformEntity
-import ru.d3rvich.core.domain.entities.SortingEntity
 import ru.d3rvich.core.domain.model.MetacriticRange
+import ru.d3rvich.core.entity.GenreFullEntity
+import ru.d3rvich.core.entity.PlatformEntity
+import ru.d3rvich.core.entity.SortingEntity
 import ru.d3rvich.feature.filter.impl.model.FilterPreferencesBodyUiModel
 import ru.d3rvich.feature.filter.impl.model.ListAction
 

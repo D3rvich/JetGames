@@ -4,9 +4,9 @@ import kotlinx.collections.immutable.persistentSetOf
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.koin.core.annotation.Single
-import ru.d3rvich.core.domain.entities.GenreFullEntity
-import ru.d3rvich.core.domain.entities.PlatformEntity
-import ru.d3rvich.core.domain.entities.SortingEntity
+import ru.d3rvich.core.entity.GenreFullEntity
+import ru.d3rvich.core.entity.PlatformEntity
+import ru.d3rvich.core.entity.SortingEntity
 import ru.d3rvich.core.domain.model.MetacriticRange
 import javax.inject.Inject
 

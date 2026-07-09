@@ -33,9 +33,9 @@ import coil3.compose.AsyncImage
 import kotlinx.datetime.LocalDate
 import ru.d3rvich.common.components.raitingbar.RatingBar
 import ru.d3rvich.common.components.shimmer.shimmer
-import ru.d3rvich.core.domain.entities.GameEntity
-import ru.d3rvich.core.domain.entities.GenreEntity
-import ru.d3rvich.core.domain.entities.ParentPlatformEntity
+import ru.d3rvich.core.entity.GameEntity
+import ru.d3rvich.core.entity.GenreEntity
+import ru.d3rvich.core.entity.ParentPlatformEntity
 import ru.d3rvich.core.ui.R
 import ru.d3rvich.core.ui.icon.findWrapper
 import ru.d3rvich.core.ui.icon.tryFindIcon

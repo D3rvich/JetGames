@@ -38,7 +38,7 @@ import androidx.compose.ui.unit.dp
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import ru.d3rvich.common.R
-import ru.d3rvich.core.domain.entities.SortingEntity
+import ru.d3rvich.core.entity.SortingEntity
 import ru.d3rvich.feature.filter.impl.R as FilterR
 
 /**

@@ -3,9 +3,9 @@ package ru.d3rvich.core.ui.model
 import androidx.compose.runtime.Immutable
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.datetime.LocalDate
-import ru.d3rvich.core.domain.entities.GenreEntity
-import ru.d3rvich.core.domain.entities.ParentPlatformEntity
-import ru.d3rvich.core.domain.entities.RatingEntity
+import ru.d3rvich.core.entity.GenreEntity
+import ru.d3rvich.core.entity.ParentPlatformEntity
+import ru.d3rvich.core.entity.RatingEntity
 
 /**
  * Created by Ilya Deryabin at 24.06.2024

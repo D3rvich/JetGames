@@ -4,7 +4,7 @@ import kotlinx.coroutines.flow.Flow
 import org.koin.core.annotation.Factory
 import ru.d3rvich.core.domain.model.LoadingResult
 import ru.d3rvich.core.domain.repositories.PlatformsRepository
-import ru.d3rvich.core.domain.entities.PlatformEntity
+import ru.d3rvich.core.entity.PlatformEntity
 import javax.inject.Inject
 
 /**

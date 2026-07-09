@@ -1,4 +1,4 @@
-package ru.d3rvich.core.domain.entities
+package ru.d3rvich.core.entity
 
 /**
  * Created by Ilya Deryabin at 23.04.2024

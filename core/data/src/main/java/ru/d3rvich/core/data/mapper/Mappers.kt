@@ -1,15 +1,5 @@
 package ru.d3rvich.core.data.mapper
 
-import ru.d3rvich.core.domain.entities.GameDetailEntity
-import ru.d3rvich.core.domain.entities.GameEntity
-import ru.d3rvich.core.domain.entities.GenreEntity
-import ru.d3rvich.core.domain.entities.GenreFullEntity
-import ru.d3rvich.core.domain.entities.ParentPlatformEntity
-import ru.d3rvich.core.domain.entities.PlatformEntity
-import ru.d3rvich.core.domain.entities.RatingEntity
-import ru.d3rvich.core.domain.entities.ScreenshotEntity
-import ru.d3rvich.core.domain.entities.StoreEntity
-import ru.d3rvich.core.domain.entities.StoreLinkEntity
 import ru.d3rvich.core.domain.model.Result
 import ru.d3rvich.core.database.model.GameDBO
 import ru.d3rvich.core.database.model.GenreDBO
@@ -17,6 +7,16 @@ import ru.d3rvich.core.database.model.ParentPlatformDBO
 import ru.d3rvich.core.database.model.PlatformDBO
 import ru.d3rvich.core.database.model.RatingDBO
 import ru.d3rvich.core.database.model.StoreDBO
+import ru.d3rvich.core.entity.GameDetailEntity
+import ru.d3rvich.core.entity.GameEntity
+import ru.d3rvich.core.entity.GenreEntity
+import ru.d3rvich.core.entity.GenreFullEntity
+import ru.d3rvich.core.entity.ParentPlatformEntity
+import ru.d3rvich.core.entity.PlatformEntity
+import ru.d3rvich.core.entity.RatingEntity
+import ru.d3rvich.core.entity.ScreenshotEntity
+import ru.d3rvich.core.entity.StoreEntity
+import ru.d3rvich.core.entity.StoreLinkEntity
 import ru.d3rvich.core.remote.model.metadata.Genre
 import ru.d3rvich.core.remote.model.metadata.GenreFull
 import ru.d3rvich.core.remote.model.metadata.ParentPlatform

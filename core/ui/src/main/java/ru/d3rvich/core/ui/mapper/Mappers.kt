@@ -1,7 +1,7 @@
 package ru.d3rvich.core.ui.mapper
 
 import kotlinx.collections.immutable.toImmutableList
-import ru.d3rvich.core.domain.entities.GameEntity
+import ru.d3rvich.core.entity.GameEntity
 import ru.d3rvich.core.ui.model.GameUiModel
 
 fun GameEntity.toGameUiModel(): GameUiModel = GameUiModel(

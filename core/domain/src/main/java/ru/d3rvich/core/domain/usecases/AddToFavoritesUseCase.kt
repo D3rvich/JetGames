@@ -3,7 +3,7 @@ package ru.d3rvich.core.domain.usecases
 import org.koin.core.annotation.Factory
 import ru.d3rvich.core.domain.model.Result
 import ru.d3rvich.core.domain.repositories.GamesRepository
-import ru.d3rvich.core.domain.entities.GameDetailEntity
+import ru.d3rvich.core.entity.GameDetailEntity
 import javax.inject.Inject
 
 /**

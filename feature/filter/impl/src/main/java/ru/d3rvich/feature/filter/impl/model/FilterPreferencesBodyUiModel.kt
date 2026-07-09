@@ -2,9 +2,9 @@ package ru.d3rvich.feature.filter.impl.model
 
 import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.toImmutableSet
-import ru.d3rvich.core.domain.entities.GenreFullEntity
-import ru.d3rvich.core.domain.entities.PlatformEntity
-import ru.d3rvich.core.domain.entities.SortingEntity
+import ru.d3rvich.core.entity.GenreFullEntity
+import ru.d3rvich.core.entity.PlatformEntity
+import ru.d3rvich.core.entity.SortingEntity
 import ru.d3rvich.core.domain.model.MetacriticRange
 import ru.d3rvich.core.domain.preferences.FilterPreferencesBody
 

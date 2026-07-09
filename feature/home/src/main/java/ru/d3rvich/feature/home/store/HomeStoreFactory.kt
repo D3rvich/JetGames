@@ -23,10 +23,10 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
-import ru.d3rvich.core.domain.entities.GameEntity
 import ru.d3rvich.core.domain.preferences.FilterPreferences
 import ru.d3rvich.core.domain.preferences.isDefault
 import ru.d3rvich.core.domain.usecases.GetGamesUseCase
+import ru.d3rvich.core.entity.GameEntity
 import ru.d3rvich.feature.home.model.ListDisplayMode
 import ru.d3rvich.feature.home.model.ListDisplayModeProvider
 import kotlin.time.Duration.Companion.milliseconds
