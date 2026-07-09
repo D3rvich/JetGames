@@ -23,6 +23,7 @@ dependencies {
     implementation(projects.feature.screenshots.ui)
     implementation(projects.feature.settings.api)
     implementation(projects.feature.settings.impl)
+    implementation(projects.feature.settings.ui)
     implementation(projects.feature.filter.api)
     implementation(projects.feature.filter.impl)
 

@@ -1,6 +1,5 @@
 package ru.d3rvich.feature.settings.api
 
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 import com.arkivanov.decompose.ComponentContext
@@ -17,7 +16,7 @@ interface SettingsComponent {
 
     fun setColorMode(colorMode: ColorMode)
 
-    fun onCloseClick()
+    fun onClose()
 
     @Immutable
     sealed interface Model {
@@ -40,9 +39,4 @@ interface SettingsComponent {
             output: (Output) -> Unit
         ): SettingsComponent
     }
-}
-
-fun interface SettingsUiFactory {
-    @Composable
-    fun Content(component: SettingsComponent)
 }

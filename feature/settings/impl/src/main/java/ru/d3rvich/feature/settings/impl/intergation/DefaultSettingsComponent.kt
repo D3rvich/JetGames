@@ -28,7 +28,7 @@ internal class DefaultSettingsComponent(
         store.accept(SettingsStore.Intent.ColorModeSelected(colorMode))
     }
 
-    override fun onCloseClick() {
+    override fun onClose() {
         output(SettingsComponent.Output.Finished)
     }
 }
