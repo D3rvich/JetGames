@@ -4,11 +4,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
-import ru.d3rvich.core.domain.model.LoadingResult
-import ru.d3rvich.core.domain.model.Result
-import ru.d3rvich.core.domain.model.asLoadingResult
 import ru.d3rvich.core.data.model.LocalDataSource
 import ru.d3rvich.core.data.model.SyncTimeManager
+import ru.d3rvich.core.model.Result
+import ru.d3rvich.core.model.asResult
 import kotlin.concurrent.atomics.AtomicBoolean
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.time.Clock
@@ -21,7 +20,7 @@ internal fun <T : Any> cashedRemoteRequest(
     localDataSource: LocalDataSource<T>,
     remoteCall: suspend () -> Result<T>,
     minDaysToSync: Int = MIN_SYNC_DAYS,
-): Flow<LoadingResult<T>> = flow {
+): Flow<Result<T>> = flow {
     require(minDaysToSync >= 0) { "minDaysToSync is expected to be greater or equal 0" }
     val duration = syncTimeManager.getTimestamp()?.let { lastSyncNotNull ->
         Clock.System.now() - Instant.fromEpochMilliseconds(lastSyncNotNull)
@@ -41,15 +40,17 @@ internal fun <T : Any> cashedRemoteRequest(
                         emit(result.value)
                     }
 
-                    is Result.Failure -> {
+                    is Result.Error -> {
                         if (!isDataEmitted.load()) {
                             throw result.throwable
                         }
                     }
+
+                    Result.Loading -> {} // Do nothing
                 }
             }
         }
     }
-}.asLoadingResult()
+}.asResult()
 
 private const val MIN_SYNC_DAYS = 7

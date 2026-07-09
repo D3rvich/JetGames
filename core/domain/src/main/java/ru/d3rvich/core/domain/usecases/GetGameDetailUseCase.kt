@@ -2,12 +2,11 @@ package ru.d3rvich.core.domain.usecases
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.onStart
 import org.koin.core.annotation.Factory
-import ru.d3rvich.core.domain.model.Result
-import ru.d3rvich.core.domain.model.LoadingResult
-import ru.d3rvich.core.domain.model.asLoadingResult
 import ru.d3rvich.core.domain.repositories.GamesRepository
 import ru.d3rvich.core.entity.GameDetailEntity
+import ru.d3rvich.core.model.Result
 import javax.inject.Inject
 
 /**
@@ -15,15 +14,7 @@ import javax.inject.Inject
  */
 @Factory
 class GetGameDetailUseCase @Inject constructor(private val gamesRepository: GamesRepository) {
-    operator fun invoke(gameId: Int): Flow<LoadingResult<GameDetailEntity>> = flow {
-        when (val result = gamesRepository.getGameDetail(gameId = gameId)) {
-            is Result.Success -> {
-                emit(result.value)
-            }
-
-            is Result.Failure -> {
-                throw result.throwable
-            }
-        }
-    }.asLoadingResult()
+    operator fun invoke(gameId: Int): Flow<Result<GameDetailEntity>> = flow {
+        emit(gamesRepository.getGameDetail(gameId))
+    }.onStart { emit(Result.Loading) }
 }

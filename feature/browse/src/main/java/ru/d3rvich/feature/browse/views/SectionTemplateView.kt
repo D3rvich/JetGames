@@ -14,7 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import ru.d3rvich.core.domain.model.LoadingResult
+import ru.d3rvich.core.model.Result
 
 /**
  * Created by Ilya Deryabin at 29.10.2024
@@ -23,7 +23,7 @@ import ru.d3rvich.core.domain.model.LoadingResult
 internal fun <T> SectionTemplateView(
     modifier: Modifier = Modifier,
     name: String,
-    status: LoadingResult<T>,
+    result: Result<T>,
     content: @Composable (T) -> Unit,
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
@@ -34,19 +34,19 @@ internal fun <T> SectionTemplateView(
         )
         Spacer(modifier = Modifier.height(8.dp))
         Box(modifier = Modifier.height(180.dp), contentAlignment = Alignment.Center) {
-            when (status) {
-                is LoadingResult.Error -> {
+            when (result) {
+                is Result.Error -> {
                     Text(text = "Error", modifier = Modifier.fillMaxSize())
                 }
 
-                LoadingResult.Loading -> {
+                Result.Loading -> {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         CircularProgressIndicator()
                     }
                 }
 
-                is LoadingResult.Success -> {
-                    content(status.value)
+                is Result.Success -> {
+                    content(result.value)
                 }
             }
         }

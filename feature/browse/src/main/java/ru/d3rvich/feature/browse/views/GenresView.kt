@@ -13,8 +13,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ru.d3rvich.feature.browse.R
-import ru.d3rvich.core.domain.model.LoadingResult
 import ru.d3rvich.core.entity.GenreFullEntity
+import ru.d3rvich.core.model.Result
 import ru.d3rvich.core.ui.theme.JetGamesTheme
 
 /**
@@ -23,12 +23,12 @@ import ru.d3rvich.core.ui.theme.JetGamesTheme
 @Composable
 internal fun GenresView(
     modifier: Modifier = Modifier,
-    genresStatus: LoadingResult<List<GenreFullEntity>>,
+    genresResult: Result<List<GenreFullEntity>>,
 ) {
     SectionTemplateView(
         modifier = modifier,
         name = stringResource(id = R.string.genres),
-        status = genresStatus
+        result = genresResult
     ) { genres ->
         LazyRow(
             modifier = Modifier.fillMaxSize(),

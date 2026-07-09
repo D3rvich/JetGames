@@ -2,9 +2,9 @@ package ru.d3rvich.core.domain.usecases
 
 import kotlinx.coroutines.flow.Flow
 import org.koin.core.annotation.Factory
-import ru.d3rvich.core.domain.model.LoadingResult
 import ru.d3rvich.core.domain.repositories.GenresRepository
 import ru.d3rvich.core.entity.GenreFullEntity
+import ru.d3rvich.core.model.Result
 import javax.inject.Inject
 
 /**
@@ -13,5 +13,5 @@ import javax.inject.Inject
 @Factory
 class GetGenresUseCase @Inject constructor(private val genresRepository: GenresRepository) {
 
-    operator fun invoke(): Flow<LoadingResult<List<GenreFullEntity>>> = genresRepository.getGenres()
+    operator fun invoke(): Flow<Result<List<GenreFullEntity>>> = genresRepository.getGenres()
 }

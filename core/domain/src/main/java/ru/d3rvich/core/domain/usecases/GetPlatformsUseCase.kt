@@ -2,9 +2,9 @@ package ru.d3rvich.core.domain.usecases
 
 import kotlinx.coroutines.flow.Flow
 import org.koin.core.annotation.Factory
-import ru.d3rvich.core.domain.model.LoadingResult
 import ru.d3rvich.core.domain.repositories.PlatformsRepository
 import ru.d3rvich.core.entity.PlatformEntity
+import ru.d3rvich.core.model.Result
 import javax.inject.Inject
 
 /**
@@ -12,7 +12,7 @@ import javax.inject.Inject
  */
 @Factory
 class GetPlatformsUseCase @Inject constructor(private val platformsRepository: PlatformsRepository) {
-    operator fun invoke(): Flow<LoadingResult<List<PlatformEntity>>> {
+    operator fun invoke(): Flow<Result<List<PlatformEntity>>> {
         return platformsRepository.getPlatforms()
     }
 }

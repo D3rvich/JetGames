@@ -9,9 +9,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import ru.d3rvich.feature.browse.R
-import ru.d3rvich.core.domain.model.LoadingResult
 import ru.d3rvich.core.entity.PlatformEntity
+import ru.d3rvich.feature.browse.R
+import ru.d3rvich.core.model.Result
 
 /**
  * Created by Ilya Deryabin at 29.10.2024
@@ -19,12 +19,12 @@ import ru.d3rvich.core.entity.PlatformEntity
 @Composable
 internal fun PlatformsView(
     modifier: Modifier = Modifier,
-    platformsStatus: LoadingResult<List<PlatformEntity>>,
+    result: Result<List<PlatformEntity>>,
 ) {
     SectionTemplateView(
         modifier = modifier,
         name = stringResource(id = R.string.platforms),
-        status = platformsStatus
+        result = result
     ) { platforms ->
         LazyRow(
             modifier = Modifier.fillMaxSize(),

@@ -6,7 +6,6 @@ import com.arkivanov.decompose.jetpackcomponentcontext.asJetpackComponentContext
 import com.arkivanov.decompose.router.slot.ChildSlot
 import com.arkivanov.decompose.router.slot.SlotNavigation
 import com.arkivanov.decompose.router.slot.activate
-import com.arkivanov.decompose.router.slot.child
 import com.arkivanov.decompose.router.slot.childSlot
 import com.arkivanov.decompose.router.slot.dismiss
 import com.arkivanov.decompose.router.stack.ChildStack

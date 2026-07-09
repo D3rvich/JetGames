@@ -12,15 +12,13 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
-import ru.d3rvich.core.domain.model.LoadingResult
-import ru.d3rvich.core.domain.model.Result
 import ru.d3rvich.core.domain.usecases.AddToFavoritesUseCase
 import ru.d3rvich.core.domain.usecases.GetGameDetailUseCase
 import ru.d3rvich.core.domain.usecases.GetScreenshotsUseCase
 import ru.d3rvich.core.domain.usecases.GetStoreLinksByGameIdUseCase
 import ru.d3rvich.core.domain.usecases.RemoveFromFavoritesUseCase
+import ru.d3rvich.core.model.Result
 import ru.d3rvich.feature.detail.browser.BrowserManager
 import ru.d3rvich.feature.detail.model.GameDetailUiModel
 import ru.d3rvich.feature.detail.model.ScreenshotsState
@@ -48,12 +46,12 @@ internal class GameDetailStoreFactory(
                 onAction<Action.LoadGameDetail> {
                     getGameDetailUseCase.invoke(gameId).map { loadingResult ->
                         when (loadingResult) {
-                            LoadingResult.Loading -> Msg.ShowLoading
-                            is LoadingResult.Error -> Msg.ShowError(
+                            Result.Loading -> Msg.ShowLoading
+                            is Result.Error -> Msg.ShowError(
                                 loadingResult.throwable.localizedMessage ?: "error"
                             )
 
-                            is LoadingResult.Success -> {
+                            is Result.Success -> {
                                 val gameDetail = loadingResult.value.toGameDetailUiModel()
                                 Msg.ShowGameDetail(gameDetail)
                             }
@@ -80,7 +78,7 @@ internal class GameDetailStoreFactory(
                             flow { emit(getScreenshotsUseCase(gameId)) }
                                 .map { result ->
                                     when (result) {
-                                        is Result.Failure -> ScreenshotsState.Error(result.throwable)
+                                        is Result.Error -> ScreenshotsState.Error(result.throwable)
                                         is Result.Success -> {
                                             if (action.gameDetail.isFavorite) {
                                                 addToFavoritesUseCase(
@@ -90,9 +88,10 @@ internal class GameDetailStoreFactory(
                                             }
                                             ScreenshotsState.Success(result.value.toImmutableList())
                                         }
+
+                                        Result.Loading -> ScreenshotsState.Loading
                                     }
                                 }
-                                .onStart { emit(ScreenshotsState.Loading) }
                                 .map { state -> Msg.UpdateScreenshots(screenshotsState = state) }
                                 .flowOn(Dispatchers.Default)
                                 .onEach { msg -> dispatch(msg) }
@@ -113,7 +112,7 @@ internal class GameDetailStoreFactory(
                             flow { emit(getStoreLinksUseCase(gameId)) }
                                 .map { result ->
                                     when (result) {
-                                        is Result.Failure -> StoresState.Error(result.throwable)
+                                        is Result.Error -> StoresState.Error(result.throwable)
                                         is Result.Success -> {
                                             val linkByStoreId =
                                                 result.value.associateBy { it.storeId }
@@ -131,9 +130,10 @@ internal class GameDetailStoreFactory(
                                             }
                                             StoresState.Success(updatedStores)
                                         }
+
+                                        Result.Loading -> StoresState.Loading
                                     }
                                 }
-                                .onStart { emit(StoresState.Loading) }
                                 .map { state ->
                                     Msg.UpdateStoreLinks(storeState = state)
                                 }

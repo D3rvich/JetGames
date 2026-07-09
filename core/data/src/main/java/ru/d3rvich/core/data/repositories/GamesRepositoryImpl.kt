@@ -7,8 +7,6 @@ import androidx.paging.map
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.koin.core.annotation.Single
-import ru.d3rvich.core.domain.model.Result
-import ru.d3rvich.core.domain.model.map
 import ru.d3rvich.core.domain.preferences.FilterPreferencesBody
 import ru.d3rvich.core.domain.repositories.GamesRepository
 import ru.d3rvich.core.data.mapper.asResult
@@ -23,6 +21,8 @@ import ru.d3rvich.core.entity.GameDetailEntity
 import ru.d3rvich.core.entity.GameEntity
 import ru.d3rvich.core.entity.ScreenshotEntity
 import ru.d3rvich.core.entity.StoreLinkEntity
+import ru.d3rvich.core.model.Result
+import ru.d3rvich.core.model.map
 import ru.d3rvich.core.remote.JetGamesNetworkDataSource
 import ru.d3rvich.core.remote.model.details.GameDetail
 
@@ -93,7 +93,7 @@ internal class GamesRepositoryImpl(
             database.gamesDao.insert(game = gameDetail.toGameDBO())
             Result.Success(Unit)
         } catch (e: Exception) {
-            Result.Failure(e)
+            Result.Error(e)
         }
 
     override suspend fun deleteGameDetail(gameDetail: GameDetailEntity): Result<Unit> =
@@ -101,6 +101,6 @@ internal class GamesRepositoryImpl(
             database.gamesDao.delete(game = gameDetail.toGameDBO())
             Result.Success(Unit)
         } catch (e: Exception) {
-            Result.Failure(e)
+            Result.Error(e)
         }
 }
