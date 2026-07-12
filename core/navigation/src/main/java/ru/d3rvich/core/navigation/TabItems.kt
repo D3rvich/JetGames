@@ -3,7 +3,7 @@ package ru.d3rvich.core.navigation
 import ru.d3rvich.core.navigation.main.MainComponent
 import ru.d3rvich.common.R as commonR
 import ru.d3rvich.feature.home.R as homeR
-import ru.d3rvich.feature.browse.R as browseR
+import ru.d3rvich.feature.browse.ui.R as browseR
 import ru.d3rvich.feature.favorites.R as favoritesR
 
 enum class TabItems(

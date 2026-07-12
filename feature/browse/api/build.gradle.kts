@@ -4,4 +4,7 @@ plugins {
 
 dependencies {
     implementation(projects.core.entity)
+    implementation(projects.core.model)
+
+    implementation(libs.kotlinx.collections.immutable)
 }

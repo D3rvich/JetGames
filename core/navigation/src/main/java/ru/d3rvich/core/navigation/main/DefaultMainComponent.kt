@@ -9,12 +9,13 @@ import com.arkivanov.decompose.router.stack.bringToFront
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.value.Value
 import kotlinx.serialization.Serializable
-import ru.d3rvich.core.navigation.main.browse.BrowseComponent
-import ru.d3rvich.core.navigation.main.browse.DefaultBrowseComponent
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 import ru.d3rvich.core.navigation.main.favorites.DefaultFavoritesComponent
 import ru.d3rvich.core.navigation.main.favorites.FavoritesComponent
 import ru.d3rvich.core.navigation.main.home.DefaultHomeComponent
 import ru.d3rvich.core.navigation.main.home.HomeComponent
+import ru.d3rvich.feature.browse.api.BrowseComponent
 
 @OptIn(ExperimentalDecomposeApi::class)
 class DefaultMainComponent(
@@ -22,7 +23,7 @@ class DefaultMainComponent(
     private val onShowGameDetail: (gameId: Int) -> Unit,
     private val onShowSettings: () -> Unit,
     private val onShowFilter: () -> Unit,
-) : MainComponent, ComponentContext by componentContext {
+) : MainComponent, ComponentContext by componentContext, KoinComponent {
     private val navigation = StackNavigation<Config>()
 
     override val stack: Value<ChildStack<*, MainComponent.Child>> =
@@ -63,8 +64,11 @@ class DefaultMainComponent(
             onShowSettings = onShowSettings
         )
 
-    private fun browseComponent(componentContext: ComponentContext): BrowseComponent =
-        DefaultBrowseComponent(componentContext = componentContext.asJetpackComponentContext())
+    private fun browseComponent(componentContext: ComponentContext): BrowseComponent {
+        val factory: BrowseComponent.Factory = get()
+        return factory.create(componentContext)
+    }
+
 
     private fun favoritesComponent(componentContext: ComponentContext): FavoritesComponent =
         DefaultFavoritesComponent(

@@ -14,7 +14,7 @@ dependencies {
     implementation(projects.core.database)
     implementation(projects.core.datastore)
     implementation(projects.feature.home)
-    implementation(projects.feature.browse)
+    implementation(projects.feature.browse.impl)
     implementation(projects.feature.favorites)
     implementation(projects.feature.filter.impl)
     implementation(projects.feature.detail)
