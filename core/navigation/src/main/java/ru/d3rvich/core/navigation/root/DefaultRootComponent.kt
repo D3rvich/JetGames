@@ -20,14 +20,13 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import ru.d3rvich.core.navigation.detail.DefaultGameDetailComponent
 import ru.d3rvich.core.navigation.detail.GameDetailComponent
-import ru.d3rvich.core.navigation.filter.DefaultFilterComponent
-import ru.d3rvich.core.navigation.filter.FilterComponent
 import ru.d3rvich.core.navigation.main.DefaultMainComponent
 import ru.d3rvich.core.navigation.main.MainComponent
 import ru.d3rvich.core.navigation.root.RootComponent.Child.Filter
 import ru.d3rvich.core.navigation.root.RootComponent.Child.GameDetail
 import ru.d3rvich.core.navigation.root.RootComponent.Child.Main
 import ru.d3rvich.core.navigation.root.RootComponent.Child.Settings
+import ru.d3rvich.feature.filter.api.FilterComponent
 import ru.d3rvich.feature.screenshots.api.ScreenshotsComponent
 import ru.d3rvich.feature.settings.api.SettingsComponent
 
@@ -123,10 +122,15 @@ class DefaultRootComponent(componentContext: ComponentContext) : RootComponent, 
         return factory.create(componentContext = componentContext, output = output)
     }
 
-    private fun filterComponent(componentContext: ComponentContext): FilterComponent =
-        DefaultFilterComponent(
-            componentContext = componentContext.asJetpackComponentContext(),
-            onClose = { navigation.pop() })
+    private fun filterComponent(componentContext: ComponentContext): FilterComponent {
+        val output: (FilterComponent.Output) -> Unit = { output ->
+            when (output) {
+                FilterComponent.Output.Finished -> navigation.pop()
+            }
+        }
+        val factory: FilterComponent.Factory = get()
+        return factory.create(context = componentContext, output = output)
+    }
 
     private fun screenshotsComponent(
         componentContext: ComponentContext,

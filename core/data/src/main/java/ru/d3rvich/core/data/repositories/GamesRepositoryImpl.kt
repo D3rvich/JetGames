@@ -7,7 +7,6 @@ import androidx.paging.map
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.koin.core.annotation.Single
-import ru.d3rvich.core.domain.preferences.FilterPreferencesBody
 import ru.d3rvich.core.domain.repositories.GamesRepository
 import ru.d3rvich.core.data.mapper.asResult
 import ru.d3rvich.core.data.mapper.toGameDBO
@@ -21,6 +20,7 @@ import ru.d3rvich.core.entity.GameDetailEntity
 import ru.d3rvich.core.entity.GameEntity
 import ru.d3rvich.core.entity.ScreenshotEntity
 import ru.d3rvich.core.entity.StoreLinkEntity
+import ru.d3rvich.core.model.FilterPreferencesBody
 import ru.d3rvich.core.model.Result
 import ru.d3rvich.core.model.map
 import ru.d3rvich.core.remote.JetGamesNetworkDataSource

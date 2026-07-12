@@ -1,5 +1,5 @@
 plugins {
-    alias(libs.plugins.jetgames.android.library.compose)
+    alias(libs.plugins.jetgames.android.library)
     alias(libs.plugins.jetgames.android.feature.impl)
     alias(libs.plugins.jetgames.shared.koin)
 }

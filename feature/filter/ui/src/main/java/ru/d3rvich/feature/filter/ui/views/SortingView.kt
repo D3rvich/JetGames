@@ -1,4 +1,4 @@
-package ru.d3rvich.feature.filter.impl.views
+package ru.d3rvich.feature.filter.ui.views
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.animateFloatAsState
@@ -39,7 +39,7 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import ru.d3rvich.common.R
 import ru.d3rvich.core.entity.SortingEntity
-import ru.d3rvich.feature.filter.impl.R as FilterR
+import ru.d3rvich.feature.filter.ui.R as FilterR
 
 /**
  * Created by Ilya Deryabin at 29.02.2024

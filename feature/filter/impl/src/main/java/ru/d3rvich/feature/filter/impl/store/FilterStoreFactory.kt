@@ -4,6 +4,7 @@ import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.coroutineExecutorFactory
+import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toImmutableSet
 import kotlinx.coroutines.Dispatchers
@@ -13,20 +14,20 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import org.koin.core.annotation.Factory
 import ru.d3rvich.core.domain.preferences.FilterPreferences
 import ru.d3rvich.core.domain.usecases.GetGenresUseCase
 import ru.d3rvich.core.domain.usecases.GetPlatformsUseCase
 import ru.d3rvich.core.entity.GenreFullEntity
 import ru.d3rvich.core.entity.PlatformEntity
 import ru.d3rvich.core.entity.SortingEntity
+import ru.d3rvich.core.model.FilterPreferencesBody
 import ru.d3rvich.core.model.Result
-import ru.d3rvich.feature.filter.impl.model.FilterPreferencesBodyUiModel
-import ru.d3rvich.feature.filter.impl.model.toFilterPreferencesBody
-import ru.d3rvich.feature.filter.impl.model.toFilterPreferencesBodyUiModel
-import ru.d3rvich.feature.filter.impl.model.update
+import ru.d3rvich.feature.filter.api.update
 
+@Factory
 internal class FilterStoreFactory(
-    private val storeFactory: StoreFactory,
+    private val storeFactory: StoreFactory = DefaultStoreFactory(),
     private val filterPreferences: FilterPreferences,
     private val getPlatformsUseCase: GetPlatformsUseCase,
     private val getGenresUseCase: GetGenresUseCase,
@@ -38,13 +39,13 @@ internal class FilterStoreFactory(
                 sortingList = SortingEntity.entries.toImmutableList(),
                 platforms = emptyList<PlatformEntity>().toImmutableList(),
                 genres = emptyList<GenreFullEntity>().toImmutableList(),
-                filterPreferencesBody = filterPreferences.filterPreferencesFlow.value.toFilterPreferencesBodyUiModel()
+                filterPreferencesBody = filterPreferences.filterPreferencesFlow.value
             ),
             bootstrapper = SimpleBootstrapper(Unit),
             executorFactory = coroutineExecutorFactory {
                 onAction<Unit> {
                     filterPreferences.filterPreferencesFlow.map { body ->
-                        Msg.UpdateFilterPreferencesBody(body.toFilterPreferencesBodyUiModel())
+                        Msg.UpdateFilterPreferencesBody(body)
                     }
                         .flowOn(Dispatchers.Default)
                         .onEach { msg -> dispatch(msg) }
@@ -70,7 +71,7 @@ internal class FilterStoreFactory(
                     publish(FilterStore.Label.CloseScreen)
                 }
                 onIntent<FilterStore.Intent.OnApplyClicked> {
-                    val currentBody = state().filterPreferencesBody.toFilterPreferencesBody()
+                    val currentBody = state().filterPreferencesBody
                     filterPreferences.applyFilterPreferences(currentBody)
                     publish(FilterStore.Label.CloseScreen)
                 }
@@ -121,6 +122,6 @@ internal class FilterStoreFactory(
             val platforms: List<PlatformEntity>
         ) : Msg
 
-        data class UpdateFilterPreferencesBody(val body: FilterPreferencesBodyUiModel) : Msg
+        data class UpdateFilterPreferencesBody(val body: FilterPreferencesBody) : Msg
     }
 }

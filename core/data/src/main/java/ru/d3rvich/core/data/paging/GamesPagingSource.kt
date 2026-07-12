@@ -10,11 +10,11 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.koin.core.parameter.parametersOf
 import ru.d3rvich.core.data.mapper.toGameEntity
-import ru.d3rvich.core.domain.model.MetacriticRange
-import ru.d3rvich.core.domain.preferences.FilterPreferencesBody
+import ru.d3rvich.core.model.MetacriticRange
 import ru.d3rvich.core.entity.GameEntity
 import ru.d3rvich.core.entity.SortingEntity
 import ru.d3rvich.core.entity.getReversed
+import ru.d3rvich.core.model.FilterPreferencesBody
 import ru.d3rvich.core.remote.JetGamesNetworkDataSource
 import ru.d3rvich.core.remote.result.NetworkResult
 import kotlin.math.roundToInt

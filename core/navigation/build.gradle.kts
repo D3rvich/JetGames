@@ -26,6 +26,7 @@ dependencies {
     implementation(projects.feature.settings.ui)
     implementation(projects.feature.filter.api)
     implementation(projects.feature.filter.impl)
+    implementation(projects.feature.filter.ui)
 
     implementation(libs.kotlinx.collections.immutable)
     implementation(libs.kotlinx.serializationJson)

@@ -3,12 +3,12 @@ package ru.d3rvich.feature.filter.impl.store
 import androidx.compose.runtime.Immutable
 import com.arkivanov.mvikotlin.core.store.Store
 import kotlinx.collections.immutable.ImmutableList
-import ru.d3rvich.core.domain.model.MetacriticRange
 import ru.d3rvich.core.entity.GenreFullEntity
 import ru.d3rvich.core.entity.PlatformEntity
 import ru.d3rvich.core.entity.SortingEntity
-import ru.d3rvich.feature.filter.impl.model.FilterPreferencesBodyUiModel
-import ru.d3rvich.feature.filter.impl.model.ListAction
+import ru.d3rvich.core.model.FilterPreferencesBody
+import ru.d3rvich.core.model.MetacriticRange
+import ru.d3rvich.feature.filter.api.ListAction
 
 internal interface FilterStore : Store<FilterStore.Intent, FilterStore.State, FilterStore.Label> {
     @Immutable
@@ -16,7 +16,7 @@ internal interface FilterStore : Store<FilterStore.Intent, FilterStore.State, Fi
         val sortingList: ImmutableList<SortingEntity>,
         val platforms: ImmutableList<PlatformEntity>,
         val genres: ImmutableList<GenreFullEntity>,
-        val filterPreferencesBody: FilterPreferencesBodyUiModel,
+        val filterPreferencesBody: FilterPreferencesBody,
     )
 
     sealed interface Intent {

@@ -1,5 +1,5 @@
 plugins {
-    alias(libs.plugins.jetgames.android.library.compose)
+    alias(libs.plugins.jetgames.android.library)
     alias(libs.plugins.jetgames.android.feature.impl)
 }
 
@@ -8,6 +8,8 @@ android {
 }
 
 dependencies {
+    implementation(projects.feature.filter.api)
+
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.espresso.core)
 }

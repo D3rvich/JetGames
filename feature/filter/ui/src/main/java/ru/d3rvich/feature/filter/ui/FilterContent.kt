@@ -1,4 +1,4 @@
-package ru.d3rvich.feature.filter.impl
+package ru.d3rvich.feature.filter.ui
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -23,7 +23,6 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,67 +36,62 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.toImmutableList
-import org.koin.compose.viewmodel.koinViewModel
-import ru.d3rvich.core.domain.model.MetacriticRange
-import ru.d3rvich.core.domain.preferences.FilterPreferencesBody
+import kotlinx.collections.immutable.toImmutableSet
 import ru.d3rvich.core.entity.GenreFullEntity
 import ru.d3rvich.core.entity.PlatformEntity
 import ru.d3rvich.core.entity.SortingEntity
+import ru.d3rvich.core.model.FilterPreferencesBody
+import ru.d3rvich.core.model.MetacriticRange
+import ru.d3rvich.core.model.isDefault
 import ru.d3rvich.core.ui.theme.JetGamesTheme
-import ru.d3rvich.feature.filter.impl.model.ListAction
-import ru.d3rvich.feature.filter.impl.model.isDefault
-import ru.d3rvich.feature.filter.impl.model.toFilterPreferencesBodyUiModel
-import ru.d3rvich.feature.filter.impl.store.FilterStore
-import ru.d3rvich.feature.filter.impl.views.FilterAppBar
-import ru.d3rvich.feature.filter.impl.views.GenresView
-import ru.d3rvich.feature.filter.impl.views.MetacriticView
-import ru.d3rvich.feature.filter.impl.views.PlatformsView
-import ru.d3rvich.feature.filter.impl.views.SortingView
+import ru.d3rvich.feature.filter.api.FilterComponent
+import ru.d3rvich.feature.filter.api.ListAction
+import ru.d3rvich.feature.filter.ui.views.FilterAppBar
+import ru.d3rvich.feature.filter.ui.views.GenresView
+import ru.d3rvich.feature.filter.ui.views.MetacriticView
+import ru.d3rvich.feature.filter.ui.views.PlatformsView
+import ru.d3rvich.feature.filter.ui.views.SortingView
 import ru.d3rvich.common.R as commonR
 
-/**
- * Created by Ilya Deryabin at 29.02.2024
- */
 @Composable
-fun FilterScreen(
-    onNavigateBack: () -> Unit,
-    modifier: Modifier = Modifier,
-    viewModel: FilterViewModel = koinViewModel(),
-) {
-    val state by viewModel.uiState.collectAsStateWithLifecycle()
-    FilterScreen(
-        modifier = modifier,
-        state = state,
-        onIntent = viewModel::obtainIntent,
-        onNavigateBack = onNavigateBack,
+fun FilterContent(component: FilterComponent, modifier: Modifier = Modifier) {
+    val model by component.models.subscribeAsState()
+    FilterContent(
+        model = model,
+        onBackClicked = component::close,
+        onReset = component::reset,
+        onApply = component::apply,
+        onSortingChange = component::setSorting,
+        onReversedChange = component::setIsReversed,
+        onSelectedPlatformsChange = component::updateSelectedPlatforms,
+        onSelectedGenresChange = component::updateSelectedGenres,
+        onMetacriticRangeChange = component::setMetacriticRange,
+        modifier = modifier
     )
-    LaunchedEffect(viewModel) {
-        viewModel.labels.collect { label ->
-            when (label) {
-                FilterStore.Label.CloseScreen -> onNavigateBack()
-            }
-        }
-    }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun FilterScreen(
-    state: FilterStore.State,
-    onIntent: (FilterStore.Intent) -> Unit,
-    onNavigateBack: () -> Unit,
+private fun FilterContent(
+    model: FilterComponent.Model,
+    onBackClicked: () -> Unit,
+    onReset: () -> Unit,
+    onApply: () -> Unit,
+    onSortingChange: (SortingEntity) -> Unit,
+    onReversedChange: (Boolean) -> Unit,
+    onSelectedPlatformsChange: (ListAction<PlatformEntity>) -> Unit,
+    onSelectedGenresChange: (ListAction<GenreFullEntity>) -> Unit,
+    onMetacriticRangeChange: (MetacriticRange) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var specToShow: FilterSpecToShow? by rememberSaveable {
         mutableStateOf(null)
     }
-    val showResetButton: Boolean by remember(state) {
-        derivedStateOf { !state.filterPreferencesBody.isDefault() }
+    val showResetButton: Boolean by remember(model) {
+        derivedStateOf { !model.filterPreferencesBody.isDefault() }
     }
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -105,12 +99,12 @@ private fun FilterScreen(
         topBar = {
             FilterAppBar(
                 isResetButtonVisible = showResetButton,
-                onBackClicked = onNavigateBack,
-                onResetClicked = { onIntent(FilterStore.Intent.OnResetClicked) },
+                onBackClicked = onBackClicked,
+                onResetClicked = onReset,
             )
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = { onIntent(FilterStore.Intent.OnApplyClicked) }) {
+            FloatingActionButton(onClick = onApply) {
                 Icon(
                     painter = painterResource(commonR.drawable.check_24px),
                     contentDescription = stringResource(R.string.apply_filter)
@@ -126,47 +120,43 @@ private fun FilterScreen(
         ) {
             item {
                 GenresView(
-                    selectedGenres = state.filterPreferencesBody.selectedGenres,
+                    selectedGenres = model.filterPreferencesBody.selectedGenres.toImmutableSet(),
                     onRemoveGenre = {
-                        onIntent(FilterStore.Intent.OnSelectedGenresChange(ListAction.RemoveItem(it)))
+                        onSelectedGenresChange(ListAction.RemoveItem(it))
                     },
                     onClearRequest = {
-                        onIntent(FilterStore.Intent.OnSelectedGenresChange(ListAction.Clear()))
+                        onSelectedGenresChange(ListAction.Clear())
                     },
-                    requestGenresDialog = { specToShow = FilterSpecToShow.Genres })
+                    requestGenresDialog = {
+                        specToShow = FilterSpecToShow.Genres
+                    })
             }
             item {
                 PlatformsView(
-                    selectedPlatforms = state.filterPreferencesBody.selectedPlatforms,
+                    selectedPlatforms = model.filterPreferencesBody.selectedPlatforms.toImmutableSet(),
                     onRemovePlatform = { item ->
-                        onIntent(
-                            FilterStore.Intent.OnSelectedPlatformsChange(
-                                ListAction.RemoveItem(item)
-                            )
-                        )
+                        onSelectedPlatformsChange(ListAction.RemoveItem(item))
                     },
                     onClearRequest = {
-                        onIntent(FilterStore.Intent.OnSelectedPlatformsChange(ListAction.Clear()))
+                        onSelectedPlatformsChange(ListAction.Clear())
                     },
-                    requestPlatformsDialog = { specToShow = FilterSpecToShow.Platform })
+                    requestPlatformsDialog = {
+                        specToShow = FilterSpecToShow.Platform
+                    })
             }
             item {
                 SortingView(
-                    sortingList = state.sortingList,
-                    selectedSorting = state.filterPreferencesBody.sortBy,
-                    isSortReversed = state.filterPreferencesBody.isReversed,
-                    onSortingSelected = { sorting ->
-                        onIntent(FilterStore.Intent.OnSortChange(sorting))
-                    },
-                    onReversedChange = { isReversed ->
-                        onIntent(FilterStore.Intent.OnReversedChange(isReversed))
-                    }
+                    sortingList = model.sortingList,
+                    selectedSorting = model.filterPreferencesBody.sortBy,
+                    isSortReversed = model.filterPreferencesBody.isReversed,
+                    onSortingSelected = onSortingChange,
+                    onReversedChange = onReversedChange
                 )
             }
             item {
                 val metacriticRange =
-                    if (state.filterPreferencesBody.metacriticRange != MetacriticRange.Unspecific) {
-                        with(state.filterPreferencesBody.metacriticRange) {
+                    if (model.filterPreferencesBody.metacriticRange != MetacriticRange.Unspecific) {
+                        with(model.filterPreferencesBody.metacriticRange) {
                             min..max
                         }
                     } else {
@@ -176,7 +166,7 @@ private fun FilterScreen(
                     range = metacriticRange,
                     onRangeChange = { floatRange ->
                         val range = MetacriticRange(floatRange = floatRange)
-                        onIntent(FilterStore.Intent.OnMetacriticRangeChange(range))
+                        onMetacriticRangeChange(range)
                     },
                 )
             }
@@ -184,19 +174,22 @@ private fun FilterScreen(
         specToShow?.let { specToShowNotNull ->
             FilterBottomSheet(
                 spec = specToShowNotNull,
-                state = state,
-                onIntent = onIntent,
+                model = model,
+                onSelectedPlatformsChange = onSelectedPlatformsChange,
+                onSelectedGenresChange = onSelectedGenresChange,
                 onDismiss = { specToShow = null })
         }
     }
 }
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun FilterBottomSheet(
     spec: FilterSpecToShow,
-    state: FilterStore.State,
-    onIntent: (FilterStore.Intent) -> Unit,
+    model: FilterComponent.Model,
+    onSelectedPlatformsChange: (ListAction<PlatformEntity>) -> Unit,
+    onSelectedGenresChange: (ListAction<GenreFullEntity>) -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -206,42 +199,26 @@ private fun FilterBottomSheet(
     ) {
         when (spec) {
             FilterSpecToShow.Genres -> BottomSheetContent(
-                items = state.genres,
-                selectedItems = state.filterPreferencesBody.selectedGenres,
+                items = model.genres,
+                selectedItems = model.filterPreferencesBody.selectedGenres.toImmutableSet(),
                 onItemSelected = {
-                    onIntent(
-                        FilterStore.Intent.OnSelectedGenresChange(
-                            ListAction.AddItem(it)
-                        )
-                    )
+                    onSelectedGenresChange(ListAction.AddItem(it))
                 },
                 onItemRemoved = {
-                    onIntent(
-                        FilterStore.Intent.OnSelectedGenresChange(
-                            ListAction.RemoveItem(it)
-                        )
-                    )
+                    onSelectedGenresChange(ListAction.RemoveItem(it))
                 },
                 itemName = GenreFullEntity::name,
                 itemKey = GenreFullEntity::id
             )
 
             FilterSpecToShow.Platform -> BottomSheetContent(
-                items = state.platforms,
-                selectedItems = state.filterPreferencesBody.selectedPlatforms,
+                items = model.platforms,
+                selectedItems = model.filterPreferencesBody.selectedPlatforms.toImmutableSet(),
                 onItemSelected = {
-                    onIntent(
-                        FilterStore.Intent.OnSelectedPlatformsChange(
-                            ListAction.AddItem(it)
-                        )
-                    )
+                    onSelectedPlatformsChange(ListAction.AddItem(it))
                 },
                 onItemRemoved = {
-                    onIntent(
-                        FilterStore.Intent.OnSelectedPlatformsChange(
-                            ListAction.RemoveItem(it)
-                        )
-                    )
+                    onSelectedPlatformsChange(ListAction.RemoveItem(it))
                 },
                 itemName = PlatformEntity::name,
                 itemKey = PlatformEntity::id
@@ -305,18 +282,14 @@ private enum class FilterSpecToShow {
 
 @Preview(showBackground = true)
 @Composable
-private fun FilterScreenPreview() {
+private fun FilterContentPreview() {
     JetGamesTheme {
-        val state = FilterStore.State(
-            sortingList = SortingEntity.entries.toImmutableList(),
+        val model = FilterComponent.Model(
+            sortingList = persistentListOf(),
             platforms = persistentListOf(),
             genres = persistentListOf(),
-            filterPreferencesBody = FilterPreferencesBody.default().toFilterPreferencesBodyUiModel()
+            filterPreferencesBody = FilterPreferencesBody.default()
         )
-        FilterScreen(
-            state = state,
-            onIntent = {},
-            onNavigateBack = { },
-        )
+        FilterContent(model, {}, {}, {}, {}, {}, {}, {}, {})
     }
 }
