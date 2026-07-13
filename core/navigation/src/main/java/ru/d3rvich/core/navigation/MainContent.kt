@@ -28,7 +28,7 @@ import com.arkivanov.decompose.extensions.compose.stack.Children
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import ru.d3rvich.core.navigation.main.MainComponent
 import ru.d3rvich.feature.browse.ui.BrowseContent
-import ru.d3rvich.feature.favorites.FavoritesScreen
+import ru.d3rvich.feature.favorites.ui.FavoritesContent
 import ru.d3rvich.feature.home.HomeScreen
 
 @Composable
@@ -66,11 +66,9 @@ fun MainContent(
                     }
 
                     is MainComponent.Child.Favorites -> {
-                        FavoritesScreen(
+                        FavoritesContent(
+                            component = child.component,
                             contentPadding = paddingValues,
-                            navigateToGameDetail = mainComponent::onGameClick,
-                            navigateToSettingsScreen = mainComponent::onSettingsClick,
-                            viewModel = child.component.favoritesViewModel
                         )
                     }
 

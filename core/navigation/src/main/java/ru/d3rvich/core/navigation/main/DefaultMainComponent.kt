@@ -11,11 +11,10 @@ import com.arkivanov.decompose.value.Value
 import kotlinx.serialization.Serializable
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
-import ru.d3rvich.core.navigation.main.favorites.DefaultFavoritesComponent
-import ru.d3rvich.core.navigation.main.favorites.FavoritesComponent
 import ru.d3rvich.core.navigation.main.home.DefaultHomeComponent
 import ru.d3rvich.core.navigation.main.home.HomeComponent
 import ru.d3rvich.feature.browse.api.BrowseComponent
+import ru.d3rvich.feature.favorites.api.FavoritesComponent
 
 @OptIn(ExperimentalDecomposeApi::class)
 class DefaultMainComponent(
@@ -70,12 +69,16 @@ class DefaultMainComponent(
     }
 
 
-    private fun favoritesComponent(componentContext: ComponentContext): FavoritesComponent =
-        DefaultFavoritesComponent(
-            componentContext = componentContext.asJetpackComponentContext(),
-            onShowGameDetail = onShowGameDetail,
-            onShowSettings = onShowSettings,
-        )
+    private fun favoritesComponent(componentContext: ComponentContext): FavoritesComponent {
+        val output: (FavoritesComponent.Output) -> Unit = { output ->
+            when (output) {
+                is FavoritesComponent.Output.OpenGameDetail -> onShowGameDetail(output.gameId)
+                FavoritesComponent.Output.OpenSettings -> onShowSettings()
+            }
+        }
+        val factory: FavoritesComponent.Factory = get()
+        return factory.create(componentContext, output)
+    }
 
     override fun onGameClick(gameId: Int) {
         onShowGameDetail(gameId)
