@@ -2,9 +2,9 @@ package ru.d3rvich.core.navigation.main
 
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.Value
-import ru.d3rvich.core.navigation.main.home.HomeComponent
 import ru.d3rvich.feature.browse.api.BrowseComponent
 import ru.d3rvich.feature.favorites.api.FavoritesComponent
+import ru.d3rvich.feature.home.api.HomeComponent
 
 interface MainComponent {
     val stack: Value<ChildStack<*, Child>>

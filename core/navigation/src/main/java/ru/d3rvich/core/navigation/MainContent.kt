@@ -29,7 +29,7 @@ import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import ru.d3rvich.core.navigation.main.MainComponent
 import ru.d3rvich.feature.browse.ui.BrowseContent
 import ru.d3rvich.feature.favorites.ui.FavoritesContent
-import ru.d3rvich.feature.home.HomeScreen
+import ru.d3rvich.feature.home.ui.HomeContent
 
 @Composable
 fun MainContent(
@@ -72,12 +72,9 @@ fun MainContent(
                         )
                     }
 
-                    is MainComponent.Child.Home -> HomeScreen(
+                    is MainComponent.Child.Home -> HomeContent(
+                        component = child.component,
                         contentPadding = paddingValues,
-                        homeViewModel = child.component.homeViewModel,
-                        navigateToDetailScreen = mainComponent::onGameClick,
-                        navigateToFilterScreen = mainComponent::onFilterClick,
-                        navigateToSettingsScreen = mainComponent::onSettingsClick
                     )
                 }
             }

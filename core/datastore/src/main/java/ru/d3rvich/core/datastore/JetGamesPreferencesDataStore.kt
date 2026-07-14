@@ -10,9 +10,9 @@ import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.koin.core.annotation.Single
-import ru.d3rvich.core.domain.model.ListDisplayOption
 import ru.d3rvich.core.domain.model.UserPreferences
 import ru.d3rvich.core.model.ColorMode
+import ru.d3rvich.core.model.ListDisplayOption
 import ru.d3rvich.core.model.ThemeType
 
 @Single

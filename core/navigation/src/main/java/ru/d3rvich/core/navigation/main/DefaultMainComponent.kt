@@ -2,7 +2,6 @@ package ru.d3rvich.core.navigation.main
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
-import com.arkivanov.decompose.jetpackcomponentcontext.asJetpackComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.bringToFront
@@ -11,10 +10,9 @@ import com.arkivanov.decompose.value.Value
 import kotlinx.serialization.Serializable
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
-import ru.d3rvich.core.navigation.main.home.DefaultHomeComponent
-import ru.d3rvich.core.navigation.main.home.HomeComponent
 import ru.d3rvich.feature.browse.api.BrowseComponent
 import ru.d3rvich.feature.favorites.api.FavoritesComponent
+import ru.d3rvich.feature.home.api.HomeComponent
 
 @OptIn(ExperimentalDecomposeApi::class)
 class DefaultMainComponent(
@@ -56,12 +54,17 @@ class DefaultMainComponent(
         Config.Home -> MainComponent.Child.Home(homeComponent(childComponentContext))
     }
 
-    private fun homeComponent(componentContext: ComponentContext): HomeComponent =
-        DefaultHomeComponent(
-            componentContext = componentContext.asJetpackComponentContext(),
-            onShowGameDetail = onShowGameDetail,
-            onShowSettings = onShowSettings
-        )
+    private fun homeComponent(componentContext: ComponentContext): HomeComponent {
+        val output: (HomeComponent.Output) -> Unit = { output ->
+            when (output) {
+                HomeComponent.Output.OpenFilter -> onShowFilter()
+                is HomeComponent.Output.OpenGameDetail -> onShowGameDetail(output.gameId)
+                HomeComponent.Output.OpenSettings -> onShowSettings()
+            }
+        }
+        val factory: HomeComponent.Factory = get()
+        return factory.create(componentContext, output)
+    }
 
     private fun browseComponent(componentContext: ComponentContext): BrowseComponent {
         val factory: BrowseComponent.Factory = get()

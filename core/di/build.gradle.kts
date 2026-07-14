@@ -13,7 +13,7 @@ dependencies {
     implementation(projects.core.remote)
     implementation(projects.core.database)
     implementation(projects.core.datastore)
-    implementation(projects.feature.home)
+    implementation(projects.feature.home.impl)
     implementation(projects.feature.browse.impl)
     implementation(projects.feature.favorites.impl)
     implementation(projects.feature.filter.impl)
