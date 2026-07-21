@@ -21,6 +21,7 @@ fun GameDetailContent(component: GameDetailComponent, modifier: Modifier = Modif
         onScreenshotsClicked = component::openScreenshots,
         onStoreClicked = component::openGameStore,
         onBackClicked = component::close,
+        modifier = modifier
     )
 }
 

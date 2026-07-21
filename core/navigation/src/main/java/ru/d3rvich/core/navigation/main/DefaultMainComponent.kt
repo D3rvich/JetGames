@@ -1,7 +1,6 @@
 package ru.d3rvich.core.navigation.main
 
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.ExperimentalDecomposeApi
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
 import com.arkivanov.decompose.router.stack.bringToFront
@@ -14,7 +13,6 @@ import ru.d3rvich.feature.browse.api.BrowseComponent
 import ru.d3rvich.feature.favorites.api.FavoritesComponent
 import ru.d3rvich.feature.home.api.HomeComponent
 
-@OptIn(ExperimentalDecomposeApi::class)
 class DefaultMainComponent(
     componentContext: ComponentContext,
     private val onShowGameDetail: (gameId: Int) -> Unit,
