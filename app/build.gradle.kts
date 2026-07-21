@@ -28,8 +28,9 @@ dependencies {
     implementation(projects.core.domain)
     implementation(projects.core.ui)
     implementation(projects.core.data)
-    implementation(projects.core.navigation)
     implementation(projects.core.di)
+    implementation(projects.feature.root.component)
+    implementation(projects.feature.root.ui)
 
     implementation(libs.splashscreen)
     implementation(libs.androidx.lifecycle.runtime)

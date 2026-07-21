@@ -17,6 +17,8 @@ dependencies {
     implementation(projects.feature.browse.impl)
     implementation(projects.feature.favorites.impl)
     implementation(projects.feature.filter.impl)
+    implementation(projects.feature.main.component)
+    implementation(projects.feature.root.component)
     implementation(projects.feature.detail.impl)
     implementation(projects.feature.screenshots.impl)
     implementation(projects.feature.settings.impl)

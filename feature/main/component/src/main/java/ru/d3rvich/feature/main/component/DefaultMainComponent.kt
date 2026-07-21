@@ -13,7 +13,7 @@ import ru.d3rvich.feature.browse.api.BrowseComponent
 import ru.d3rvich.feature.favorites.api.FavoritesComponent
 import ru.d3rvich.feature.home.api.HomeComponent
 
-@Factory
+@Factory(binds = [DefaultMainComponent::class])
 internal class DefaultMainComponent(
     @InjectedParam componentContext: ComponentContext,
     @InjectedParam private val output: (MainComponent.Output) -> Unit,

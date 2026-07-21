@@ -11,5 +11,5 @@ internal class MainComponentFactory : MainComponent.Factory, KoinComponent {
     override fun create(
         context: ComponentContext,
         output: (MainComponent.Output) -> Unit
-    ): MainComponent = get { parametersOf(context, output) }
+    ): MainComponent = get<DefaultMainComponent> { parametersOf(context, output) }
 }
