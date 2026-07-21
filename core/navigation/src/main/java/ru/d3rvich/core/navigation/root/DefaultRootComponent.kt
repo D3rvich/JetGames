@@ -2,7 +2,6 @@ package ru.d3rvich.core.navigation.root
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.ExperimentalDecomposeApi
-import com.arkivanov.decompose.jetpackcomponentcontext.asJetpackComponentContext
 import com.arkivanov.decompose.router.slot.ChildSlot
 import com.arkivanov.decompose.router.slot.SlotNavigation
 import com.arkivanov.decompose.router.slot.activate
@@ -18,14 +17,13 @@ import com.arkivanov.essenty.backhandler.BackHandlerOwner
 import kotlinx.serialization.Serializable
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
-import ru.d3rvich.core.navigation.detail.DefaultGameDetailComponent
-import ru.d3rvich.core.navigation.detail.GameDetailComponent
 import ru.d3rvich.core.navigation.main.DefaultMainComponent
 import ru.d3rvich.core.navigation.main.MainComponent
 import ru.d3rvich.core.navigation.root.RootComponent.Child.Filter
 import ru.d3rvich.core.navigation.root.RootComponent.Child.GameDetail
 import ru.d3rvich.core.navigation.root.RootComponent.Child.Main
 import ru.d3rvich.core.navigation.root.RootComponent.Child.Settings
+import ru.d3rvich.feature.detail.api.GameDetailComponent
 import ru.d3rvich.feature.filter.api.FilterComponent
 import ru.d3rvich.feature.screenshots.api.ScreenshotsComponent
 import ru.d3rvich.feature.settings.api.SettingsComponent
@@ -95,21 +93,16 @@ class DefaultRootComponent(componentContext: ComponentContext) : RootComponent, 
             when (output) {
                 GameDetailComponent.Output.Finished -> navigation.pop()
 
-                is GameDetailComponent.Output.OpenScreenshotsAt -> {
-                    screenshotsNavigation.activate(
-                        ScreenshotsConfig(
-                            selectedItem = output.selectedItem,
-                            screenshots = output.items
-                        )
+                is GameDetailComponent.Output.OpenScreenshots -> screenshotsNavigation.activate(
+                    ScreenshotsConfig(
+                        selectedItem = output.selectedItem,
+                        screenshots = output.items.map { it.imageUrl }
                     )
-                }
+                )
             }
         }
-        return DefaultGameDetailComponent(
-            componentContext = componentContext.asJetpackComponentContext(),
-            gameId = gameId,
-            output = output
-        )
+        val factory: GameDetailComponent.Factory = get()
+        return factory.create(componentContext, gameId, output)
     }
 
     private fun settingsComponent(componentContext: ComponentContext): SettingsComponent {

@@ -4,8 +4,8 @@ import com.arkivanov.decompose.router.slot.ChildSlot
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.backhandler.BackHandlerOwner
-import ru.d3rvich.core.navigation.detail.GameDetailComponent
 import ru.d3rvich.core.navigation.main.MainComponent
+import ru.d3rvich.feature.detail.api.GameDetailComponent
 import ru.d3rvich.feature.filter.api.FilterComponent
 import ru.d3rvich.feature.screenshots.api.ScreenshotsComponent
 import ru.d3rvich.feature.settings.api.SettingsComponent

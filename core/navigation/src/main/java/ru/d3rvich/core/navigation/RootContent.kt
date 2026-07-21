@@ -19,6 +19,7 @@ import com.arkivanov.decompose.extensions.compose.stack.animation.slide
 import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import ru.d3rvich.core.navigation.root.RootComponent
+import ru.d3rvich.feature.detail.ui.GameDetailContent
 import ru.d3rvich.feature.filter.ui.FilterContent
 import ru.d3rvich.feature.screenshots.ui.ScreenshotsContent
 import ru.d3rvich.feature.settings.ui.SettingsContent
