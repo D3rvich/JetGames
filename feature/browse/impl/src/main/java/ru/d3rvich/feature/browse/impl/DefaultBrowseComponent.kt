@@ -22,7 +22,7 @@ import ru.d3rvich.core.model.Result
 import ru.d3rvich.core.model.map
 import ru.d3rvich.feature.browse.api.BrowseComponent
 
-@Factory(binds = [BrowseComponent::class])
+@Factory(binds = [DefaultBrowseComponent::class])
 internal class DefaultBrowseComponent(
     @InjectedParam context: ComponentContext,
     getGenresUseCase: GetGenresUseCase,

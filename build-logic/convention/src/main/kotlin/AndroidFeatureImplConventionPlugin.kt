@@ -12,7 +12,6 @@ import ru.d3rvich.jetgames.libs
 class AndroidFeatureImplConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
-            apply(plugin = "jetgames.android.library")
             apply(plugin = "jetgames.android.koin")
             extensions.configure<LibraryExtension> {
                 defaultConfig {
@@ -26,13 +25,9 @@ class AndroidFeatureImplConventionPlugin : Plugin<Project> {
 
                 "implementation"(libs.findLibrary("kotlinx-collections-immutable").get())
                 "implementation"(libs.findLibrary("decompose-core").get())
-                "implementation"(libs.findLibrary("decompose-extensionsCompose").get())
                 "implementation"(libs.findLibrary("mviKotlin-core").get())
                 "implementation"(libs.findLibrary("mviKotlin-main").get())
                 "implementation"(libs.findLibrary("mviKotlin-extensions-coroutines").get())
-                "implementation"(libs.findLibrary("androidx-lifecycle-runtime-compose").get())
-                "implementation"(libs.findLibrary("androidx-lifecycle-viewmodel-compose").get())
-                "implementation"(libs.findLibrary("androidx-lifecycle-viewmodel-ktx").get())
             }
         }
     }

@@ -10,5 +10,5 @@ import ru.d3rvich.feature.browse.api.BrowseComponent
 @Factory(binds = [BrowseComponent.Factory::class])
 internal class BrowseComponentFactory : BrowseComponent.Factory, KoinComponent {
     override fun create(component: ComponentContext): BrowseComponent =
-        get { parametersOf(component) }
+        get<DefaultBrowseComponent> { parametersOf(component) }
 }

@@ -18,6 +18,7 @@ internal fun Project.configureAndroidCompose(commonExtension: CommonExtension) {
         dependencies {
             val bom = libs.findLibrary("androidx-compose-bom").get()
             "implementation"(platform(bom))
+            "implementation"(libs.findLibrary("androidx-core-ktx").get())
             "implementation"(libs.findLibrary("androidx-compose-ui-core").get())
             "implementation"(libs.findLibrary("androidx-compose-ui-graphics").get())
             "implementation"(libs.findLibrary("androidx-compose-material3").get())
@@ -28,15 +29,6 @@ internal fun Project.configureAndroidCompose(commonExtension: CommonExtension) {
         }
     }
     configureCompose<KotlinAndroidProjectExtension>()
-}
-
-internal fun Project.configureJvmCompose(kotlinJvmExtension: KotlinJvmProjectExtension) {
-    kotlinJvmExtension.apply {
-        dependencies {
-            "implementation"(libs.findLibrary("androidx-compose-runtime").get())
-        }
-    }
-    configureCompose<KotlinJvmProjectExtension>()
 }
 
 private inline fun <reified T : KotlinBaseExtension> Project.configureCompose() = configure<T> {
