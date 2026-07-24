@@ -1,4 +1,4 @@
-package ru.d3rvich.feature.settings.impl.intergation
+package ru.d3rvich.feature.settings.impl.component
 
 import ru.d3rvich.feature.settings.api.SettingsComponent
 import ru.d3rvich.feature.settings.impl.store.SettingsStore

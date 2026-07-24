@@ -1,16 +1,16 @@
 [versions]
-androidGradlePlugin = "9.2.1"
-androidTools = "32.2.1"
+androidGradlePlugin = "9.3.1"
+androidTools = "32.3.1"
 androidxCore = "1.19.0"
-kotlin = "2.4.0"
+kotlin = "2.4.10"
 koin-bom = "4.2.2"
-koin-compiler = "1.0.1"
+koin-compiler = "1.0.2"
 ksp = "2.3.6"
 androidxLifecycle = "2.11.0"
 androidxActivity = "1.13.0"
-androidxCompose = "1.11.3"
+androidxCompose = "1.11.4"
 androidxComposeMaterial3 = "1.4.0"
-androidxComposeBom = "2026.06.00"
+androidxComposeBom = "2026.06.01"
 androidxPaging = "3.5.0"
 androidxRoom = "2.8.4"
 androidxDataStore = "1.2.1"
@@ -23,8 +23,8 @@ mviKotlin = "4.4.0"
 kotlinxCoroutines = "1.11.0"
 kotlinxSerializationJson = "1.11.0"
 kotlinxDatetime = "0.8.0"
-kotlinxCollectionsImmutable = "0.5.0"
-ktor = "3.5.0"
+kotlinxCollectionsImmutable = "0.5.1"
+ktor = "3.5.1"
 slf4j = "2.0.17-0"
 junit = "4.13.2"
 androidx-test-ext-junit = "1.3.0"
@@ -33,7 +33,7 @@ espresso-core = "3.7.0"
 [libraries]
 androidx-lifecycle-runtime = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "androidxLifecycle" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidxActivity" }
-androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "androidxCompose"}
+androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "androidxCompose" }
 androidx-compose-ui-core = { group = "androidx.compose.ui", name = "ui", version.ref = "androidxCompose" }
 androidx-compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics", version.ref = "androidxCompose" }
 androidx-compose-ui-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview", version.ref = "androidxCompose" }

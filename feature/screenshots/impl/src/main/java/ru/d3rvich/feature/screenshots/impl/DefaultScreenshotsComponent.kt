@@ -5,13 +5,16 @@ import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.backhandler.BackCallback
 import kotlinx.serialization.builtins.serializer
+import org.koin.core.annotation.Factory
+import org.koin.core.annotation.InjectedParam
 import ru.d3rvich.feature.screenshots.api.ScreenshotsComponent
 
+@Factory(binds = [DefaultScreenshotsComponent::class])
 internal class DefaultScreenshotsComponent(
-    componentContext: ComponentContext,
-    initialPage: Int,
-    override val screenshots: List<String>,
-    private val output: (ScreenshotsComponent.Output) -> Unit,
+    @InjectedParam componentContext: ComponentContext,
+    @InjectedParam initialPage: Int,
+    @InjectedParam override val screenshots: List<String>,
+    @InjectedParam private val output: (ScreenshotsComponent.Output) -> Unit,
 ) : ScreenshotsComponent, ComponentContext by componentContext {
 
     private val savedShowWidgets =

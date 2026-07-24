@@ -12,6 +12,8 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import org.koin.core.annotation.Factory
+import org.koin.core.annotation.InjectedParam
 import ru.d3rvich.core.entity.GenreFullEntity
 import ru.d3rvich.core.entity.PlatformEntity
 import ru.d3rvich.core.entity.SortingEntity
@@ -22,10 +24,11 @@ import ru.d3rvich.feature.filter.api.ListAction
 import ru.d3rvich.feature.filter.impl.store.FilterStore
 import ru.d3rvich.feature.filter.impl.store.FilterStoreFactory
 
+@Factory(binds = [DefaultFilterComponent::class])
 internal class DefaultFilterComponent(
+    @InjectedParam context: ComponentContext,
     storeFactory: FilterStoreFactory,
-    private val context: ComponentContext,
-    private val output: (FilterComponent.Output) -> Unit
+    @InjectedParam private val output: (FilterComponent.Output) -> Unit
 ) : FilterComponent, ComponentContext by context {
     private val store = instanceKeeper.getStore { storeFactory.create() }
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)

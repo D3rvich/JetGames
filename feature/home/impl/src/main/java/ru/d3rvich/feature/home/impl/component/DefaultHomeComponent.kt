@@ -4,6 +4,8 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.operator.map
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
+import org.koin.core.annotation.Factory
+import org.koin.core.annotation.InjectedParam
 import ru.d3rvich.core.model.ListDisplayOption
 import ru.d3rvich.core.ui.utils.asValue
 import ru.d3rvich.feature.home.api.HomeComponent
@@ -11,10 +13,11 @@ import ru.d3rvich.feature.home.api.HomeComponent.Model
 import ru.d3rvich.feature.home.impl.store.HomeStore
 import ru.d3rvich.feature.home.impl.store.HomeStoreFactory
 
+@Factory(binds = [DefaultHomeComponent::class])
 internal class DefaultHomeComponent(
-    componentContext: ComponentContext,
+    @InjectedParam componentContext: ComponentContext,
     storeFactory: HomeStoreFactory,
-    private val output: (HomeComponent.Output) -> Unit
+    @InjectedParam private val output: (HomeComponent.Output) -> Unit
 ) : HomeComponent, ComponentContext by componentContext {
 
     private val store: HomeStore = instanceKeeper.getStore { storeFactory.create() }

@@ -4,6 +4,8 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.operator.map
 import com.arkivanov.mvikotlin.core.instancekeeper.getStore
+import org.koin.core.annotation.Factory
+import org.koin.core.annotation.InjectedParam
 import ru.d3rvich.core.entity.ScreenshotEntity
 import ru.d3rvich.core.ui.utils.asValue
 import ru.d3rvich.feature.detail.api.GameDetailComponent
@@ -11,12 +13,13 @@ import ru.d3rvich.feature.detail.impl.browser.BrowserManager
 import ru.d3rvich.feature.detail.impl.store.GameDetailStore
 import ru.d3rvich.feature.detail.impl.store.GameDetailStoreFactory
 
+@Factory(binds = [DefaultGameDetailComponent::class])
 internal class DefaultGameDetailComponent(
-    context: ComponentContext,
-    override val gameId: Int,
-    private val browserManager: BrowserManager,
+    @InjectedParam context: ComponentContext,
+    @InjectedParam override val gameId: Int,
+    @InjectedParam private val output: (GameDetailComponent.Output) -> Unit,
     private val storeFactory: GameDetailStoreFactory,
-    private val output: (GameDetailComponent.Output) -> Unit
+    private val browserManager: BrowserManager
 ) : GameDetailComponent, ComponentContext by context {
     private val store = instanceKeeper.getStore { storeFactory.create(gameId) }
 
