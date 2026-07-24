@@ -10,6 +10,9 @@ dependencies {
     implementation(projects.core.domain)
     implementation(projects.common)
 
+    implementation(libs.decompose.core)
+    implementation(libs.mviKotlin.core)
+
     implementation(libs.kotlinx.collections.immutable)
     implementation(libs.kotlinx.datetime)
 

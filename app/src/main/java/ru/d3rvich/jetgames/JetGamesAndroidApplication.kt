@@ -13,10 +13,8 @@ import coil3.request.crossfade
 import coil3.util.DebugLogger
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
-import org.koin.core.annotation.KoinApplication
-import org.koin.plugin.module.dsl.startKoin
-import ru.d3rvich.common.R
-import ru.d3rvich.jetgames.di.AppModule
+import org.koin.plugin.module.dsl.modules
+import ru.d3rvich.core.di.initKoin
 import timber.log.Timber
 
 /**
@@ -26,7 +24,8 @@ class JetGamesAndroidApplication : Application(), SingletonImageLoader.Factory {
     override fun onCreate() {
         super.onCreate()
         Timber.plant(Timber.DebugTree())
-        startKoin<JetGamesApplication> {
+        initKoin {
+            modules(ViewModelModule::class)
             androidLogger()
             androidContext(this@JetGamesAndroidApplication)
         }
@@ -54,6 +53,3 @@ class JetGamesAndroidApplication : Application(), SingletonImageLoader.Factory {
         }
             .build()
 }
-
-@KoinApplication(modules = [AppModule::class])
-object JetGamesApplication

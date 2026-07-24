@@ -21,8 +21,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import ru.d3rvich.core.domain.model.ThemeType
 import ru.d3rvich.core.domain.model.UserPreferences
+import ru.d3rvich.core.model.ThemeType
 import ru.d3rvich.core.ui.model.asUiState
 import ru.d3rvich.core.ui.model.isDarkTheme
 import ru.d3rvich.core.ui.settings.LocalUserPreferences

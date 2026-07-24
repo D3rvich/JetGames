@@ -21,6 +21,7 @@ dependencies {
     compileOnly(libs.android.gradlePlugin)
     compileOnly(libs.android.tools.common)
     compileOnly(libs.kotlin.gradlePlugin)
+    compileOnly(libs.compose.gradlePlugin)
     compileOnly(libs.ksp.gradlePlugin)
 }
 
@@ -45,9 +46,17 @@ gradlePlugin {
             id = "jetgames.android.library"
             implementationClass = "AndroidLibraryConventionPlugin"
         }
-        register("androidFeature") {
-            id = "jetgames.android.feature"
-            implementationClass = "AndroidFeatureConventionPlugin"
+        register("androidFeatureApi") {
+            id = "jetgames.android.feature.api"
+            implementationClass = "AndroidFeatureApiConventionPlugin"
+        }
+        register("androidFeatureImpl") {
+            id = "jetgames.android.feature.impl"
+            implementationClass = "AndroidFeatureImplConventionPlugin"
+        }
+        register("androidFeatureUi") {
+            id = "jetgames.android.feature.ui"
+            implementationClass = "AndroidFeatureUiConventionPlugin"
         }
         register("jvmLibrary") {
             id = "jetgames.jvm.library"

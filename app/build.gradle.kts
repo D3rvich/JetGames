@@ -28,16 +28,9 @@ dependencies {
     implementation(projects.core.domain)
     implementation(projects.core.ui)
     implementation(projects.core.data)
-    implementation(projects.core.remote)
-    implementation(projects.core.database)
-    implementation(projects.common)
-    implementation(projects.feature.home)
-    implementation(projects.feature.browse)
-    implementation(projects.feature.favorites)
-    implementation(projects.feature.filter)
-    implementation(projects.feature.detail)
-    implementation(projects.feature.screenshots)
-    implementation(projects.feature.settings)
+    implementation(projects.core.di)
+    implementation(projects.feature.root.component)
+    implementation(projects.feature.root.ui)
 
     implementation(libs.splashscreen)
     implementation(libs.androidx.lifecycle.runtime)
@@ -45,15 +38,12 @@ dependencies {
 
     // Decompose
     implementation(libs.decompose.core)
-    implementation(libs.decompose.extentionsCompose)
 
     // Coil
-    implementation(libs.coil.network)
-    implementation(libs.coil.compose)
+    implementation(libs.coil)
 
     // Coroutines
     implementation(libs.kotlinx.coroutines)
-    implementation(libs.kotlinx.serializationJson)
 
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.espresso.core)

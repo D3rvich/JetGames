@@ -18,7 +18,7 @@ sealed interface NetworkResult<out T> {
          * 4хх и 5хх ответы с сервера
          */
         class ServerError(
-            override val error: ResponseException?,
+            override val error: ResponseException,
             val statusCode: Int,
             val statusMassage: String? = null,
             val url: String? = null,
@@ -27,18 +27,18 @@ sealed interface NetworkResult<out T> {
         /**
          * Проблемы с сетью или таймаут
          */
-        class ConnectivityError(override val error: IOException?) : Failure<IOException>
+        class ConnectivityError(override val error: IOException) : Failure<IOException>
 
         /**
          * Ошибка при парсинге JSON
          */
-        class SerializationError(override val error: SerializationException?) :
+        class SerializationError(override val error: SerializationException) :
             Failure<SerializationException>
 
         /**
          * Прочие ошибки
          */
-        class Error(override val error: Exception?) : Failure<Exception>
+        class Error(override val error: Exception) : Failure<Exception>
     }
 }
 

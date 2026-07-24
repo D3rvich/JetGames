@@ -1,0 +1,137 @@
+package ru.d3rvich.feature.home.impl.store
+
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
+import com.arkivanov.mvikotlin.core.store.Store
+import com.arkivanov.mvikotlin.core.store.StoreFactory
+import com.arkivanov.mvikotlin.extensions.coroutines.coroutineExecutorFactory
+import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.WhileSubscribed
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.launch
+import org.koin.core.annotation.Factory
+import ru.d3rvich.core.domain.preferences.FilterPreferences
+import ru.d3rvich.core.domain.repositories.UserPreferencesRepository
+import ru.d3rvich.core.domain.usecases.GetGamesUseCase
+import ru.d3rvich.core.entity.GameEntity
+import ru.d3rvich.core.model.ListDisplayOption
+import ru.d3rvich.core.model.isDefault
+import kotlin.time.Duration.Companion.milliseconds
+
+@Factory
+internal class HomeStoreFactory(
+    private val getGamesUseCase: GetGamesUseCase,
+    private val filterPreferences: FilterPreferences,
+    private val userPreferencesRepository: UserPreferencesRepository,
+    private val storeFactory: StoreFactory = DefaultStoreFactory(),
+) {
+    @OptIn(FlowPreview::class)
+    fun create(): HomeStore = object : HomeStore,
+        Store<HomeStore.Intent, HomeStore.State, Nothing> by storeFactory.create<HomeStore.Intent, Unit, Message, HomeStore.State, Nothing>(
+            name = "HomeStore",
+            initialState = HomeStore.State.Loading,
+            bootstrapper = SimpleBootstrapper(Unit),
+            executorFactory = coroutineExecutorFactory {
+                val searchFlow = MutableStateFlow("")
+                val debounceSearchFlow = searchFlow.debounce(SEARCH_TIMEOUT_MILLIS.milliseconds)
+                val refreshTrigger = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
+                onAction<Unit> {
+                    val gamesFlow = combine(
+                        debounceSearchFlow,
+                        filterPreferences.filterPreferencesFlow,
+                        refreshTrigger.onStart { emit(Unit) }
+                    ) { search, filterPreferencesBody, _ -> search to filterPreferencesBody }
+                        .map { (search, body) ->
+                            val games = getGamesUseCase.invoke(search, body).cachedIn(this)
+                            Triple(games, search, body)
+                        }.flowOn(Dispatchers.IO).shareIn(
+                            scope = this,
+                            started = SharingStarted.WhileSubscribed(5000.milliseconds),
+                            replay = 1
+                        )
+                    combine(
+                        gamesFlow,
+                        userPreferencesRepository.getListDisplayOption()
+                    ) { triple, listDisplayMode ->
+                        val (games, search, body) = triple
+                        val isFilterEdited = !body.isDefault()
+                        Message.Loaded(
+                            games = games,
+                            search = search,
+                            isFilterEdited = isFilterEdited,
+                            listDisplayMode = listDisplayMode
+                        )
+                    }.flowOn(Dispatchers.Default)
+                        .onEach { message -> dispatch(message) }
+                        .launchIn(this)
+                }
+
+                onIntent<HomeStore.Intent.SearchChange> { intent ->
+                    searchFlow.value = intent.searchText
+                    dispatch(Message.SearchChanged(intent.searchText))
+                }
+                onIntent<HomeStore.Intent.Refresh> {
+                    refreshTrigger.tryEmit(Unit)
+                }
+                onIntent<HomeStore.Intent.ListDisplayChange> { intent ->
+                    launch(Dispatchers.Default) {
+                        userPreferencesRepository.setListDisplayOption(intent.listDisplayOption)
+                    }
+                }
+            },
+            reducer = { message ->
+                when (this) {
+                    is HomeStore.State.Content -> {
+                        when (message) {
+                            is Message.Loaded -> copy(
+                                games = message.games,
+                                search = message.search,
+                                isFilterEdited = message.isFilterEdited,
+                                listDisplayOption = message.listDisplayMode
+                            )
+
+                            is Message.SearchChanged -> copy(search = message.text)
+                        }
+                    }
+
+                    HomeStore.State.Loading -> {
+                        if (message is Message.Loaded) {
+                            HomeStore.State.Content(
+                                games = message.games,
+                                search = message.search,
+                                isFilterEdited = message.isFilterEdited,
+                                listDisplayOption = message.listDisplayMode
+                            )
+                        } else this
+                    }
+                }
+            }
+        ) {}
+
+    private sealed interface Message {
+        data class SearchChanged(val text: String) : Message
+
+        data class Loaded(
+            val games: Flow<PagingData<GameEntity>>,
+            val search: String,
+            val isFilterEdited: Boolean,
+            val listDisplayMode: ListDisplayOption,
+        ) : Message
+    }
+}
+
+private const val SEARCH_TIMEOUT_MILLIS = 500L

@@ -9,10 +9,13 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import ru.d3rvich.core.domain.model.ColorModeType
-import ru.d3rvich.core.domain.model.ThemeType
+import org.koin.core.annotation.Single
 import ru.d3rvich.core.domain.model.UserPreferences
+import ru.d3rvich.core.model.ColorMode
+import ru.d3rvich.core.model.ListDisplayOption
+import ru.d3rvich.core.model.ThemeType
 
+@Single
 class JetGamesPreferencesDataStore(private val context: Context) {
 
     private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(DATASTORE_NAME)
@@ -29,8 +32,15 @@ class JetGamesPreferencesDataStore(private val context: Context) {
         val themeRaw = preferences[PreferencesScheme.THEME_TYPE]
         val colorRaw = preferences[PreferencesScheme.COLOR_MODE]
         val theme = if (themeRaw != null) ThemeType.valueOf(themeRaw) else ThemeType.System
-        val color = if (colorRaw != null) ColorModeType.valueOf(colorRaw) else ColorModeType.Default
+        val color = if (colorRaw != null) ColorMode.valueOf(colorRaw) else ColorMode.Default
         UserPreferences(theme, color)
+    }
+
+    val listDisplayOption: Flow<ListDisplayOption> = context.dataStore.data.map { preferences ->
+        val rawListDisplayOption = preferences[PreferencesScheme.LIST_DISPLAY_OPTION]
+        rawListDisplayOption?.let {
+            ListDisplayOption.valueOf(rawListDisplayOption)
+        } ?: ListDisplayOption.Compact
     }
 
     suspend fun setTheme(theme: ThemeType) {
@@ -39,7 +49,7 @@ class JetGamesPreferencesDataStore(private val context: Context) {
         }
     }
 
-    suspend fun setColorMode(colorMode: ColorModeType) {
+    suspend fun setColorMode(colorMode: ColorMode) {
         context.dataStore.edit { preferences ->
             preferences[PreferencesScheme.COLOR_MODE] = colorMode.name
         }
@@ -56,6 +66,12 @@ class JetGamesPreferencesDataStore(private val context: Context) {
             preferences[PreferencesScheme.SYNC_TIME_GENRES] = value
         }
     }
+
+    suspend fun setListDisplayOption(option: ListDisplayOption) {
+        context.dataStore.edit { preferences ->
+            preferences[PreferencesScheme.LIST_DISPLAY_OPTION] = option.toString()
+        }
+    }
 }
 
 
@@ -66,6 +82,7 @@ private object PreferencesScheme {
     val COLOR_MODE = stringPreferencesKey("COLOR_MODE")
     val SYNC_TIME_PLATFORMS = longPreferencesKey("SYNC_PLATFORMS")
     val SYNC_TIME_GENRES = longPreferencesKey("SYNC_GENRES")
+    val LIST_DISPLAY_OPTION = stringPreferencesKey("LIST_DISPLAY_OPTION")
 }
 
 private const val DEFAULT_TIMESTAMP = -1L

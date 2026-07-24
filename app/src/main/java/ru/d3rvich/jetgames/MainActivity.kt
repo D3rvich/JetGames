@@ -13,16 +13,18 @@ import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.arkivanov.decompose.defaultComponentContext
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.d3rvich.core.domain.model.UserPreferences
 import ru.d3rvich.core.ui.model.asUiState
 import ru.d3rvich.core.ui.theme.JetGamesTheme
-import ru.d3rvich.jetgames.navigation.RootContent
-import ru.d3rvich.jetgames.navigation.root.DefaultRootComponent
+import ru.d3rvich.feature.root.component.RootComponent
+import ru.d3rvich.feature.root.ui.RootContent
 
 class MainActivity : ComponentActivity() {
 
     private val viewModel: MainViewModel by viewModel()
+    private val rootComponentFactory: RootComponent.Factory by inject()
 
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,7 +34,7 @@ class MainActivity : ComponentActivity() {
         }
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        val root = DefaultRootComponent(componentContext = defaultComponentContext())
+        val root = rootComponentFactory.create(defaultComponentContext())
         setContent {
             val windowSizeClass = calculateWindowSizeClass(this)
             val uiState = viewModel.uiState.collectAsStateWithLifecycle().value

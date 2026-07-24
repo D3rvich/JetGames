@@ -3,21 +3,23 @@ JetGames
 
 ## Tech Stack
 
-[Kotlin 2.0](https://kotlinlang.org/docs/whatsnew20.html)
+[Kotlin](https://kotlinlang.org/docs/whatsnew20.html)
 
-[Jetpack Compose](https://developer.android.com/compose) + [Material3](https://m3.material.io/)
+[Jetpack Compose](https://developer.android.com/compose) with [Material3](https://m3.material.io/)
 
 [Decompose](https://github.com/arkivanov/Decompose)
 
-[KotlinX Serialization](https://github.com/Kotlin/kotlinx.serialization)
+[MVIKotlin](https://github.com/arkivanov/MVIKotlin)
 
-[KotlinX Coroutines](https://github.com/Kotlin/kotlinx.coroutines)
+[Kotlin Serialization](https://github.com/Kotlin/kotlinx.serialization)
 
-[KotlinX Datetime](https://github.com/Kotlin/kotlinx-datetime)
+[Kotlin Coroutines](https://github.com/Kotlin/kotlinx.coroutines)
+
+[Kotlin Datetime](https://github.com/Kotlin/kotlinx-datetime)
 
 [KSP](https://github.com/google/ksp)
 
-[Koin Annotations](https://insert-koin.io/)
+[Koin Annotations](https://insert-koin.io/) with [Compiler Plugin](https://github.com/InsertKoinIO/koin-compiler-plugin)
 
 [Coil](https://coil-kt.github.io/coil/)
 

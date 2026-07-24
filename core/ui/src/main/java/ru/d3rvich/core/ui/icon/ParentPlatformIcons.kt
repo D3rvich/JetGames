@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
-import ru.d3rvich.core.domain.entities.ParentPlatformEntity
+import ru.d3rvich.core.entity.ParentPlatformEntity
 import ru.d3rvich.core.ui.R
 
 object ParentPlatformIcons {
