@@ -21,9 +21,9 @@ import ru.d3rvich.common.R
  */
 @Composable
 fun SearchField(
-    modifier: Modifier = Modifier,
     text: String,
     onTextChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
     focusRequester: FocusRequester? = null,
     onClearText: (() -> Unit)? = null,
 ) {
@@ -40,10 +40,10 @@ fun SearchField(
         },
         suffix = {
             IconButton(onClick = {
-                onClearText?.invoke()
                 if (text.isNotEmpty()) {
                     onTextChange("")
                 }
+                onClearText?.invoke()
             }) {
                 Icon(
                     painter = painterResource(R.drawable.close_24px),

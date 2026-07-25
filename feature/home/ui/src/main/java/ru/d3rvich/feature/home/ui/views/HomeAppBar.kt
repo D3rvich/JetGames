@@ -25,6 +25,7 @@ import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,18 +33,20 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.util.lerp
 import ru.d3rvich.common.components.SearchField
 import ru.d3rvich.core.model.ListDisplayOption
 import ru.d3rvich.core.ui.theme.JetGamesTheme
 import ru.d3rvich.feature.home.ui.model.iconResId
 import ru.d3rvich.feature.home.ui.model.stringResId
+import androidx.compose.ui.graphics.lerp
 import ru.d3rvich.common.R as CommonR
 import ru.d3rvich.feature.home.ui.R as HomeR
 
@@ -71,15 +74,23 @@ internal fun HomeAppBar(
             focusRequester.requestFocus()
         }
     }
-    val alphaFraction =
-        lerp(1f, 0.5f, scrollBehavior?.state?.collapsedFraction ?: 0f)
+    val topAppColors = TopAppBarDefaults.topAppBarColors()
+    val containerColor = topAppColors.containerColor.copy(alpha = 0.95f)
+    val scrolledContainerColor = topAppColors.scrolledContainerColor.copy(alpha = 0.5f)
+    val backgroundColor by remember(containerColor, scrolledContainerColor) {
+        derivedStateOf {
+            val fraction = scrollBehavior?.state?.collapsedFraction ?: 0f
+            lerp(containerColor, scrolledContainerColor, fraction)
+        }
+    }
     TopAppBar(
-        modifier = modifier,
-        colors = TopAppBarDefaults.topAppBarColors()
-            .copy(
-                scrolledContainerColor =
-                    TopAppBarDefaults.topAppBarColors().scrolledContainerColor.copy(alpha = alphaFraction)
-            ),
+        modifier = modifier.drawBehind {
+            drawRect(color = backgroundColor)
+        },
+        colors = topAppColors.copy(
+            containerColor = Color.Transparent,
+            scrolledContainerColor = Color.Transparent
+        ),
         scrollBehavior = scrollBehavior,
         navigationIcon = {
             AnimatedVisibility(visible = !showSearch) {
@@ -119,36 +130,53 @@ internal fun HomeAppBar(
             }
         },
         actions = {
-            BadgedBox(badge = {
-                if (isFilterEdited) {
-                    Badge(modifier = Modifier.offset(x = (-8).dp, y = 8.dp))
-                }
-            }) {
-                IconButton(
-                    onClick = navigateToFilterScreen,
-                ) {
-                    Icon(
-                        painter = painterResource(CommonR.drawable.ic_filter_alt_24),
-                        contentDescription = stringResource(HomeR.string.open_filter)
-                    )
-                }
-            }
-            var showMenu by rememberSaveable {
-                mutableStateOf(false)
-            }
-            ListViewModeMenu(
-                showMenu = showMenu,
-                onShowMenuChange = { showMenu = it },
+            Actions(
                 currentListDisplayOption = currentListDisplayOption,
-                onListViewModeChange = onListDisplayOptionChange
+                isFilterEdited = isFilterEdited,
+                onListDisplayOptionChange = onListDisplayOptionChange,
+                navigateToFilterScreen = navigateToFilterScreen,
+                navigateToSettingsScreen = navigateToSettingsScreen
             )
-            IconButton(onClick = navigateToSettingsScreen) {
-                Icon(
-                    painter = painterResource(CommonR.drawable.settings_24px),
-                    contentDescription = stringResource(HomeR.string.open_settings)
-                )
-            }
         })
+}
+
+@Composable
+private fun Actions(
+    currentListDisplayOption: ListDisplayOption,
+    isFilterEdited: Boolean,
+    onListDisplayOptionChange: (ListDisplayOption) -> Unit,
+    navigateToFilterScreen: () -> Unit,
+    navigateToSettingsScreen: () -> Unit
+) {
+    var showMenu by rememberSaveable {
+        mutableStateOf(false)
+    }
+    ListViewModeMenu(
+        showMenu = showMenu,
+        onShowMenuChange = { showMenu = it },
+        currentListDisplayOption = currentListDisplayOption,
+        onListViewModeChange = onListDisplayOptionChange
+    )
+    BadgedBox(badge = {
+        if (isFilterEdited) {
+            Badge(modifier = Modifier.offset(x = (-8).dp, y = 8.dp))
+        }
+    }) {
+        IconButton(
+            onClick = navigateToFilterScreen,
+        ) {
+            Icon(
+                painter = painterResource(CommonR.drawable.ic_filter_alt_24),
+                contentDescription = stringResource(HomeR.string.open_filter)
+            )
+        }
+    }
+    IconButton(onClick = navigateToSettingsScreen) {
+        Icon(
+            painter = painterResource(CommonR.drawable.settings_24px),
+            contentDescription = stringResource(HomeR.string.open_settings)
+        )
+    }
 }
 
 @Composable
