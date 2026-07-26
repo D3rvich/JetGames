@@ -30,16 +30,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.datetime.LocalDate
 import ru.d3rvich.common.components.raitingbar.RatingBar
 import ru.d3rvich.common.components.shimmer.shimmer
-import ru.d3rvich.core.entity.GameEntity
 import ru.d3rvich.core.entity.GenreEntity
 import ru.d3rvich.core.entity.ParentPlatformEntity
 import ru.d3rvich.core.ui.R
 import ru.d3rvich.core.ui.icon.findWrapper
 import ru.d3rvich.core.ui.icon.tryFindIcon
-import ru.d3rvich.core.ui.mapper.toGameUiModel
 import ru.d3rvich.core.ui.model.GameUiModel
 import ru.d3rvich.core.ui.theme.JetGamesTheme
 
@@ -413,17 +412,17 @@ private fun LargeGameItemLoadingPreview() {
 @Preview(showBackground = true)
 @Composable
 private fun LargeGameItemPreview() {
-    val parentPlatforms = listOf(
+    val parentPlatforms = persistentListOf(
         ParentPlatformEntity(0, "PC"),
         ParentPlatformEntity(1, "Playstation"),
         ParentPlatformEntity(2, "XBOX")
     )
-    val genres = listOf(
+    val genres = persistentListOf(
         GenreEntity(0, "Action"),
         GenreEntity(1, "Strategy"),
         GenreEntity(2, "RPG"),
     )
-    val game = GameEntity(
+    val game = GameUiModel(
         id = 0,
         name = "Game name",
         imageUrl = null,
@@ -436,7 +435,7 @@ private fun LargeGameItemPreview() {
     )
     JetGamesTheme {
         GameListItemView(
-            game = game.toGameUiModel(),
+            game = game,
             isLarge = true,
             onItemClick = {}
         )
@@ -454,7 +453,7 @@ private fun CompactGameItemLoadingPreview() {
 @Preview(showBackground = true)
 @Composable
 private fun CompactGameItemPreview() {
-    val game = GameEntity(
+    val game = GameUiModel(
         id = 0,
         name = "Game name",
         imageUrl = null,
@@ -467,7 +466,7 @@ private fun CompactGameItemPreview() {
     )
     JetGamesTheme {
         GameListItemView(
-            game = game.toGameUiModel(),
+            game = game,
             isLarge = false,
         )
     }
@@ -476,14 +475,14 @@ private fun CompactGameItemPreview() {
 @Preview(showBackground = true)
 @Composable
 private fun CompactGameItemWithLongNamePreview() {
-    val game = GameEntity(
+    val game = GameUiModel(
         id = 0,
         name = "A very very very very very very very long game name what overlaps text view",
         imageUrl = null,
         metacritic = 50,
         rating = 2.5f,
         released = LocalDate(2007, 11, 1),
-        parentPlatforms = listOf(
+        parentPlatforms = persistentListOf(
             ParentPlatformEntity(0, "PC"),
             ParentPlatformEntity(1, "Xbox One")
         ),
@@ -492,7 +491,7 @@ private fun CompactGameItemWithLongNamePreview() {
     )
     JetGamesTheme {
         GameListItemView(
-            game = game.toGameUiModel(),
+            game = game,
             isLarge = false
         ) {}
     }
@@ -504,7 +503,7 @@ private fun CompactGamesViewPreview() {
     JetGamesTheme {
         Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(4.dp)) {
             repeat(5) { itemNumber ->
-                val game = GameEntity(
+                val game = GameUiModel(
                     id = itemNumber,
                     name = "Game name $itemNumber",
                     imageUrl = null,
@@ -516,7 +515,7 @@ private fun CompactGamesViewPreview() {
                     ratings = null
                 )
                 GameListItemView(
-                    game = game.toGameUiModel(),
+                    game = game,
                     isLarge = false,
                     onItemClick = {}
                 )

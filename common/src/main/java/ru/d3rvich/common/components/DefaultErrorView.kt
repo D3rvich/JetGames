@@ -25,8 +25,8 @@ import ru.d3rvich.common.R
 @Composable
 fun DefaultErrorView(
     message: String,
-    modifier: Modifier = Modifier,
     onRefreshPressed: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier.fillMaxSize(),
@@ -50,6 +50,6 @@ fun DefaultErrorView(
 @Composable
 private fun ErrorViewPreview() {
     MaterialTheme {
-        DefaultErrorView(message = "Error message") {}
+        DefaultErrorView(message = "Error message", onRefreshPressed = {})
     }
 }

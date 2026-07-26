@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -24,12 +25,11 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.itemKey
 import ru.d3rvich.common.components.DefaultErrorView
 import ru.d3rvich.core.ui.components.GameListItemView
-import ru.d3rvich.core.ui.mapper.toGameUiModel
+import ru.d3rvich.core.ui.model.GameUiModel
+import ru.d3rvich.core.ui.paging.HandlePagingItems
 import ru.d3rvich.feature.favorites.api.FavoritesComponent
 import ru.d3rvich.common.R as commonR
 
@@ -79,49 +79,31 @@ private fun FavoritesContent(
             )
         }
     ) { paddingValues ->
-        LazyColumn(
-            modifier = Modifier.padding(paddingValues),
-            contentPadding = contentPadding,
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            if (pagingItems.loadState.refresh == LoadState.Loading) {
-                item {
-                    LoadingView(modifier = Modifier.fillParentMaxSize())
-                }
+        val lazyListState = rememberLazyListState()
+        HandlePagingItems(
+            items = pagingItems,
+            onLoading = { LoadingView() },
+            onEmpty = { NoItemsMessage() },
+            onError = { error ->
+                DefaultErrorView(
+                    message = error.localizedMessage ?: "Error",
+                    onRefreshPressed = { })
             }
-
-            if (pagingItems.loadState.refresh is LoadState.Error) {
-                item {
-                    val error = pagingItems.loadState.refresh as? LoadState.Error
-                    DefaultErrorView(
-                        message = error?.error?.message ?: "error",
-                        modifier = Modifier.fillParentMaxSize(),
-                        onRefreshPressed = { }
+        ) {
+            LazyColumn(
+                state = lazyListState,
+                modifier = Modifier.padding(paddingValues),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                contentPadding = contentPadding
+            ) {
+                pagingItems(key = GameUiModel::id, contentType = { "GameItems" }) { game ->
+                    GameListItemView(
+                        game = game,
+                        isLarge = false,
+                        onItemClick = onGameClicked,
                     )
                 }
-            }
-
-            if (pagingItems.loadState.refresh is LoadState.NotLoading && pagingItems.itemCount == 0) {
-                item {
-                    NoItemsMessage(modifier = Modifier.fillParentMaxSize())
-                }
-            }
-
-            items(
-                count = pagingItems.itemCount,
-                key = pagingItems.itemKey { it.id }) { index ->
-                pagingItems[index]?.let { item ->
-                    GameListItemView(
-                        game = item.toGameUiModel(),
-                        isLarge = false,
-                    ) { gameId ->
-                        onGameClicked(gameId)
-                    }
-                }
-            }
-
-            if (pagingItems.loadState.append == LoadState.Loading) {
-                item {
+                appendLoadingItem {
                     CircularProgressIndicator(
                         modifier = Modifier
                             .fillMaxWidth()

@@ -4,7 +4,7 @@ import androidx.compose.runtime.Stable
 import androidx.paging.PagingData
 import com.arkivanov.decompose.ComponentContext
 import kotlinx.coroutines.flow.Flow
-import ru.d3rvich.core.entity.GameEntity
+import ru.d3rvich.core.ui.model.GameUiModel
 
 @Stable
 interface FavoritesComponent {
@@ -14,7 +14,7 @@ interface FavoritesComponent {
     fun settingsClicked()
 
     @Stable
-    data class Model(val games: Flow<PagingData<GameEntity>>)
+    data class Model(val games: Flow<PagingData<GameUiModel>>)
 
     sealed interface Output {
         data object OpenSettings : Output
