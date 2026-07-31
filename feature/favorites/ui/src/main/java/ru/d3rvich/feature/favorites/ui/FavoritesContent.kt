@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -33,31 +32,14 @@ import ru.d3rvich.core.ui.paging.HandlePagingItems
 import ru.d3rvich.feature.favorites.api.FavoritesComponent
 import ru.d3rvich.common.R as commonR
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoritesContent(
     component: FavoritesComponent,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier
 ) {
-    FavoritesContent(
-        model = component.model,
-        contentPadding = contentPadding,
-        onSettingsClicked = component::settingsClicked,
-        onGameClicked = component::gameClicked,
-        modifier = modifier
-    )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun FavoritesContent(
-    model: FavoritesComponent.Model,
-    contentPadding: PaddingValues,
-    onSettingsClicked: () -> Unit,
-    onGameClicked: (gameId: Int) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val pagingItems = model.games.collectAsLazyPagingItems()
+    val games = component.games.collectAsLazyPagingItems()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     Scaffold(
         modifier = modifier
@@ -68,7 +50,7 @@ private fun FavoritesContent(
             TopAppBar(
                 title = { Text(text = stringResource(R.string.favorites)) },
                 actions = {
-                    IconButton(onClick = onSettingsClicked) {
+                    IconButton(onClick = component::settingsClicked) {
                         Icon(
                             painter = painterResource(commonR.drawable.settings_24px),
                             contentDescription = stringResource(R.string.open_settings)
@@ -79,9 +61,8 @@ private fun FavoritesContent(
             )
         }
     ) { paddingValues ->
-        val lazyListState = rememberLazyListState()
         HandlePagingItems(
-            items = pagingItems,
+            items = games,
             onLoading = { LoadingView() },
             onEmpty = { NoItemsMessage() },
             onError = { error ->
@@ -91,7 +72,6 @@ private fun FavoritesContent(
             }
         ) {
             LazyColumn(
-                state = lazyListState,
                 modifier = Modifier.padding(paddingValues),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 contentPadding = contentPadding
@@ -100,7 +80,7 @@ private fun FavoritesContent(
                     GameListItemView(
                         game = game,
                         isLarge = false,
-                        onItemClick = onGameClicked,
+                        onItemClick = component::gameClicked,
                     )
                 }
                 appendLoadingItem {

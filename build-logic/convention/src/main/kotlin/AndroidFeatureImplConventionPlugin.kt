@@ -25,6 +25,7 @@ class AndroidFeatureImplConventionPlugin : Plugin<Project> {
 
                 "implementation"(libs.findLibrary("kotlinx-collections-immutable").get())
                 "implementation"(libs.findLibrary("decompose-core").get())
+                "implementation"(libs.findLibrary("essenty-lifecycle-coroutines").get())
                 "implementation"(libs.findLibrary("mviKotlin-core").get())
                 "implementation"(libs.findLibrary("mviKotlin-main").get())
                 "implementation"(libs.findLibrary("mviKotlin-extensions-coroutines").get())

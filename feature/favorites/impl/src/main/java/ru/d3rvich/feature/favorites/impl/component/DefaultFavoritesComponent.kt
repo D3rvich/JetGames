@@ -1,29 +1,32 @@
 package ru.d3rvich.feature.favorites.impl.component
 
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import androidx.paging.map
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.mvikotlin.core.instancekeeper.getStore
+import com.arkivanov.essenty.lifecycle.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.koin.core.annotation.Factory
 import org.koin.core.annotation.InjectedParam
+import ru.d3rvich.core.domain.usecases.GetFavoriteGamesUseCase
 import ru.d3rvich.core.entity.GameEntity
+import ru.d3rvich.core.ui.model.GameUiModel
 import ru.d3rvich.core.ui.model.toGameUiModel
 import ru.d3rvich.feature.favorites.api.FavoritesComponent
-import ru.d3rvich.feature.favorites.impl.store.FavoritesStore
-import ru.d3rvich.feature.favorites.impl.store.FavoritesStoreFactory
 
 @Factory(binds = [DefaultFavoritesComponent::class])
 internal class DefaultFavoritesComponent(
     @InjectedParam componentContext: ComponentContext,
     @InjectedParam private val output: (FavoritesComponent.Output) -> Unit,
-    private val storeFactory: FavoritesStoreFactory
+    getFavoriteGamesUseCase: GetFavoriteGamesUseCase
 ) : FavoritesComponent, ComponentContext by componentContext {
-    private val store: FavoritesStore = instanceKeeper.getStore { storeFactory.create() }
+    private val coroutineScope = coroutineScope()
 
-    override val model: FavoritesComponent.Model =
-        FavoritesComponent.Model(games = store.state.games.map { pagingData ->
+    override val games: Flow<PagingData<GameUiModel>> =
+        getFavoriteGamesUseCase.invoke("").map { pagingData ->
             pagingData.map(GameEntity::toGameUiModel)
-        })
+        }.cachedIn(coroutineScope)
 
     override fun gameClicked(gameId: Int) {
         output(FavoritesComponent.Output.OpenGameDetail(gameId))

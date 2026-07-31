@@ -8,13 +8,10 @@ import ru.d3rvich.core.ui.model.GameUiModel
 
 @Stable
 interface FavoritesComponent {
-    val model: Model
+    val games: Flow<PagingData<GameUiModel>>
 
     fun gameClicked(gameId: Int)
     fun settingsClicked()
-
-    @Stable
-    data class Model(val games: Flow<PagingData<GameUiModel>>)
 
     sealed interface Output {
         data object OpenSettings : Output

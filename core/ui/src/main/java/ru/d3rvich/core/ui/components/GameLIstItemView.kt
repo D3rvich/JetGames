@@ -191,10 +191,10 @@ private fun GameListItemLoadingView(modifier: Modifier = Modifier, isLarge: Bool
 
 @Composable
 private fun GameListItemView(
-    modifier: Modifier = Modifier,
     game: GameUiModel,
     isLarge: Boolean,
     onItemClick: (gameId: Int) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     if (isLarge) {
         LargeGameListItemView(

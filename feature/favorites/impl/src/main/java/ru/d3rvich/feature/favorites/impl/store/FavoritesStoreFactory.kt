@@ -7,6 +7,7 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.coroutineBootstrapper
 import com.arkivanov.mvikotlin.extensions.coroutines.coroutineExecutorFactory
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import org.koin.core.annotation.Factory
@@ -18,13 +19,13 @@ internal class FavoritesStoreFactory(
     private val getFavoriteGamesUseCase: GetFavoriteGamesUseCase,
     private val storeFactory: StoreFactory = DefaultStoreFactory(),
 ) {
-    fun create(): FavoritesStore =
+    fun create(coroutineScope: CoroutineScope): FavoritesStore =
         object : FavoritesStore,
             Store<Nothing, FavoritesStore.State, Nothing> by storeFactory.create<Nothing, Message, Message, FavoritesStore.State, Nothing>(
                 name = "FavoritesStore",
                 initialState = FavoritesStore.State(emptyFlow()),
                 bootstrapper = coroutineBootstrapper {
-                    val gamesFlow = getFavoriteGamesUseCase.invoke("").cachedIn(this)
+                    val gamesFlow = getFavoriteGamesUseCase.invoke("").cachedIn(coroutineScope)
                     dispatch(Message.GamesLoaded(gamesFlow))
                 },
                 executorFactory = coroutineExecutorFactory {

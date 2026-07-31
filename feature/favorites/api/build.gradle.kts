@@ -5,6 +5,7 @@ plugins {
 
 dependencies {
     implementation(projects.core.entity)
+    implementation(projects.core.ui.model)
 
     implementation(libs.androidx.paging.common)
     implementation(libs.kotlinx.coroutines)
