@@ -4,7 +4,6 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.backhandler.BackCallback
-import kotlinx.serialization.builtins.serializer
 import org.koin.core.annotation.Factory
 import org.koin.core.annotation.InjectedParam
 import ru.d3rvich.feature.screenshots.api.ScreenshotsComponent
@@ -17,14 +16,10 @@ internal class DefaultScreenshotsComponent(
     @InjectedParam private val output: (ScreenshotsComponent.Output) -> Unit,
 ) : ScreenshotsComponent, ComponentContext by componentContext {
 
-    private val savedShowWidgets =
-        stateKeeper.consume(SHOW_WIDGETS_KEY, Boolean.serializer()) ?: true
-    private val _showWidgets = MutableValue(savedShowWidgets)
+    private val _showWidgets = MutableValue(true)
     override val showWidgets: Value<Boolean> = _showWidgets
 
-    private var _currentPage: Int =
-        stateKeeper.consume(CURRENT_PAGE_KEY, Int.serializer()) ?: initialPage
-
+    private var _currentPage: Int = initialPage
     override val currentPage: Int = _currentPage
 
     private val backCallback = BackCallback {
@@ -33,8 +28,6 @@ internal class DefaultScreenshotsComponent(
 
     init {
         backHandler.register(backCallback)
-        stateKeeper.register(CURRENT_PAGE_KEY, Int.serializer()) { _currentPage }
-        stateKeeper.register(SHOW_WIDGETS_KEY, Boolean.serializer()) { _showWidgets.value }
     }
 
     override fun setShowWidgets(isShow: Boolean) {
@@ -49,6 +42,3 @@ internal class DefaultScreenshotsComponent(
         _currentPage = page
     }
 }
-
-private const val CURRENT_PAGE_KEY = "current_page"
-private const val SHOW_WIDGETS_KEY = "show_widgets"

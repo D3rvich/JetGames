@@ -12,7 +12,7 @@ import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.arkivanov.decompose.defaultComponentContext
+import com.arkivanov.decompose.retainedComponent
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.d3rvich.core.domain.model.UserPreferences
@@ -34,7 +34,7 @@ class MainActivity : ComponentActivity() {
         }
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        val root = rootComponentFactory.create(defaultComponentContext())
+        val root = retainedComponent { rootComponentFactory.create(it) }
         setContent {
             val windowSizeClass = calculateWindowSizeClass(this)
             val uiState = viewModel.uiState.collectAsStateWithLifecycle().value

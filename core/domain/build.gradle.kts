@@ -5,9 +5,10 @@ plugins {
     alias(libs.plugins.jetgames.shared.koin)
 }
 
-val compileKotlin: KotlinCompile by tasks
-compileKotlin.compilerOptions {
-    freeCompilerArgs.set(listOf("-Xexplicit-backing-fields"))
+tasks.getByName<KotlinCompile>("compileKotlin") {
+    compilerOptions {
+        freeCompilerArgs.set(listOf("-Xexplicit-backing-fields"))
+    }
 }
 
 dependencies {

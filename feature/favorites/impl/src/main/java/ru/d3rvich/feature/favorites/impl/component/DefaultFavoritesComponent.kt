@@ -23,10 +23,8 @@ internal class DefaultFavoritesComponent(
 ) : FavoritesComponent, ComponentContext by componentContext {
     private val coroutineScope = coroutineScope()
 
-    override val games: Flow<PagingData<GameUiModel>> =
-        getFavoriteGamesUseCase.invoke("").map { pagingData ->
-            pagingData.map(GameEntity::toGameUiModel)
-        }.cachedIn(coroutineScope)
+    override val games: Flow<PagingData<GameUiModel>> = getFavoriteGamesUseCase.invoke("")
+        .map { pagingData -> pagingData.map(GameEntity::toGameUiModel) }.cachedIn(coroutineScope)
 
     override fun gameClicked(gameId: Int) {
         output(FavoritesComponent.Output.OpenGameDetail(gameId))

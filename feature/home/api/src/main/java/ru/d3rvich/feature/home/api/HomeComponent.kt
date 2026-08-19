@@ -6,8 +6,8 @@ import androidx.paging.PagingData
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.Value
 import kotlinx.coroutines.flow.Flow
-import ru.d3rvich.core.entity.GameEntity
 import ru.d3rvich.core.model.ListDisplayOption
+import ru.d3rvich.core.ui.model.GameUiModel
 
 @Stable
 interface HomeComponent {
@@ -28,7 +28,7 @@ interface HomeComponent {
 
         @Stable
         data class Content(
-            val games: Flow<PagingData<GameEntity>>,
+            val games: Flow<PagingData<GameUiModel>>,
             val search: String,
             val isFilterEdited: Boolean,
             val listDisplayOption: ListDisplayOption

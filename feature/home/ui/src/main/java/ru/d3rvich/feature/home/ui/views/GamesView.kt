@@ -3,9 +3,8 @@ package ru.d3rvich.feature.home.ui.views
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.calculateEndPadding
-import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.plus
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -23,7 +22,6 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.LoadStates
@@ -34,11 +32,10 @@ import androidx.paging.compose.itemKey
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.datetime.LocalDate
 import ru.d3rvich.common.components.DefaultErrorView
-import ru.d3rvich.core.entity.GameEntity
 import ru.d3rvich.core.model.ListDisplayOption
 import ru.d3rvich.core.ui.components.GameGridItemView
 import ru.d3rvich.core.ui.components.GameListItemView
-import ru.d3rvich.core.ui.mapper.toGameUiModel
+import ru.d3rvich.core.ui.model.GameUiModel
 import ru.d3rvich.core.ui.theme.JetGamesTheme
 import ru.d3rvich.feature.home.ui.R
 
@@ -47,7 +44,7 @@ import ru.d3rvich.feature.home.ui.R
  */
 @Composable
 internal fun GamesView(
-    pagingItems: LazyPagingItems<GameEntity>,
+    pagingItems: LazyPagingItems<GameUiModel>,
     listDisplayMode: ListDisplayOption,
     onRefreshPressed: () -> Unit,
     onGameSelected: (Int) -> Unit,
@@ -118,12 +115,12 @@ internal fun GamesView(
                     pagingItems[index]?.let { item ->
                         if (listDisplayMode == ListDisplayOption.Grid) {
                             GameGridItemView(
-                                game = item.toGameUiModel(),
+                                game = item,
                                 onItemClick = onGameSelected
                             )
                         } else {
                             GameListItemView(
-                                game = item.toGameUiModel(),
+                                game = item,
                                 isLarge = listDisplayMode == ListDisplayOption.Large,
                                 onItemClick = onGameSelected
                             )
@@ -154,17 +151,8 @@ internal fun GamesView(
     }
 }
 
-private operator fun PaddingValues.plus(other: PaddingValues): PaddingValues = PaddingValues(
-    start = this.calculateStartPadding(LayoutDirection.Ltr) +
-            other.calculateStartPadding(LayoutDirection.Ltr),
-    top = this.calculateTopPadding() + other.calculateTopPadding(),
-    end = this.calculateEndPadding(LayoutDirection.Ltr) +
-            other.calculateEndPadding(LayoutDirection.Ltr),
-    bottom = this.calculateBottomPadding() + other.calculateBottomPadding(),
-)
-
 private val previewPagingData = List(10) {
-    GameEntity(
+    GameUiModel(
         id = it,
         name = "Game $it",
         imageUrl = null,

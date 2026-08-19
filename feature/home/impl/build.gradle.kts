@@ -10,6 +10,7 @@ android {
 dependencies {
     implementation(projects.feature.home.api)
     implementation(projects.core.domain)
+    implementation(projects.core.ui.model)
 
     implementation(libs.androidx.paging.common)
 

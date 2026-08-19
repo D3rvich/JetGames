@@ -6,6 +6,7 @@ plugins {
 dependencies {
     implementation(projects.core.entity)
     implementation(projects.core.model)
+    implementation(projects.core.ui.model)
 
     implementation(libs.androidx.paging.common)
 }
