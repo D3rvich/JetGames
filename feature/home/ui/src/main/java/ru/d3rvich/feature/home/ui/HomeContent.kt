@@ -18,67 +18,35 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import kotlinx.coroutines.launch
 import ru.d3rvich.common.components.ScrollToTopButton
 import ru.d3rvich.core.model.ListDisplayOption
 import ru.d3rvich.feature.home.api.HomeComponent
-import ru.d3rvich.feature.home.ui.views.GamesView
+import ru.d3rvich.feature.home.ui.views.GamesGrid
 import ru.d3rvich.feature.home.ui.views.HomeAppBar
-import ru.d3rvich.feature.home.ui.views.LoadingView
 import kotlin.math.roundToInt
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeContent(
     component: HomeComponent,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier
 ) {
-    val model by component.model.subscribeAsState()
-    when (val model = model) {
-        is HomeComponent.Model.Content -> HomeContent(
-            model = model,
-            contentPadding = contentPadding,
-            navigateToDetailScreen = component::openGameDetail,
-            navigateToFilterScreen = component::openFilter,
-            navigateToSettingsScreen = component::openSettings,
-            onRefresh = component::refresh,
-            onSearchChange = component::setSearch,
-            onListDisplayOptionChange = component::setListVDisplayOption,
-            modifier = modifier
-        )
-
-        HomeComponent.Model.Loading -> LoadingView(modifier.padding(contentPadding))
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-internal fun HomeContent(
-    model: HomeComponent.Model.Content,
-    contentPadding: PaddingValues,
-    navigateToDetailScreen: (Int) -> Unit,
-    navigateToFilterScreen: () -> Unit,
-    navigateToSettingsScreen: () -> Unit,
-    onRefresh: () -> Unit,
-    onSearchChange: (String) -> Unit,
-    onListDisplayOptionChange: (ListDisplayOption) -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    val pagingItems = model.games.collectAsLazyPagingItems()
+    val pagingItems = component.games.collectAsLazyPagingItems()
+    val model by component.model.collectAsStateWithLifecycle()
     val gridState = rememberLazyGridState()
-    val currentListDisplayOption = model.listDisplayOption
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
-    val scope = rememberCoroutineScope()
     BoxWithConstraints {
-        val itemWidth = when (currentListDisplayOption) {
-            ListDisplayOption.Grid -> 160.dp
-            else -> 300.dp
+        val cellMinWidth = remember(model.listDisplayOption) {
+            if (model.listDisplayOption == ListDisplayOption.Grid) 160.dp
+            else 300.dp
         }
-        val maxItemsInColumn = (this.maxWidth / itemWidth).roundToInt()
-        val isButtonVisible by remember {
+        val maxItemsInColumn = (this.maxWidth / cellMinWidth).roundToInt()
+        val isButtonVisible by remember(maxItemsInColumn) {
             derivedStateOf {
                 gridState.firstVisibleItemIndex > maxItemsInColumn * 3
             }
@@ -88,6 +56,7 @@ internal fun HomeContent(
                 .fillMaxSize()
                 .nestedScroll(scrollBehavior.nestedScrollConnection),
             floatingActionButton = {
+                val scope = rememberCoroutineScope()
                 ScrollToTopButton(
                     isVisible = isButtonVisible,
                     modifier = Modifier.padding(bottom = contentPadding.calculateBottomPadding())
@@ -102,29 +71,28 @@ internal fun HomeContent(
                 if (pagingItems.loadState.refresh !is LoadState.Error || model.search.isNotEmpty()) {
                     HomeAppBar(
                         searchText = model.search,
-                        onSearchChange = onSearchChange,
+                        onSearchChange = component::setSearch,
                         isFilterEdited = model.isFilterEdited,
-                        currentListDisplayOption = currentListDisplayOption,
-                        onListDisplayOptionChange = onListDisplayOptionChange,
+                        currentListDisplayOption = model.listDisplayOption,
+                        onListDisplayOptionChange = component::setListVDisplayOption,
                         scrollBehavior = scrollBehavior,
-                        navigateToFilterScreen = navigateToFilterScreen,
-                        navigateToSettingsScreen = navigateToSettingsScreen,
+                        navigateToFilterScreen = component::openFilter,
+                        navigateToSettingsScreen = component::openSettings,
                     )
                 }
             }
         ) { paddingValues ->
-            GamesView(
-                pagingItems = pagingItems,
-                listDisplayMode = currentListDisplayOption,
+            GamesGrid(
+                games = pagingItems,
+                listDisplayOption = model.listDisplayOption,
+                cellMinWidth = cellMinWidth,
+                onGameClick = component::openGameDetail,
+                modifier = modifier,
+                gridState = gridState,
                 contentPadding = PaddingValues(
                     top = paddingValues.calculateTopPadding() + 8.dp,
                     bottom = contentPadding.calculateBottomPadding()
-                ),
-                gridState = gridState,
-                onRefreshPressed = onRefresh,
-                onGameSelected = { gameId ->
-                    navigateToDetailScreen(gameId)
-                }
+                )
             )
         }
     }

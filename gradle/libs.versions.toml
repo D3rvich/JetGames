@@ -1,10 +1,10 @@
 [versions]
-androidGradlePlugin = "9.3.1"
+androidGradlePlugin = "9.4.1"
 androidTools = "32.3.1"
 androidxCore = "1.19.0"
-kotlin = "2.4.10"
+kotlin = "2.4.20"
 koin-bom = "4.2.2"
-koin-compiler = "1.1.0"
+koin-compiler = "1.2.1"
 ksp = "2.3.6"
 androidxLifecycle = "2.11.0"
 androidxActivity = "1.13.0"
