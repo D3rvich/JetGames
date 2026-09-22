@@ -24,7 +24,6 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
@@ -40,12 +39,15 @@ import ru.d3rvich.feature.home.ui.R
 internal fun GamesGrid(
     games: LazyPagingItems<GameUiModel>,
     listDisplayOption: ListDisplayOption,
-    cellMinWidth: Dp,
     onGameClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
     gridState: LazyGridState = rememberLazyGridState(),
     contentPadding: PaddingValues = PaddingValues()
 ) {
+    val cellMinWidth = remember(listDisplayOption) {
+        if (listDisplayOption == ListDisplayOption.Grid) 160.dp
+        else 300.dp
+    }
     val focusManager = LocalFocusManager.current
     val connection = remember(focusManager) {
         object : NestedScrollConnection {
